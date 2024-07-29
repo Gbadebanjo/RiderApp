@@ -3,22 +3,24 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 
-function StyledButton({ title, onPress, width, marginRight, 
+function StyledButton({ title, onPress, width, marginRight, height,
     marginLeft, marginTop, marginBottom, backgroundColor, 
-    borderWidth, borderColor, TextColor, iconName }) {
+    borderWidth, borderColor, TextColor, iconName, paddingVertical }) {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[
         styles.button,
-        { backgroundColor: backgroundColor || '#7538EC' },
+        { backgroundColor: backgroundColor || '#212121' },
         { width },
+        { height },
         { marginRight },
         { marginLeft },
         { marginTop },
         { marginBottom },
         { borderWidth },
-        { borderColor }
+        { borderColor },
+        {paddingVertical}
       ]}
     >
       <View style={styles.content}>
