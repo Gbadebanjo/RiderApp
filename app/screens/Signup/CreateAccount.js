@@ -14,32 +14,32 @@ export default function FirstScreen() {
       <Text style={styles.title}>Welcome!</Text>
       <Text style={styles.subtitle}>Create an Account</Text>
 
-      <InputField 
-          label="Email"
-          placeholder="user@rydepro.com" 
-          keyboardType="email-address" 
-          autoCapitalize="none" 
-          textContentType="emailAddress" 
-          returnKeyType="next"
-          width="90%"
-          marginLeft={15}
-          />
+      <InputField
+        label="Email"
+        placeholder="user@rydepro.com"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        textContentType="emailAddress"
+        returnKeyType="next"
+        width="90%"
+        marginLeft={15}
+      />
 
-        <StyledButton 
-          title="Continue" 
-          onPress={() => alert('Button Pressed')}  
-          width="85%" 
-          height={53}
-          paddingVertical={10}
-          marginTop={30}
-          backgroundColor="#212121" 
-          borderWidth={2} 
-          TextColor="#fff" 
-          iconName="angle-right"/>
-              
-          <TouchableOpacity onPress={() => alert('Continue as Guest Pressed')}>
-            <Text style={styles.loginText}>Login</Text>
-          </TouchableOpacity>       
+      <StyledButton
+        title="Continue"
+        onPress={() => alert('Button Pressed')}
+        width="85%"
+        height={53}
+        paddingVertical={10}
+        marginTop={30}
+        backgroundColor="#212121"
+        borderWidth={2}
+        TextColor="#fff"
+        iconName="angle-right" />
+
+      <TouchableOpacity onPress={() => alert('Continue as Guest Pressed')}>
+        <Text style={styles.loginText}>Login</Text>
+      </TouchableOpacity>
     </View>
   );
 }

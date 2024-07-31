@@ -1,26 +1,22 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-// import StyledButton from './app/components/StyledButton';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import Landing from './app/screens/Welcome/Landing';
+import LandingOffer from './app/screens/Welcome/LandingOffer';
 import FirstScreen from './app/screens/Signup/FirstScreen';
 import CreateAccount from './app/screens/Signup/CreateAccount';
 
+const Stack = createStackNavigator();
+
 export default function App() {
   return (
-    <View style={styles.container}>
-      {/* <FirstScreen /> */}
-      <CreateAccount/>
-      <StatusBar style="auto" />
-    </View>
+   <NavigationContainer>
+    <Stack.Navigator initialRouteName='Landing'>
+      <Stack.Screen name='Landing' component={Landing} options={{ headerShown: false }}/>
+      <Stack.Screen name='LandingOffer' component={LandingOffer} options={{ headerShown: false }}/>
+      <Stack.Screen name='FirstScreen' component={FirstScreen} options={{ headerShown: false }}/>
+      <Stack.Screen name='CreateAccount' component={CreateAccount} options={{ headerShown: false }}/>
+    </Stack.Navigator>
+   </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%'
-  },
-});
