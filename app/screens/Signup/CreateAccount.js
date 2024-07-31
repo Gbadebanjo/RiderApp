@@ -1,16 +1,17 @@
 // import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../components/StyledButton';
 import InputField from '../../components/InputField';
+import Centerlogo from '../../components/centerlogo';
 
-const logo = require('../../assets/Logo Image.png');
 
-export default function FirstScreen() {
+export default function FirstScreen({navigation}) {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <Image source={logo} style={styles.logo} />
+      <Centerlogo/>
       <Text style={styles.title}>Welcome!</Text>
       <Text style={styles.subtitle}>Create an Account</Text>
 
@@ -27,7 +28,7 @@ export default function FirstScreen() {
 
       <StyledButton
         title="Continue"
-        onPress={() => alert('Button Pressed')}
+        onPress={() => navigation.navigate('LandingOffer')}
         width="85%"
         height={53}
         paddingVertical={10}
@@ -40,7 +41,7 @@ export default function FirstScreen() {
       <TouchableOpacity onPress={() => alert('Continue as Guest Pressed')}>
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
