@@ -12,7 +12,7 @@ const Landing = ({ navigation }) => {
     }).start();
 
     const timeout = setTimeout(() => {
-        navigation.navigate('FirstScreen');
+        navigation.navigate('LandingOffer');
     }, 9000);
 
     return () => clearTimeout(timeout);
