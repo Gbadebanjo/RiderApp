@@ -40,7 +40,7 @@ export default function FirstScreen({ navigation }) {
 
 
 
-        <TouchableOpacity onPress={() => alert('Continue as Guest Pressed')}>
+        <TouchableOpacity onPress={() => navigation.navigate('MenuLanding')}>
           <Text style={styles.guestText}>Continue as Guest</Text>
         </TouchableOpacity>
 
