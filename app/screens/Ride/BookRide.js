@@ -4,8 +4,8 @@ import React from 'react'
 
 const BookRide = () => {
   return (
-    <SafeAreaView>
-      <Text>BookRide</Text>
+    <SafeAreaView style={{justifyContent: "center", backgroundColor: '#000', flex: 1, alignItems: 'center'}}>
+      <Text style={{color: '#fff', fontSize: 30}}>BookRide</Text>
     </SafeAreaView>
   )
 }

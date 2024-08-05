@@ -4,8 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 const BookingHistory = () => {
   return (
-    <SafeAreaView>
-      <Text>BookingHistory</Text>
+    <SafeAreaView style={{justifyContent: "center", backgroundColor: '#000', flex: 1, alignItems: 'center'}}>
+      <Text style={{color: '#fff', fontSize: 30}}>BookingHistory</Text>
     </SafeAreaView>
   )
 }

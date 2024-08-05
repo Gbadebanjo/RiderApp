@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -46,29 +46,28 @@ function MenuStack() {
 
 function NavButtons() {
     return (
-        <Tab.Navigator screenOptions={{tabBarHideOnKeyboard: true, headerShown: false, tabBarShowLabel: true, tabBarStyle: styles.tabBar}}>
+        <Tab.Navigator screenOptions={{ tabBarHideOnKeyboard: true, headerShown: false, tabBarShowLabel: true, tabBarStyle: styles.tabBar, tabBarActiveTintColor: '#000', tabBarInactiveTintColor: 'gray', tabBarLabelStyle: styles.tabBarLabel, tabBarIconStyle: styles.tabBarIcon,}}>
             <Tab.Screen name="BookRide" component={BookRideStack} options={{
-                tabBarLabel: 'Book Ride',
-                tabBarIcon: ({ color }) => (
+                tabBarLabel: 'Book Ride', tabBarIcon: ({ color }) => (
                     <AntDesign name="car" size={24} color={color} />
                 )
             }} />
             <Tab.Screen name="BookingHistory" component={BookingHistoryStack} options={{
                 tabBarLabel: 'Booking History',
                 tabBarIcon: ({ color }) => (
-                    <AntDesign name="book" size={24} color={color} />
+                    <AntDesign name="book" size={24} color={color } />
                 )
             }} />
             <Tab.Screen name="Services" component={ServicesStack} options={{
                 tabBarLabel: 'Services',
                 tabBarIcon: ({ color }) => (
-                    <AntDesign name="appstore1" size={24} color={color} />
+                    <AntDesign name="appstore-o" size={24} color={color} />
                 )
             }} />
             <Tab.Screen name="Menu" component={MenuStack} options={{
                 tabBarLabel: 'Menu',
                 tabBarIcon: ({ color }) => (
-                    <AntDesign name="menufold" size={24} color={color} />
+                    <FontAwesome name="user-o" size={24} color={color} />
                 )
             }} />
         </Tab.Navigator>
@@ -78,17 +77,18 @@ function NavButtons() {
 const styles = StyleSheet.create({
     tabBar: {
         backgroundColor: '#fff',
+        paddingTop: 5,
         borderTopColor: '#fff',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        
-    }
+        height: 65, 
+        paddingBottom: 10,
+      },
+      tabBarLabel: {
+        fontSize: 12, 
+        paddingBottom: 5, 
+      },
+      tabBarIcon: {
+        marginBottom: -5, 
+      },
 })
 
 export default NavButtons;

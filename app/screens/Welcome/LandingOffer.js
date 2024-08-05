@@ -30,7 +30,9 @@ export default function LandingOffer({ navigation }) {
       </View>
       <Text style={styles.texthead}>{offers[currentOffer].texthead}</Text>
       <Text style={styles.textbody}>{offers[currentOffer].textbody}</Text>
+      <View style={styles.button}>
       <StyledButton title="Skip" onPress={() => navigation.navigate('FirstScreen')} width="90%" height={53} paddingVertical={10} marginTop={170} iconName="angle-right" />
+      </View>
     </SafeAreaView>
   )
 }
@@ -64,5 +66,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: 40,
     color: '#464646',
+  },
+  button: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    marginBottom: 36,
   },
 })
