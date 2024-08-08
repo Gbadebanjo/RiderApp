@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import MenuLanding from '../screens/Dashboard/MenuLanding';
+import Account1 from '../screens/Dashboard/Account1';
 import Services from '../screens/Services/Services';
 import BookRide from '../screens/Ride/BookRide';
 import BookingHistory from '../screens/History/BookingHistory';
@@ -40,6 +41,7 @@ function MenuStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen name="MenuLanding" component={MenuLanding} options={{ headerShown: false }} />
+            <Stack.Screen name="Account1" component={Account1} options={{ headerShown: false }} />
         </Stack.Navigator>
     )
 }
