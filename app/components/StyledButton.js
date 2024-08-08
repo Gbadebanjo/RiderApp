@@ -5,7 +5,7 @@ import { FontAwesome } from '@expo/vector-icons';
 
 function StyledButton({ title, onPress, width, marginRight, height,
     marginLeft, marginTop, marginBottom, backgroundColor, 
-    borderWidth, borderColor, TextColor, iconName, paddingVertical }) {
+    borderWidth, borderColor, TextColor, iconName, paddingVertical, fontSize = 18 }) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -24,7 +24,7 @@ function StyledButton({ title, onPress, width, marginRight, height,
       ]}
     >
       <View style={styles.content}>
-        <Text style={[styles.text, { color: TextColor || '#fff' }]}>{title}</Text>
+        <Text style={[styles.text, {fontSize}, { color: TextColor || '#fff' }]}>{title}</Text>
         {iconName && <FontAwesome name={iconName} size={22} color="#fff" style={styles.icon} />}
       </View>
     </TouchableOpacity>
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   text: {
-    fontSize: 18,
+    // fontSize: 18,
     flex: 1,
     textAlign: 'center',
   },
