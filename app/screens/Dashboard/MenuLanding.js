@@ -11,9 +11,6 @@ const MenuLanding = ({ navigation }) => {
       <TouchableOpacity style={styles.nameContainer} onPress={() => navigation.navigate('Account1')}>
         <View style={styles.Img}>
           <Image source={require('../../assets/Userpic.png')} />
-          <View style={styles.cam} >
-            <Ionicons name='camera-outline' size={22} color='#fff' />
-          </View>
         </View>
         <View style={styles.namContainer}>
           <Text style={styles.name}>John Doe</Text>
@@ -98,20 +95,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   Img: {
-    position: 'relative',
     borderRadius: 50,
-  },
-  cam: {
-    width: 30,
-    height: 30,
-    backgroundColor: '#000',
-    borderRadius: 20,
-    position: 'absolute',
-    opacity: 0.6,
-    bottom: 0,
-    right: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   namContainer: {
     marginLeft: 20,
