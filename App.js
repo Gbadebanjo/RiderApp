@@ -9,6 +9,9 @@ import MenuLanding from './app/screens/Dashboard/MenuLanding';
 import WelcomeGuest from './app/screens/Auth/Signup/WelcomeGuest';
 import VerifySignup from './app/screens/Auth/Signup/VerifySignup';
 import SetPassword from './app/screens/Auth/Signup/SetPassword';
+import UserDetails from './app/screens/Auth/Signup/UserDetails';
+import ResidencyLocation from './app/screens/Auth/Signup/ResidencyLocation';
+import Security from './app/screens/Security/Security'
 
 import NavButtons from './app/components/NavButtons';
 
@@ -26,6 +29,9 @@ export default function App() {
       <Stack.Screen name='VerifySignup' component={VerifySignup} options={{ headerShown: false }}/>
       <Stack.Screen name='SetPassword' component={SetPassword} options={{ headerShown: false }}/>
       <Stack.Screen name='MenuLanding' component={NavButtons} options={{ headerShown: false }}/>
+      <Stack.Screen name='UserDetails' component={UserDetails} options={{ headerShown: false }}/>
+      <Stack.Screen name='ResidencyLocation' component={ResidencyLocation} options={{ headerShown: false }}/>
+      <Stack.Screen name='Security' component={Security} options={{ headerShown: false }}/>
     </Stack.Navigator>
    </NavigationContainer>
   );

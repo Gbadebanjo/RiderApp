@@ -18,16 +18,17 @@ const InputField = ({
   flex = 0
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-  const styles = getStyles(width, marginLeft, paddingLeft, flex);
+  const styles = getStyles(width, marginLeft, paddingLeft, flex, isFocused);
 
   return (
     <View style={styles.inputContainer}>
       <Text style={styles.label}>{label}</Text>
-      <View style={{ flexDirection: 'row', alignItems: 'center',}}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%'}}>
       <TextInput
         style={[styles.input, error && styles.error, error && styles.errorTextColor]}
         placeholder={placeholder}
@@ -38,6 +39,8 @@ const InputField = ({
         placeholderTextColor="#d2d2d4"
         value={value}
         width={width}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         />
           {showPasswordToggle && textContentType === 'password' && (
           <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIconContainer}>
@@ -50,7 +53,7 @@ const InputField = ({
   );
 };
 
-const getStyles = (width, marginLeft, paddingLeft, flex ) =>
+const getStyles = (width, marginLeft, paddingLeft, flex, isFocused ) =>
   StyleSheet.create({
     inputContainer: {
       flex: flex,
@@ -60,17 +63,18 @@ const getStyles = (width, marginLeft, paddingLeft, flex ) =>
     },
     label: {
       color: '#212121',
-      fontSize: 18,
+      fontSize: 16,
       marginTop: 15,
       alignSelf: 'flex-start',
-      // marginLeft: marginLeft,
+      marginLeft: marginLeft,
     },
     input: {
       // width: '100%',
-      borderColor: '#212121',
+      borderColor: isFocused ? '#212121' : '#CCCCCC',
       borderBottomWidth: 2,
       marginTop: 10,
       fontSize: 14,
+      paddingVertical: 5,
       marginLeft: marginLeft,
     },
     error : {
@@ -88,7 +92,9 @@ const getStyles = (width, marginLeft, paddingLeft, flex ) =>
     },
     eyeIconContainer: {
       right: 30,
-      top: 2,
+      marginBottom: 4
+      // top: 2,
+      // bottom: ,
     },
   });
 

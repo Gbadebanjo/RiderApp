@@ -41,10 +41,10 @@ export default function FirstScreen({navigation}) {
             placeholder="user@rydepro.com"
             keyboardType="email-address"
             autoCapitalize="none"
-            textContentType="emailAddress"
+            textContentType="email"
             returnKeyType="next"
             width="100%"
-            // marginLeft={15}
+            // marginLeft={1}
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
             value={values.email}
@@ -54,7 +54,7 @@ export default function FirstScreen({navigation}) {
           <StyledButton
             title="Continue"
             onPress={handleSubmit}
-            width="85%"
+            width="100%"
             height={53}
             paddingVertical={10}
             marginTop={40}
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     paddingTop: 30,
+    paddingHorizontal:30,
   },
   logo: {
     width: '20%',
@@ -106,14 +107,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontWeight: '700',
     alignSelf: 'flex-start',
-    marginLeft: '10%',
+    // marginLeft: '10%',
     marginBottom: 20,
   },
   subtitle: {
     fontSize: 26,
     fontWeight: '700',
     alignSelf: 'flex-start',
-    marginLeft: '10%',
+    // marginLeft: '10%',
     marginBottom: 0,
   },
   socialsLogo: {
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 14,
     color: 'red',
-    marginLeft: '10%',
+    // marginLeft: '10%',
     marginTop: 0,
     alignSelf: 'flex-start',
   },
