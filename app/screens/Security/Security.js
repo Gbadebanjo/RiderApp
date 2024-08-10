@@ -2,8 +2,6 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../components/BackButton';
-// import InputField from '../../../components/InputField';
-// import StyledButton from '../../../components/StyledButton';
 import { Entypo } from '@expo/vector-icons';
 
 export default function Security({navigation}) {
@@ -20,48 +18,57 @@ export default function Security({navigation}) {
                 </TouchableOpacity>
             </View>    
             <View>
-                <View style={styles.eachSecurity}>
+                <TouchableOpacity style={styles.eachSecurity}
+                    onPress={() => navigation.navigate('Biometric')}
+                    >
                     <View style={styles.iconText}>
                     <BackButton style={styles.Icon} />
                     <Text>Biometric</Text>
                     </View>
-                    <BackButton style={styles.Icon} />
-                </View>
+                    <Entypo name="chevron-small-right" size={20} color='black' />
+                </TouchableOpacity>
 
-                <View style={styles.eachSecurity}>
+                <TouchableOpacity style={styles.eachSecurity}
+                    onPress={() => navigation.navigate('Biometric')}
+                    >
                     <View style={styles.iconText}>
                     <BackButton style={styles.Icon} />
                     <Text>Facial ID</Text>
                     </View>
-                    <BackButton style={styles.Icon} />
-                </View>
+                    <Entypo name="chevron-small-right" size={20} color='black' />
+                </TouchableOpacity>
 
-                <View style={styles.eachSecurity}>
+                <TouchableOpacity style={styles.eachSecurity}
+                    onPress={() => navigation.navigate('Biometric')}
+                    >
                     <View style={styles.iconText}>
                     <BackButton style={styles.Icon} />
                     <Text>Passphrase</Text>
                     </View>
-                    <BackButton style={styles.Icon} />
-                </View>
+                    <Entypo name="chevron-small-right" size={20} color='black' />
+                </TouchableOpacity>
 
-                <View style={styles.eachSecurity}>
+                <TouchableOpacity style={styles.eachSecurity}
+                    onPress={() => navigation.navigate('Biometric')}
+                    >
                     <View style={styles.iconText}>
                     <BackButton style={styles.Icon} />
                     <Text>Pin</Text>
                     </View>
-                    <BackButton style={styles.Icon} />
-                </View>
+                    <Entypo name="chevron-small-right" size={20} color='black' />
+                </TouchableOpacity>
 
-                <View style={styles.eachSecurity}>
+                <TouchableOpacity style={styles.eachSecurity}
+                    onPress={() => navigation.navigate('Biometric')}
+                    >
                     <View style={styles.iconText}>
                     <BackButton style={styles.Icon} />
                     <Text>Lock your Account</Text>
                     </View>
-                    <BackButton style={styles.Icon} />
-                </View>
+                    <Entypo name="chevron-small-right" size={20} color='black' />
+                </TouchableOpacity>
             </View>        
     </SafeAreaView>
-
     );
 }
 
@@ -79,7 +86,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 30,
     },
     title: {
         fontSize: 28,
@@ -90,6 +97,9 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'space-between',
         alignItems: 'center',
+        borderBottomWidth: 2,
+        borderColor: '#98A0B3',
+        marginTop: 20,
     },
     iconText: {
         flexDirection: 'row',

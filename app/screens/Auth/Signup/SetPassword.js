@@ -33,7 +33,8 @@ const validationSchema = yup.object().shape({
     .label('Confirm Password'),
   });
 
-export default function SetPassword({navigation}) {
+export default function SetPassword({navigation, route}) {
+    const { email } = route.params;
 
     return (
         <SafeAreaView style={styles.container}>
@@ -41,11 +42,6 @@ export default function SetPassword({navigation}) {
             <View style={styles.titleContainer}> 
                 <BackButton style={styles.Icon} />
                 <Text style={styles.title}>Password</Text>
-                <TouchableOpacity
-                    style={styles.Icon}
-                    onPress={() => navigation.goBack()}>
-                    {/* <Entypo name="dots-three-vertical" size={18} /> */}
-                </TouchableOpacity>
             </View>
             <Text style={styles.subtitle}>Your Password must be at least 8 characters long, and contain at least one digit and one special character</Text>
             
@@ -53,7 +49,11 @@ export default function SetPassword({navigation}) {
                 initialValues={{ password: '', confirmPassword: '', }}
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
-                navigation.navigate('UserDetails');
+                navigation.navigate('UserDetails', { 
+                  // password: values.password,
+                  // confirmPassword: values.confirmPassword,
+                  email: email,
+                });
                 }}
             >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
@@ -121,13 +121,14 @@ const styles = StyleSheet.create({
         marginTop: 20,
         width: '100%',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 10,
     },
     title: {
         fontSize: 28,
         fontWeight: '700',
+        marginLeft: '30%',
     },
     subtitle: {
         fontSize: 16,

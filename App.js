@@ -12,6 +12,9 @@ import SetPassword from './app/screens/Auth/Signup/SetPassword';
 import UserDetails from './app/screens/Auth/Signup/UserDetails';
 import ResidencyLocation from './app/screens/Auth/Signup/ResidencyLocation';
 import Security from './app/screens/Security/Security'
+import Biometric from './app/screens/Security/Biometric';
+import Feedback from './app/screens/Feedback/Feedback';
+import ThankYou from './app/screens/Feedback/ThankYou';
 
 import NavButtons from './app/components/NavButtons';
 
@@ -32,6 +35,9 @@ export default function App() {
       <Stack.Screen name='UserDetails' component={UserDetails} options={{ headerShown: false }}/>
       <Stack.Screen name='ResidencyLocation' component={ResidencyLocation} options={{ headerShown: false }}/>
       <Stack.Screen name='Security' component={Security} options={{ headerShown: false }}/>
+      <Stack.Screen name='Biometric' component={Biometric} options={{ headerShown: false }}/>
+      <Stack.Screen name='Feedback' component={Feedback} options={{ headerShown: false }}/>
+      <Stack.Screen name='ThankYou' component={ThankYou} options={{ headerShown: false }}/>
     </Stack.Navigator>
    </NavigationContainer>
   );

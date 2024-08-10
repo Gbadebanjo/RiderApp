@@ -27,7 +27,8 @@ const validationSchema = yup.object().shape({
     referralCode: yup.string().optional(),
 });
 
-export default function UserDetails({navigation}) {
+export default function UserDetails({navigation, route}) {
+    const { email } = route.params;
     const [value, setValue] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [isFocused, setIsFocused] = useState(false);
@@ -47,7 +48,7 @@ export default function UserDetails({navigation}) {
              lastName: '',
              displayName: '',
              accessibility: '',
-             email: '',
+             email: email,
              phoneNumber: '',
              referralCode: '',
             }}
@@ -143,7 +144,7 @@ export default function UserDetails({navigation}) {
                 width="100%"
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
-                value={values.email}
+                value={email}
                 error={touched.email && errors.email}
                 errorMessage={errors.email}
                 showPasswordToggle={false}

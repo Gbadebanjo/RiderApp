@@ -22,7 +22,8 @@ const validationSchema = yup.object().shape({
 
 const CELL_COUNT = 6;
 
-export default function FirstScreen({navigation}) {
+export default function FirstScreen({navigation, route}) {
+    const { email } = route.params;
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -43,7 +44,10 @@ export default function FirstScreen({navigation}) {
         initialValues={{ code: '' }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-        navigation.navigate('SetPassword');
+          navigation.navigate('SetPassword', { 
+            email: email,
+          });
+        // navigation.navigate('SetPassword');
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (

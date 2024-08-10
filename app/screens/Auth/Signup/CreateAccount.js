@@ -31,7 +31,7 @@ export default function FirstScreen({navigation}) {
         initialValues={{ email: '' }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          navigation.navigate('VerifySignup');
+          navigation.navigate('VerifySignup', { email: values.email });
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
