@@ -25,7 +25,7 @@ export default function FirstScreen({ navigation }) {
 
         <StyledButton
           title="Login"
-          onPress={() => alert('Button Pressed')}
+          onPress={() => navigation.navigate('Login')}
           width="80%"
           height={53}
           paddingVertical={10}

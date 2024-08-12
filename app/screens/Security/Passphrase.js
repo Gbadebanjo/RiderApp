@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: '#fff',
-        paddingHorizontal: 11,
+        paddingHorizontal: 20,
         width: '100%',
     },
     titleContainer: {
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     },
     subTitle: {
         fontSize: 16,
-        fontWeight: '500',
+        fontWeight: '400',
         width: '100%',
     },
     mainContent: {
@@ -98,6 +98,6 @@ const styles = StyleSheet.create({
     },
     generateText:{
         fontSize: 16,
-        fontWeight: '700',
+        fontWeight: '500',
     },
 });

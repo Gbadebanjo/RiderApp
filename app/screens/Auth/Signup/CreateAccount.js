@@ -1,6 +1,7 @@
 // import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
+import { MaterialCommunityIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../../components/StyledButton';
 import InputField from '../../../components/InputField';
@@ -19,7 +20,7 @@ const validationSchema = yup.object().shape({
     .required('Enter your Email Address'),
 });
 
-export default function FirstScreen({navigation}) {
+export default function CreateAccount({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -69,13 +70,14 @@ export default function FirstScreen({navigation}) {
       </Formik>
 
           <View style={styles.socialsLogo}>
-            <SocialLogo text="Google" logo={googleLogo} />
-            <SocialLogo text="Apple" logo={appleLogo}/>
+            <SocialLogo text="Email" onPress={()=> alert('Login with Email')} logo={<MaterialCommunityIcons name="email" size={30} color='#000000' />}/>
+            <SocialLogo text="Google" onPress={()=> alert('Login with Google')} logo={googleLogo}/>
+            <SocialLogo text="Apple" onPress={()=> alert('Login with Apple')} logo={appleLogo}/>
           </View>
 
         <OrSeparator/>
      
-      <TouchableOpacity onPress={() => alert('Logged In User')}>
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
 
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
   },
   socialsLogo: {
     flexDirection: 'row',
-    gap: 30,
+    gap: 0,
     marginTop: 30,
   },
   errorText: {
@@ -143,7 +145,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
     color: '#212121',
-    width: '80%',
+    width: '100%',
     marginBottom: 20,
   },
   boldText: {
