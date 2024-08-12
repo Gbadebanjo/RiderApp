@@ -1,70 +1,72 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather, Entypo, Ionicons } from '@expo/vector-icons';
+import { Feather, Entypo } from '@expo/vector-icons';
 
 import React from 'react'
 
 const MenuLanding = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.head}>Menu</Text>
-      <TouchableOpacity style={styles.nameContainer} onPress={() => navigation.navigate('Account1')}>
-        <View style={styles.Img}>
-          <Image source={require('../../assets/Userpic.png')} />
-        </View>
-        <View style={styles.namContainer}>
-          <Text style={styles.name}>John Doe</Text>
-          <Text style={styles.account}>Individual Account</Text>
-          <Text style={styles.id}>User ID: 234565456755</Text>
-        </View>
-        <Entypo name="chevron-thin-right" size={14} color="#98A0B3"  />
-      </TouchableOpacity>
-      <View>
-        <View style={styles.details}>
-          <View style={styles.detailsrow}>
-            <Feather name="lock" size={24} color="#D3D3D3" />
-            <Text style={styles.detailname}>Wallet Vault</Text>
-            <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Text style={styles.head}>Menu</Text>
+        <TouchableOpacity style={styles.nameContainer} onPress={() => navigation.navigate('Account')}>
+          <View style={styles.Img}>
+            <Image source={require('../../assets/Userpic.png')} />
           </View>
-          <View style={styles.detailsrow}>
-            <Feather name="lock" size={24} color="#D3D3D3" />
-            <Text style={styles.detailname}>Share Account</Text>
-            <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+          <View style={styles.namContainer}>
+            <Text style={styles.name}>John Doe</Text>
+            <Text style={styles.account}>Individual Account</Text>
+            <Text style={styles.id}>User ID: 234565456755</Text>
           </View>
-          <View style={styles.detailsrow}>
-            <Feather name="lock" size={22} color="#D3D3D3" />
-            <Text style={[styles.detailname, { borderBottomWidth: 0 }]}>Booking History</Text>
-            <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+          <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+        </TouchableOpacity>
+        <View>
+          <View style={styles.details}>
+            <View style={styles.detailsrow}>
+              <Feather name="lock" size={24} color="#D3D3D3" />
+              <Text style={styles.detailname}>Wallet Vault</Text>
+              <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+            </View>
+            <View style={styles.detailsrow}>
+              <Feather name="lock" size={24} color="#D3D3D3" />
+              <Text style={styles.detailname}>Share Account</Text>
+              <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+            </View>
+            <View style={styles.detailsrow}>
+              <Feather name="lock" size={22} color="#D3D3D3" />
+              <Text style={[styles.detailname, { borderBottomWidth: 0 }]}>Booking History</Text>
+              <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+            </View>
           </View>
         </View>
-      </View>
-      <TouchableOpacity style={styles.rewards}>
-        <Feather name="lock" size={24} color="#98A0B3" />
-        <Text style={styles.rewardtext}>Rewards Program</Text>
-        <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.rewards}>
+          <Feather name="lock" size={24} color="#98A0B3" />
+          <Text style={styles.rewardtext}>Rewards Program</Text>
+          <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+        </TouchableOpacity>
         <View style={styles.details}>
           <TouchableOpacity style={styles.detailsrow}>
             <Feather name="lock" size={24} color="#98A0B3" />
-            <Text style={[styles.detailname, {color: '#464646'}]}>Referral Program</Text>
+            <Text style={[styles.detailname, { color: '#464646' }]}>Referral Program</Text>
             <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.detailsrow}>
             <Feather name="lock" size={24} color="#98A0B3" />
-            <Text style={[styles.detailname, {color: '#464646'}]}>Settings</Text>
+            <Text style={[styles.detailname, { color: '#464646' }]}>Settings</Text>
             <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.detailsrow}>
             <Feather name="lock" size={22} color="#98A0B3" />
-            <Text style={[styles.detailname, {color: '#464646'}]}>Legal</Text>
+            <Text style={[styles.detailname, { color: '#464646' }]}>Legal</Text>
             <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.detailsrow}>
             <Feather name="lock" size={22} color="#98A0B3" />
-            <Text style={[styles.detailname, { borderBottomWidth: 0 , color: '#464646'}]}>Logout</Text>
+            <Text style={[styles.detailname, { borderBottomWidth: 0, color: '#464646' }]}>Logout</Text>
             <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
           </TouchableOpacity>
         </View>
+      </ScrollView>
     </SafeAreaView >
   )
 }
@@ -118,6 +120,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F7FA',
     borderRadius: 10,
     width: '100%',
+    // height: 'auto',
     marginTop: 20,
   },
   detailsrow: {
