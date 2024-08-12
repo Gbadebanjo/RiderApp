@@ -1,10 +1,8 @@
-// import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar } from 'react-native';
-import StyledButton from '../../components/StyledButton';
-import InputField from '../../components/InputField';
+import StyledButton from '../../../components/StyledButton';
 
-const logo = require('../../assets/Logo Image.png');
+const logo = require('../../../assets/Logo Image.png');
 
 export default function FirstScreen({ navigation }) {
   return (
@@ -27,7 +25,7 @@ export default function FirstScreen({ navigation }) {
 
         <StyledButton
           title="Login"
-          onPress={() => alert('Button Pressed')}
+          onPress={() => navigation.navigate('Login')}
           width="80%"
           height={53}
           paddingVertical={10}
@@ -38,24 +36,11 @@ export default function FirstScreen({ navigation }) {
           TextColor="#212121"
           iconName="angle-right" />
 
-
-
-        <TouchableOpacity onPress={() => navigation.navigate('MenuLanding')}>
+        <TouchableOpacity onPress={() => navigation.navigate('WelcomeGuest')}>
           <Text style={styles.guestText}>Continue as Guest</Text>
         </TouchableOpacity>
 
       </View>
-
-      {/* <InputField 
-          label="Email"
-          placeholder="user@rydepro.com" 
-          keyboardType="email-address" 
-          autoCapitalize="none" 
-          textContentType="emailAddress" 
-          returnKeyType="next"
-          width="90%"
-          marginLeft={15}
-          /> */}
     </View>
   );
 }
