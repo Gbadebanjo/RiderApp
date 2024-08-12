@@ -13,6 +13,11 @@ import UserDetails from './app/screens/Auth/Signup/UserDetails';
 import ResidencyLocation from './app/screens/Auth/Signup/ResidencyLocation';
 import Security from './app/screens/Security/Security'
 import Biometric from './app/screens/Security/Biometric';
+import FacialID from './app/screens/Security/FacialID';
+import Passphrase from './app/screens/Security/Passphrase';
+import CreatePassphrase from './app/screens/Security/CreatePassphrase';
+import GeneratePassphrase from './app/screens/Security/GeneratePassphrase';
+import Pin from './app/screens/Security/Pin';
 import Feedback from './app/screens/Feedback/Feedback';
 import ThankYou from './app/screens/Feedback/ThankYou';
 
@@ -36,6 +41,11 @@ export default function App() {
       <Stack.Screen name='ResidencyLocation' component={ResidencyLocation} options={{ headerShown: false }}/>
       <Stack.Screen name='Security' component={Security} options={{ headerShown: false }}/>
       <Stack.Screen name='Biometric' component={Biometric} options={{ headerShown: false }}/>
+      <Stack.Screen name='FacialID' component={FacialID} options={{ headerShown: false }}/>
+      <Stack.Screen name='Passphrase' component={Passphrase} options={{ headerShown: false }}/>
+      <Stack.Screen name='CreatePassphrase' component={CreatePassphrase} options={{ headerShown: false }}/>
+      <Stack.Screen name='GeneratePassphrase' component={GeneratePassphrase} options={{ headerShown: false }}/>
+      <Stack.Screen name='Pin' component={Pin} options={{ headerShown: false }}/>
       <Stack.Screen name='Feedback' component={Feedback} options={{ headerShown: false }}/>
       <Stack.Screen name='ThankYou' component={ThankYou} options={{ headerShown: false }}/>
     </Stack.Navigator>

@@ -4,30 +4,13 @@ import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ScrollView } from 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../components/StyledButton';
 import Centerlogo from '../../components/centerlogo';
-// import { Formik } from 'formik';
-// import InputField from '../../../components/InputField';
-// import SelectInput from '../../../components/SelectInput';
-import * as yup from 'yup'; 
 import BackButton from '../../components/BackButton';
-const googleLogo = require('./../../assets/GoogleIcon.png');
-const appleLogo = require('./../../assets/AppleLogo.png');
 import { FontAwesome } from '@expo/vector-icons';
+import { TextInput } from 'react-native-gesture-handler';
 // import axios from 'axios';
 
-const validationSchema = yup.object().shape({
-    country: yup.string().required('Country is required'),
-    state: yup.string().required('State is required'),
-    city: yup.string().required('City is required'),
-    zipcode: yup.string().optional(),
-});
 
 export default function Feedback({navigation}) {
-    const [value, setValue] = useState('');
-    const [isFocused, setIsFocused] = useState(false);
-    const [states, setStates] = useState([]);
-    const [cities, setCities] = useState([]);
-    const [selectedState, setSelectedState] = useState('');
-    const [selectedCity, setSelectedCity] = useState('');
 
   return (
     <SafeAreaView style={styles.container}>
@@ -35,7 +18,7 @@ export default function Feedback({navigation}) {
         <View style={styles.topContainer}>
             <BackButton style={styles.Icon} />
             <TouchableOpacity style={styles.nextContainer} 
-                onPress={()=> navigation.navigate('ThankYou')}>
+                onPress={()=> navigation.navigate('MenuLanding')}>
                 <Text style={styles.logoText}>Skip</Text>
                 <FontAwesome name='angle-right' size={20} color="black" />
             </TouchableOpacity>
@@ -52,6 +35,12 @@ export default function Feedback({navigation}) {
 
             <Text style={styles.subTitle}>Thank you for rating our app! Would you like to leave a comment</Text>
 
+            <TextInput
+              style={styles.textInput}
+              multiline={true}
+              textAlignVertical="top"
+            />
+
                 <StyledButton
                     title="Submit"
                     onPress={() => navigation.navigate('ThankYou')}
@@ -62,13 +51,10 @@ export default function Feedback({navigation}) {
                     backgroundColor="#212121"
                     borderWidth={2}
                     TextColor="#fff"
-                    // iconName="angle-right" 
                     marginLeft='30%'
                 />
 
         </View>
-
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -81,7 +67,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 30,
     paddingTop: 20,
-    paddingBottom: 30,
+    paddingBottom: 0,
   },
   Icon: {
     alignSelf: 'flex-start',
@@ -119,4 +105,14 @@ const styles = StyleSheet.create({
     width: '30%',
     justifyContent: 'space-between',
   },
+  textInput: {
+    marginTop: 15,
+    borderColor: '#AAB1BC',
+    borderWidth: 1,
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    marginBottom: 0,
+    padding: 10,
+  }
 });

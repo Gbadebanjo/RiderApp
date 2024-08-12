@@ -1,8 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../components/BackButton';
 import { Entypo } from '@expo/vector-icons';
+import { MaterialCommunityIcons, AntDesign, Ionicons, FontAwesome } from '@expo/vector-icons';
+
+const Biometric = require('../../assets/finger-scan.png');
+const FacialID = require('../../assets/scanning.png');
+const Passphrase = require('../../assets/passphrase.png');
+const Pin = require('../../assets/pin.png');
+const LockAccount = require('../../assets/lock-slash.png');
 
 export default function Security({navigation}) {
 
@@ -21,51 +28,53 @@ export default function Security({navigation}) {
                 <TouchableOpacity style={styles.eachSecurity}
                     onPress={() => navigation.navigate('Biometric')}
                     >
-                    <View style={styles.iconText}>
-                    <BackButton style={styles.Icon} />
-                    <Text>Biometric</Text>
+                    <View style={styles.fingerprint}>
+                        <Ionicons name="finger-print" size={15} color='black' />
                     </View>
-                    <Entypo name="chevron-small-right" size={20} color='black' />
+                    <View style={styles.iconText}>
+                        <Text style={styles.text}>Biometric</Text>
+                        <Entypo name="chevron-small-right" size={20} color='black' />
+                    </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('Biometric')}
+                    onPress={() => navigation.navigate('FacialID')}
                     >
+                    <AntDesign name="scan1" size={25} color='black' />
                     <View style={styles.iconText}>
-                    <BackButton style={styles.Icon} />
-                    <Text>Facial ID</Text>
+                        <Text style={styles.text}>Facial ID</Text>
+                        <Entypo name="chevron-small-right" size={20} color='black' />
                     </View>
-                    <Entypo name="chevron-small-right" size={20} color='black' />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('Biometric')}
+                    onPress={() => navigation.navigate('Passphrase')}
                     >
+                    <MaterialCommunityIcons name="line-scan" size={25} color='black' />
                     <View style={styles.iconText}>
-                    <BackButton style={styles.Icon} />
-                    <Text>Passphrase</Text>
+                        <Text style={styles.text}>Passphrase</Text>
+                        <Entypo name="chevron-small-right" size={20} color='black' />
                     </View>
-                    <Entypo name="chevron-small-right" size={20} color='black' />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('Biometric')}
+                    onPress={() => navigation.navigate('Pin')}
                     >
+                    <FontAwesome name="user-secret" size={25} color='black' />
                     <View style={styles.iconText}>
-                    <BackButton style={styles.Icon} />
-                    <Text>Pin</Text>
+                        <Text style={styles.text}>Pin</Text>
+                        <Entypo name="chevron-small-right" size={23} color='black' />
                     </View>
-                    <Entypo name="chevron-small-right" size={20} color='black' />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('Biometric')}
+                    // onPress={() => navigation.navigate('Biometric')}
                     >
+                    <MaterialCommunityIcons name="lock-off-outline" size={25} color='black' />
                     <View style={styles.iconText}>
-                    <BackButton style={styles.Icon} />
-                    <Text>Lock your Account</Text>
+                        <Text style={styles.text}>Lock your Account</Text>
+                        <Entypo name="chevron-small-right" size={23} color='black' />
                     </View>
-                    <Entypo name="chevron-small-right" size={20} color='black' />
                 </TouchableOpacity>
             </View>        
     </SafeAreaView>
@@ -97,13 +106,24 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderBottomWidth: 2,
-        borderColor: '#98A0B3',
         marginTop: 20,
     },
     iconText: {
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
+        width: '89%',
+        justifyContent: 'space-between',
+        borderBottomWidth: 2,
+        borderColor: '#98A0B3',
+        paddingBottom: 5,
+    },
+    text: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#464646',
+    },
+    fingerprint: {
+       borderWidth: 1.5,
+       borderRadius: 8,
+       padding: 2,
     }
 });

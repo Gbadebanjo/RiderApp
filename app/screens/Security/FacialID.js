@@ -2,46 +2,33 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../components/BackButton';
-import StyledButton from '../../components/StyledButton';
 import { Entypo } from '@expo/vector-icons';
 import Centerlogo from '../../components/centerlogo';
 
 const biometricLogo = require('../../assets/GoogleIcon.png');
 
-export default function Biometric({navigation}) {
+export default function FacialID({navigation}) {
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
             <View style={styles.titleContainer}> 
                 <BackButton style={styles.Icon} />
-                <Text style={styles.title}>Biometric</Text>
+                <Text style={styles.title}>Facial ID</Text>
                 <TouchableOpacity
                     style={styles.Icon}
                     onPress={() => navigation.navigate()}>
                     <Entypo name="dots-three-vertical" size={18} />
                 </TouchableOpacity>
             </View>  
-            <Text style={styles.subTitle}>Place your Thumb to setup your biometric</Text>  
+            <Text style={styles.subTitle}>Scan your face for authentication</Text>  
             <View style={styles.mainContent}>
 
-                <View>
-                <Centerlogo logoSource={biometricLogo} logoWidth={100} logoHeight={100} />
-                <Text style={styles.logoText}>Biometric</Text>
-                </View>
-
-                <StyledButton
-                    title="Update"
-                    onPress={() => navigation.navigate('Feedback')}
-                    width="100%"
-                    height={53}
-                    paddingVertical={10}
-                    marginTop={40}
-                    backgroundColor="#212121"
-                    borderWidth={2}
-                    TextColor="#fff"
-                    iconName="angle-right" 
-                    />
+                <TouchableOpacity
+                onPress={()=> navigation.navigate('Feedback')}>
+                    <Centerlogo logoSource={biometricLogo} logoWidth={100} logoHeight={100} />
+                    <Text style={styles.logoText}>Face ID</Text>
+                </TouchableOpacity>
             </View>        
     </SafeAreaView>
     );
@@ -73,14 +60,7 @@ const styles = StyleSheet.create({
         // alignSelf: 'flex-start',
     },
     mainContent: {
-        flex: 1,
-        width: '100%',
-        justifyContent: 'space-around',
-    },
-    iconText: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
+        marginTop: 100,
     },
     logoText:{
         fontSize: 18,
