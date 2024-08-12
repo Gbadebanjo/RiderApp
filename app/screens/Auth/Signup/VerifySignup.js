@@ -22,7 +22,8 @@ const validationSchema = yup.object().shape({
 
 const CELL_COUNT = 6;
 
-export default function FirstScreen({navigation}) {
+export default function FirstScreen({navigation, route}) {
+    const { email } = route.params;
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -43,8 +44,10 @@ export default function FirstScreen({navigation}) {
         initialValues={{ code: '' }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-        // alert('Code submitted');
-        navigation.navigate('SetPassword');
+          navigation.navigate('SetPassword', { 
+            email: email,
+          });
+        // navigation.navigate('SetPassword');
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
@@ -56,7 +59,7 @@ export default function FirstScreen({navigation}) {
                 onChangeText={handleChange('code')}
                 cellCount={CELL_COUNT}
                 rootStyle={styles.codeFieldRoot}
-                keyboardType="number-pad"
+                // keyboardType="number-pad"
                 textContentType="oneTimeCode"
                 onSubmitEditing={handleSubmit} 
                 renderCell={({ index, symbol, isFocused }) => (
@@ -100,7 +103,7 @@ export default function FirstScreen({navigation}) {
                     // onPress={alert('Resend Code')}
                     width="50%"
                     height={40}
-                    fontSize={14}
+                    fontSize={11}
                     paddingVertical={10}
                     marginTop={20}
                     backgroundColor="#D3D3D3"
@@ -112,7 +115,7 @@ export default function FirstScreen({navigation}) {
                     // onPress={alert('Send SMS')}
                     width="50%"
                     height={40}
-                    fontSize={14}
+                    fontSize={13}
                     paddingVertical={10}
                     marginTop={20}
                     backgroundColor="#D3D3D3"
@@ -135,12 +138,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     width: '100%',
+    paddingHorizontal: 30,
     paddingTop: 30,
   },
   Icon: {
-    // paddingTop: 40,
     alignSelf: 'flex-start',
-    marginLeft: '7%'
   },
   logo: {
     width: '20%',
@@ -152,14 +154,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontWeight: '700',
     alignSelf: 'flex-start',
-    marginLeft: '10%',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
     fontWeight: '400',
     alignSelf: 'flex-start',
-    marginLeft: '10%',
     marginBottom: 0,
   },
   socialsLogo: {
@@ -170,7 +170,6 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 14,
     color: 'red',
-    marginLeft: '10%',
     marginTop: 0,
     alignSelf: 'flex-start',
   },
@@ -187,11 +186,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
     color: '#212121',
-    width: '80%',
+    width: '100%',
     marginBottom: 20,
   },
   buttonContainer:{
-    width: '60%',
+    width: '70%',
     flexDirection: 'row',
     gap: 10,
     marginBottom: 20,
@@ -207,7 +206,7 @@ const styles = StyleSheet.create({
   },
   codeFieldRoot: {
     marginTop: 40,
-    width: '80%',
+    width: '100%',
     alignSelf: 'center',
   },
   cell: {
@@ -216,14 +215,14 @@ const styles = StyleSheet.create({
     lineHeight: 38,
     fontSize: 24,
     borderBottomWidth: 2,
-    borderColor: '#D3D3D3',
+    borderColor: '#CCCCCC',
     textAlign: 'center',
   },
   focusCell: {
-    borderColor: '#000',
+    borderColor: '#000000',
   },
   completeCell: {
-    borderColor: '#000',
+    borderColor: '#000000',
 },
   inputText: {
     color: 'black', 

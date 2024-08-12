@@ -33,7 +33,8 @@ const validationSchema = yup.object().shape({
     .label('Confirm Password'),
   });
 
-export default function SetPassword({navigation}) {
+export default function SetPassword({navigation, route}) {
+    const { email } = route.params;
 
     return (
         <SafeAreaView style={styles.container}>
@@ -41,11 +42,6 @@ export default function SetPassword({navigation}) {
             <View style={styles.titleContainer}> 
                 <BackButton style={styles.Icon} />
                 <Text style={styles.title}>Password</Text>
-                <TouchableOpacity
-                    style={styles.Icon}
-                    onPress={() => navigation.goBack()}>
-                    <Entypo name="dots-three-vertical" size={18} />
-                </TouchableOpacity>
             </View>
             <Text style={styles.subtitle}>Your Password must be at least 8 characters long, and contain at least one digit and one special character</Text>
             
@@ -53,13 +49,17 @@ export default function SetPassword({navigation}) {
                 initialValues={{ password: '', confirmPassword: '', }}
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
-                navigation.navigate('MenuLanding');
+                navigation.navigate('UserDetails', { 
+                  // password: values.password,
+                  // confirmPassword: values.confirmPassword,
+                  email: email,
+                });
                 }}
             >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
               <>
               <InputField
-                label="New Password"
+                label="Password"
                 placeholder=""
                 autoCapitalize="none"
                 textContentType="password"
@@ -71,7 +71,7 @@ export default function SetPassword({navigation}) {
                 error={touched.password && errors.password}
                 errorMessage={errors.password}
                 showPasswordToggle={true}
-                marginLeft={20}
+                // marginLeft={20}
               />
 
               <InputField
@@ -87,10 +87,10 @@ export default function SetPassword({navigation}) {
                 error={touched.confirmPassword && errors.confirmPassword}
                 errorMessage={errors.confirmPassword}
                 showPasswordToggle={true}
-                marginLeft={20}
+                // marginLeft={20}
               />
               <StyledButton
-                title="Update"
+                title="Confirm"
                 onPress={handleSubmit}
                 width="100%"
                 height={53}
@@ -114,23 +114,26 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: '#fff',
-        paddingHorizontal: 15,
+        paddingHorizontal: 20,
         width: '100%',
     },
     titleContainer: {
         marginTop: 20,
         width: '100%',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
         alignItems: 'center',
+        marginBottom: 10,
     },
     title: {
         fontSize: 28,
         fontWeight: '700',
+        marginLeft: '30%',
     },
     subtitle: {
         fontSize: 16,
         color: '#464646',
         marginTop: 10,
+        marginBottom: 15,
     },
 });

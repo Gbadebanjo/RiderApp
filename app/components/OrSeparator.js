@@ -13,7 +13,7 @@ const OrSeparator = () => {
 
 const styles = StyleSheet.create({
     orContainer: {
-        width: '80%',
+        width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 30,
