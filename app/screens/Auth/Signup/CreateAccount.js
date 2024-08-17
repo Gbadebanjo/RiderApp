@@ -33,7 +33,7 @@ export default function CreateAccount({navigation}) {
         validationSchema={validationSchema}
         onSubmit={(values) => {
           // navigation.navigate('VerifySignup', { email: values.email });
-          navigation.navigate('Security');
+          navigation.navigate('UserDetails', { email: values.email });
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
