@@ -9,7 +9,6 @@ import {
   Modal,
   Animated,
   Easing,
-  Linking,
 } from 'react-native';
 import { FontAwesome, Entypo, Ionicons, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -60,7 +59,7 @@ const Account = ({ navigation }) => {
             <Text style={styles.account}>Individual Account</Text>
             <Text style={styles.id}>User ID: 234565456755</Text>
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Edit')}>
             <Text style={styles.edit}>Edit</Text>
           </TouchableOpacity>
           {/* <Linking>Edit</Linking> */}
@@ -144,11 +143,23 @@ const Account = ({ navigation }) => {
           ><View style={styles.modalLineContainer}>
               <Text style={styles.modalTitle}>Edit Account Photo</Text>
             </View>
-            <TouchableOpacity style={styles.modalLineContainer}>
+            <TouchableOpacity 
+            style={styles.modalLineContainer}
+            onPress={() => {
+              toggleModal(); 
+              // Add functionality to hide profile picture
+            }}
+            >
               <Text style={styles.modalText}>Hide Profile Picture</Text>
               <FontAwesome name="user-o" size={16} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.modalLineContainer}>
+            <TouchableOpacity 
+            style={styles.modalLineContainer}
+            onPress={() => {
+              toggleModal()
+              navigation.navigate('Photo')
+            }}
+              >
               <Text style={styles.modalText}>Take photo</Text>
               <Feather name="camera" size={16} color="black" />
             </TouchableOpacity>

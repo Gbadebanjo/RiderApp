@@ -32,7 +32,7 @@ export default function WelcomeGuest({ navigation }) {
 
         <StyledButton
           title="Login"
-          onPress={() => alert('Button Pressed')}
+          onPress={() => navigation.navigate('MenuLanding')}
           width="80%"
           height={53}
           paddingVertical={10}
@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    paddingVertical: 40,
-    marginTop: 20,
+    paddingVertical: 60,
+    // marginTop: 20,
   },
   title: {
     width: '80%',

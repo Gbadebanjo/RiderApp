@@ -9,6 +9,8 @@ import Account from '../screens/Dashboard/Account';
 import Services from '../screens/Services/Services';
 import BookRide from '../screens/Ride/BookRide';
 import BookingHistory from '../screens/History/BookingHistory';
+import Edit from '../screens/Dashboard/Edit';
+import Settings from '../screens/Dashboard/Settings';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -42,6 +44,8 @@ function MenuStack() {
         <Stack.Navigator>
             <Stack.Screen name="MenuLanding" component={MenuLanding} options={{ headerShown: false }} />
             <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
+            <Stack.Screen name="Edit" component={Edit} options={{ headerShown: false }} />
+            <Stack.Screen name="Settings" component={Settings} options={{ headerShown: false }} />
         </Stack.Navigator>
     )
 }

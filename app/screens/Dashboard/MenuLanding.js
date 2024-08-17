@@ -2,9 +2,19 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, Entypo } from '@expo/vector-icons';
 
-import React from 'react'
+import React, {useState, useRef } from 'react'
 
 const MenuLanding = ({ navigation }) => {
+  const [showReferral, setShowReferral] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const toggleReferral = () => {
+    setShowReferral(!showReferral);
+  };
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  }
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -18,7 +28,8 @@ const MenuLanding = ({ navigation }) => {
             <Text style={styles.account}>Individual Account</Text>
             <Text style={styles.id}>User ID: 234565456755</Text>
           </View>
-          <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+          <Entypo name={"chevron-thin-right" }
+          size={14} color="#98A0B3" />
         </TouchableOpacity>
         <View>
           <View style={styles.details}>
@@ -39,18 +50,39 @@ const MenuLanding = ({ navigation }) => {
             </View>
           </View>
         </View>
-        <TouchableOpacity style={styles.rewards}>
+        <TouchableOpacity 
+          onPress={() => navigation.navigate('RewardProgram')}
+        style={styles.rewards}
+        >
           <Feather name="lock" size={24} color="#98A0B3" />
           <Text style={styles.rewardtext}>Rewards Program</Text>
           <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
         </TouchableOpacity>
         <View style={styles.details}>
-          <TouchableOpacity style={styles.detailsrow}>
+          <TouchableOpacity style={styles.detailsrow} onPress={toggleReferral} >
             <Feather name="lock" size={24} color="#98A0B3" />
             <Text style={[styles.detailname, { color: '#464646' }]}>Referral Program</Text>
+            <Entypo name={showReferral ? 'chevron-thin-up' : 'chevron-thin-down'} size={14} color="#98A0B3" />
+          </TouchableOpacity>
+          {showReferral &&
+          <>
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('TrackReferral')}
+          style={styles.detailsrow2}>
+            <Text style={[styles.detailname, { color: '#464646', fontSize: 15 }]}>Track Referral</Text>
             <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.detailsrow}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('InviteReferral')}
+           style={styles.detailsrow2}>
+            <Text style={[styles.detailname, { color: '#464646', fontSize: 15 }]}>Invite Referral</Text>
+            <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+          </TouchableOpacity>
+          </>
+          }
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Settings')}
+           style={styles.detailsrow}>
             <Feather name="lock" size={24} color="#98A0B3" />
             <Text style={[styles.detailname, { color: '#464646' }]}>Settings</Text>
             <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
@@ -127,6 +159,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
+  },
+  detailsrow2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    marginLeft: 20,
   },
   detailname: {
     fontSize: 16,
