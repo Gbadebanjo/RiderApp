@@ -20,6 +20,12 @@ import GeneratePassphrase from './app/screens/Security/GeneratePassphrase';
 import Pin from './app/screens/Security/Pin';
 import Feedback from './app/screens/Feedback/Feedback';
 import ThankYou from './app/screens/Feedback/ThankYou';
+import Photo from './app/screens/Dashboard/Photo';
+import RewardProgram from './app/screens/Dashboard/RewardProgram';
+import CashbackReward from './app/screens/Dashboard/CashbackReward';
+import MilesPoint from './app/screens/Dashboard/MilesPoint';
+import InviteReferral from './app/screens/Dashboard/InviteReferral';
+import TrackReferral from './app/screens/Dashboard/TrackReferral';
 
 import NavButtons from './app/components/NavButtons';
 
@@ -49,6 +55,12 @@ export default function App() {
       <Stack.Screen name='Pin' component={Pin} options={{ headerShown: false }}/>
       <Stack.Screen name='Feedback' component={Feedback} options={{ headerShown: false }}/>
       <Stack.Screen name='ThankYou' component={ThankYou} options={{ headerShown: false }}/>
+      <Stack.Screen name='Photo' component={Photo} options={{ headerShown: false }}/>
+      <Stack.Screen name='RewardProgram' component={RewardProgram} options={{ headerShown: false }}/>
+      <Stack.Screen name='CashbackReward' component={CashbackReward} options={{ headerShown: false }}/>
+      <Stack.Screen name='MilesPoint' component={MilesPoint} options={{ headerShown: false }}/>
+      <Stack.Screen name='InviteReferral' component={InviteReferral} options={{ headerShown: false }}/>
+      <Stack.Screen name='TrackReferral' component={TrackReferral} options={{ headerShown: false }}/>
     </Stack.Navigator>
    </NavigationContainer>
   );

@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     paddingVertical: 40,
   },
   logo: {
-    // marginTop: 20,
+    marginTop: 30,
   },
   title: {
     width: '80%',
