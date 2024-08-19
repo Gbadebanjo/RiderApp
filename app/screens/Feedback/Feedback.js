@@ -29,8 +29,12 @@ export default function Feedback({navigation}) {
             <Text style={styles.subTitle}>How would you rate the sign up process</Text>
 
             <View style={styles.thumbs}>
-                <FontAwesome name='thumbs-o-up' size={30} color="black" />
-                <FontAwesome name='thumbs-o-down' size={30} color="black" />
+                <TouchableOpacity style={styles.eachThumb} onPress={() => alert('Thumbs Up clicked')}>
+                    <FontAwesome name='thumbs-o-up' size={30} color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.eachThumb} onPress={() => alert('Thumbs Up clicked')}>
+                    <FontAwesome name='thumbs-o-down' size={30} color="black" />
+                </TouchableOpacity>
             </View>
 
             <Text style={styles.subTitle}>Thank you for rating our app! Would you like to leave a comment</Text>
@@ -44,14 +48,14 @@ export default function Feedback({navigation}) {
                 <StyledButton
                     title="Submit"
                     onPress={() => navigation.navigate('ThankYou')}
-                    width="40%"
+                    width="100%"
                     height={53}
                     paddingVertical={10}
                     marginTop={40}
                     backgroundColor="#212121"
                     borderWidth={2}
                     TextColor="#fff"
-                    marginLeft='30%'
+                    marginBottom={20}
                 />
 
         </View>
@@ -104,6 +108,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '30%',
     justifyContent: 'space-between',
+    gap: 10,
+  },
+  eachThumb:{
+    backgroundColor: '#D3D3D3',
+    padding: 12,
+    borderRadius: 50,
   },
   textInput: {
     marginTop: 15,

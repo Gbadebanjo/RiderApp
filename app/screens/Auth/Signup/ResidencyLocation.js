@@ -45,12 +45,12 @@ export default function ResidencyLocation({navigation}) {
             <SelectInput
                 label="Country"
                 items={[
-                    { label: 'Service Dogs', value: 'serviceDogs' },
-                    { label: 'Wheel Chair', value: 'wheelChair' },
-                    { label: 'Elderly', value: 'elderly' },
-                    { label: 'Others', value: 'others' },
+                    { label: 'United States', value: 'US' },
+                    { label: 'United Kingdom', value: 'UK' },
+                    { label: 'Nigeria', value: 'Nigeria' },
+                    { label: 'India', value: 'India' },
                 ]}
-                placeholder={{ label: 'Accessibility (Optional)', value: ""  }}
+                placeholder={{ label: 'Select Country', value: ""  }}
                 onValueChange={handleChange('country')}
                 value={values.country}
                 width="100%"
@@ -63,8 +63,8 @@ export default function ResidencyLocation({navigation}) {
             <SelectInput
                 label="State"
                 items={[
-                    { label: 'Service Dogs', value: 'serviceDogs' },
-                    { label: 'Wheel Chair', value: 'wheelChair' },
+                    { label: 'Lagos', value: 'Lagos' },
+                    { label: 'Ogun', value: 'Ogun' },
                     { label: 'Elderly', value: 'elderly' },
                     { label: 'Others', value: 'others' },
                 ]}
