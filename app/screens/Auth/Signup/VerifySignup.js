@@ -124,9 +124,12 @@ export default function FirstScreen({navigation, route}) {
             </View>
         </View>
 
-      <Text style={styles.proceedText}>
-        By proceeding, you agree to RYDEPRO’s Terms, Privacy Notice and can unsubscribe by emailing 
-        <Text style={styles.boldText}> "Unsubscribe" </Text>
+        <Text style={styles.proceedText}>
+          By proceeding, you agree to RYDEPRO’s  
+          <Text style={styles.linkText} onPress={() => alert('Terms clicked')}> Terms </Text>, 
+          <Text style={styles.linkText} onPress={() => alert('Privacy Notice clicked')}> Privacy </Text> 
+          Notice and can unsubscribe by emailing 
+          <Text style={styles.boldText}> "Unsubscribe" </Text>
       </Text>
     </SafeAreaView>
   );
@@ -227,5 +230,9 @@ const styles = StyleSheet.create({
   inputText: {
     color: 'black', 
     fontSize: 18,
+  },
+  linkText: {
+    textDecorationLine: 'underline',
+    color: '#0000EE',
   },
 });

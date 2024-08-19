@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
       line: {
         flex: 1,
         height: 1,
-        backgroundColor: '#CCCCCC',
+        backgroundColor: '#CCCCCc',
        },
       orText: {
         marginHorizontal: 10,
