@@ -32,8 +32,8 @@ export default function CreateAccount({navigation}) {
         initialValues={{ email: '' }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          // navigation.navigate('VerifySignup', { email: values.email });
-          navigation.navigate('UserDetails', { email: values.email });
+          navigation.navigate('VerifySignup', { email: values.email });
+          // navigation.navigate('UserDetails', { email: values.email });
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
@@ -70,7 +70,7 @@ export default function CreateAccount({navigation}) {
       </Formik>
 
           <View style={styles.socialsLogo}>
-            <SocialLogo text="Email" onPress={()=> alert('Login with Email')} logo={<MaterialCommunityIcons name="email" size={30} color='#000000' />}/>
+            {/* <SocialLogo text="Email" onPress={()=> alert('Login with Email')} logo={<MaterialCommunityIcons name="email" size={30} color='#000000' />}/> */}
             <SocialLogo text="Google" onPress={()=> alert('Login with Google')} logo={googleLogo}/>
             <SocialLogo text="Apple" onPress={()=> alert('Login with Apple')} logo={appleLogo}/>
           </View>
@@ -84,7 +84,10 @@ export default function CreateAccount({navigation}) {
       <View style={styles.flexSpacer} />
 
       <Text style={styles.proceedText}>
-        By proceeding, you agree to RYDEPRO’s Terms, Privacy Notice and can unsubscribe by emailing 
+        By proceeding, you agree to RYDEPRO’s  
+        <Text style={styles.linkText} onPress={() => alert('Terms clicked')}> Terms </Text>, 
+        <Text style={styles.linkText} onPress={() => alert('Privacy Notice clicked')}> Privacy </Text> 
+        Notice and can unsubscribe by emailing 
         <Text style={styles.boldText}> "Unsubscribe" </Text>
       </Text>
     </SafeAreaView>
@@ -153,5 +156,9 @@ const styles = StyleSheet.create({
   },
   flexSpacer: {
     flex: 1,
+  },
+  linkText: {
+    textDecorationLine: 'underline',
+    color: '#0000EE',
   },
 });

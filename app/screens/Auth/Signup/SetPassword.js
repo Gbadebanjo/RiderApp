@@ -11,7 +11,7 @@ import * as yup from 'yup';
 const validationSchema = yup.object().shape({
     password: yup.string()
     .required()
-    .min(6)
+    .min(8)
     .test('uppercase', 'Password must contain a Uppercase', value =>
       /^(?=.*[A-Z]).+$/.test(value),
     )

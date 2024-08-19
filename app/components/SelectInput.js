@@ -50,16 +50,15 @@ const styles = StyleSheet.create({
     // marginLeft: 20,
   },
   inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 20,
+    fontSize: 14,
     paddingVertical: 8,
-    color: 'black',
-    paddingRight: 40,
-    borderWidth: 2,
+    color: '#212121',
+    // paddingRight: 40,
+    borderBottomWidth: 2,
     // marginLeft: 20,
   },
   iconContainer: {
-    top: 16,
+    top: 10,
     right: '10%',
   },
 });
