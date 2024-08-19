@@ -126,10 +126,10 @@ export default function FirstScreen({navigation, route}) {
 
         <Text style={styles.proceedText}>
           By proceeding, you agree to RYDEPRO’s  
-          <Text style={styles.linkText} onPress={() => alert('Terms clicked')}> Terms </Text>, 
+          <Text style={styles.linkText} onPress={() => alert('Terms clicked')}> Terms, </Text>
           <Text style={styles.linkText} onPress={() => alert('Privacy Notice clicked')}> Privacy </Text> 
           Notice and can unsubscribe by emailing 
-          <Text style={styles.boldText}> "Unsubscribe" </Text>
+          <Text style={styles.boldText} onPress={() => alert('Privacy Notice clicked')}> "Unsubscribe" </Text>
       </Text>
     </SafeAreaView>
   );
