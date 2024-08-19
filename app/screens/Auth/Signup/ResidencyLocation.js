@@ -9,8 +9,6 @@ import InputField from '../../../components/InputField';
 import SelectInput from '../../../components/SelectInput';
 import * as yup from 'yup'; 
 import BackButton from '../../../components/BackButton';
-const googleLogo = require('./../../../assets/GoogleIcon.png');
-const appleLogo = require('./../../../assets/AppleLogo.png');
 // import axios from 'axios';
 
 const validationSchema = yup.object().shape({
@@ -21,42 +19,6 @@ const validationSchema = yup.object().shape({
 });
 
 export default function ResidencyLocation({navigation}) {
-    const [value, setValue] = useState('');
-    const [isFocused, setIsFocused] = useState(false);
-    const [states, setStates] = useState([]);
-    const [cities, setCities] = useState([]);
-    const [selectedState, setSelectedState] = useState('');
-    const [selectedCity, setSelectedCity] = useState('');
-
-    // useEffect(() => {
-    //     fetchStates();
-    //   }, []);
-    
-    //   useEffect(() => {
-    //     if (selectedState) {
-    //       fetchCities(selectedState);
-    //     } else { 
-    //       setCities([]);
-    //     }
-    //   }, [selectedState]);
-    
-    //   const fetchStates = async () => {
-    //     try {
-    //       const response = await axios.get('https://nga-states-lga.onrender.com/fetch');
-    //       setStates(response.data);
-    //     } catch (error) {
-    //       console.error('Error fetching states:', error);
-    //     }
-    //   };
-    
-    //   const fetchCities = async (state) => {
-    //     try {
-    //       const response = await axios.get(`https://nga-states-lga.onrender.com/?state=${state}`);
-    //       setCities(response.data);
-    //     } catch (error) {
-    //       console.error('Error fetching cities:', error);
-    //     }
-    //   };
 
   return (
     <SafeAreaView style={styles.container}>
