@@ -1,104 +1,121 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React from 'react'
-import { FontAwesome, Feather, Entypo } from '@expo/vector-icons';
+import BackButton from '../../components/BackButton';
+import { Entypo, MaterialCommunityIcons, AntDesign, Ionicons, FontAwesome, Octicons } from '@expo/vector-icons';
 
-const Settings = ({ navigation }) => {
+export default function Settings({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity
-                style={styles.headcontainer}
-                onPress={() => navigation.goBack()}
-            >
-                <FontAwesome name="angle-left" size={24} color="black" />
-                <Text style={styles.head}>Settings</Text>
-            </TouchableOpacity>
-            <View style={styles.subcontainer}>
+            <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+            <View style={styles.titleContainer}>
+                <BackButton style={styles.Icon} />
+                <Text style={styles.title}>Security</Text>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('Security')}
-                    style={styles.detailsrow}>
-                    <Feather name="lock" size={24} color="#98A0B3" />
-                    <Text style={[styles.detailname, { color: '#464646' }]}>Security</Text>
-                    <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+                    style={styles.Icon}
+                    onPress={() => navigation.goBack()}>
                 </TouchableOpacity>
-                <TouchableOpacity
+            </View>
+            <View>
+                <TouchableOpacity style={styles.eachSetting}
                     onPress={() => navigation.navigate('Security')}
-                    style={styles.detailsrow}>
-                    <Feather name="lock" size={24} color="#98A0B3" />
-                    <Text style={[styles.detailname, { color: '#464646' }]}>Privacy & Data</Text>
-                    <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+                >
+                    <MaterialCommunityIcons name="shield-check-outline" size={24} color='#212121' />
+                    <View style={styles.iconText}>
+                        <Text style={styles.text}>Security</Text>
+                        <Entypo name="chevron-small-right" size={20} color='black' />
+                    </View>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Security')}
-                    style={styles.detailsrow}>
-                    <Feather name="lock" size={24} color="#98A0B3" />
-                    <Text style={[styles.detailname, { color: '#464646' }]}>Notifications</Text>
-                    <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+                <TouchableOpacity style={styles.eachSetting}
+                    onPress={() => navigation.navigate('')}
+                >
+                    <MaterialCommunityIcons name="lock-off-outline" size={24} color='#212121' />
+                    <View style={styles.iconText}>
+                        <Text style={styles.text}>Privacy & Data</Text>
+                        <Entypo name="chevron-small-right" size={20} color='black' />
+                    </View>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Security')}
-                    style={styles.detailsrow}>
-                    <Feather name="lock" size={24} color="#98A0B3" />
-                    <Text style={[styles.detailname, { color: '#464646' }]}>Terms</Text>
-                    <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+                <TouchableOpacity style={styles.eachSetting}
+                    onPress={() => navigation.navigate('')}
+                >
+                    <Ionicons name="notifications-outline" size={25} color='black' />
+                    <View style={styles.iconText}>
+                        <Text style={styles.text}>Notification</Text>
+                        <Entypo name="chevron-small-right" size={20} color='black' />
+                    </View>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Security')}
-                    style={styles.detailsrow}>
-                    <Feather name="lock" size={24} color="#98A0B3" />
-                    <Text style={[styles.detailname, { color: '#464646' }]}>Help & Support</Text>
-                    <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+                <TouchableOpacity style={styles.eachSetting}
+                    onPress={() => navigation.navigate('')}
+                >
+                    <Octicons name="note" size={25} color='black' />
+                    <View style={styles.iconText}>
+                        <Text style={styles.text}>Terms</Text>
+                        <Entypo name="chevron-small-right" size={20} color='black' />
+                    </View>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Security')}
-                    style={styles.detailsrow}>
-                    <Feather name="lock" size={24} color="#98A0B3" />
-                    <Text style={[styles.detailname, { color: '#464646' }]}>Delete Account</Text>
-                    <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+                <TouchableOpacity style={styles.eachSetting}
+                    onPress={() => navigation.navigate('')}
+                >
+                    <MaterialCommunityIcons name="lock-off-outline" size={24} color='#D3D3D3' />
+                    <View style={styles.iconText}>
+                        <Text style={[styles.text, {color :'#D3D3D3'}]}>Help & Support</Text>
+                        <Entypo name="chevron-small-right" size={20} color='black' />
+                    </View>
                 </TouchableOpacity>
-                
+                <TouchableOpacity style={styles.eachSetting}
+                    onPress={() => navigation.navigate('')}
+                >
+                    <MaterialCommunityIcons name="lock-off-outline" size={24} color='#D3D3D3' />
+                    <View style={styles.iconText}>
+                        <Text style={[styles.text, {color :'#D3D3D3'}]}>Delete Account</Text>
+                        <Entypo name="chevron-small-right" size={20} color='black' />
+                    </View>
+                </TouchableOpacity>
+
+
             </View>
         </SafeAreaView>
-    )
+    );
 }
-
-export default Settings
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        alignItems: 'center',
         backgroundColor: '#fff',
-        paddingTop: 30,
         paddingHorizontal: 20,
+        width: '100%',
     },
-    headcontainer: {
+    titleContainer: {
+        marginTop: 30,
+        width: '100%',
         flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
+        marginBottom: 30,
     },
-    head: {
+    title: {
         fontSize: 28,
-        fontWeight: 'bold',
-        color: '#161718',
-        textAlign: 'center',
-        flex: 1,
+        fontWeight: '700',
     },
-    subcontainer: {
-        marginTop: 20,
-        // borderBottomWidth: 1,
-        // borderBottomColor: '#E0E0E0',
-    },
-    detailsrow: {
+    eachSetting: {
         flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#E0E0E0',
+        marginTop: 20,
     },
-    detailname: {
-        fontSize: 18,
+    iconText: {
+        flexDirection: 'row',
+        width: '89%',
+        justifyContent: 'space-between',
+        borderBottomWidth: 2,
+        borderColor: '#98A0B3',
+        paddingBottom: 5,
+    },
+    text: {
+        fontSize: 16,
+        fontWeight: '700',
         color: '#464646',
-        marginLeft: 20,
-        flex: 1,
     },
-
-})
+});

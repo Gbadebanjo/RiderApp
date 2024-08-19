@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather, Entypo } from '@expo/vector-icons';
+import { Feather, Entypo, FontAwesome6,FontAwesome5, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 
 import React, {useState, useRef } from 'react'
 
@@ -34,18 +34,18 @@ const MenuLanding = ({ navigation }) => {
         <View>
           <View style={styles.details}>
             <View style={styles.detailsrow}>
-              <Feather name="lock" size={24} color="#D3D3D3" />
+            <MaterialCommunityIcons name="lock-off-outline" size={24} color='#D3D3D3' />
               <Text style={styles.detailname}>Wallet Vault</Text>
               <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
             </View>
             <View style={styles.detailsrow}>
-              <Feather name="lock" size={24} color="#D3D3D3" />
+            <MaterialCommunityIcons name="lock-off-outline" size={24} color='#D3D3D3' />
               <Text style={styles.detailname}>Share Account</Text>
               <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
             </View>
             <View style={styles.detailsrow}>
-              <Feather name="lock" size={22} color="#D3D3D3" />
-              <Text style={[styles.detailname, { borderBottomWidth: 0 }]}>Booking History</Text>
+            <MaterialCommunityIcons name="lock-off-outline" size={24} color='#D3D3D3' />
+            <Text style={[styles.detailname, { borderBottomWidth: 0 }]}>Booking History</Text>
               <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
             </View>
           </View>
@@ -54,13 +54,13 @@ const MenuLanding = ({ navigation }) => {
           onPress={() => navigation.navigate('RewardProgram')}
         style={styles.rewards}
         >
-          <Feather name="lock" size={24} color="#98A0B3" />
+          <FontAwesome6 name="hand-holding-dollar" size={24} color="#212121" />
           <Text style={styles.rewardtext}>Rewards Program</Text>
           <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
         </TouchableOpacity>
         <View style={styles.details}>
           <TouchableOpacity style={styles.detailsrow} onPress={toggleReferral} >
-            <Feather name="lock" size={24} color="#98A0B3" />
+            <FontAwesome5 name="people-arrows" size={24} color="#212121" />
             <Text style={[styles.detailname, { color: '#464646' }]}>Referral Program</Text>
             <Entypo name={showReferral ? 'chevron-thin-up' : 'chevron-thin-down'} size={14} color="#98A0B3" />
           </TouchableOpacity>
@@ -83,17 +83,17 @@ const MenuLanding = ({ navigation }) => {
           <TouchableOpacity
             onPress={() => navigation.navigate('Settings')}
            style={styles.detailsrow}>
-            <Feather name="lock" size={24} color="#98A0B3" />
+            <Feather name="settings" size={24} color="#212121" />
             <Text style={[styles.detailname, { color: '#464646' }]}>Settings</Text>
             <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.detailsrow}>
-            <Feather name="lock" size={22} color="#98A0B3" />
+            <Octicons name="law" size={22} color="#212121" />
             <Text style={[styles.detailname, { color: '#464646' }]}>Legal</Text>
             <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.detailsrow}>
-            <Feather name="lock" size={22} color="#98A0B3" />
+            <MaterialCommunityIcons name="logout" size={22} color="#212121" />
             <Text style={[styles.detailname, { borderBottomWidth: 0, color: '#464646' }]}>Logout</Text>
             <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
           </TouchableOpacity>
@@ -109,7 +109,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 30,
     paddingHorizontal: 20,
   },
   head: {
@@ -117,6 +116,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#161718',
     alignSelf: 'center',
+    paddingTop: 30,
   },
   nameContainer: {
     flexDirection: 'row',
@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F7FA',
     borderRadius: 10,
     width: '100%',
-    // height: 'auto',
     marginTop: 20,
   },
   detailsrow: {
