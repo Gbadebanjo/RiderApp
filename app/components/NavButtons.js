@@ -52,7 +52,7 @@ function MenuStack() {
 
 function NavButtons() {
     return (
-        <Tab.Navigator screenOptions={{ tabBarHideOnKeyboard: true, headerShown: false, tabBarShowLabel: true, tabBarStyle: styles.tabBar, tabBarActiveTintColor: '#000', tabBarInactiveTintColor: 'gray', tabBarLabelStyle: styles.tabBarLabel, tabBarIconStyle: styles.tabBarIcon,}}>
+        <Tab.Navigator initialRouteName="Menu" screenOptions={{ tabBarHideOnKeyboard: true, headerShown: false, tabBarShowLabel: true, tabBarStyle: styles.tabBar, tabBarActiveTintColor: '#000', tabBarInactiveTintColor: 'gray', tabBarLabelStyle: styles.tabBarLabel, tabBarIconStyle: styles.tabBarIcon, }}>
             <Tab.Screen name="BookRide" component={BookRideStack} options={{
                 tabBarLabel: 'Book Ride', tabBarIcon: ({ color }) => (
                     <AntDesign name="car" size={24} color={color} />
@@ -61,7 +61,7 @@ function NavButtons() {
             <Tab.Screen name="BookingHistory" component={BookingHistoryStack} options={{
                 tabBarLabel: 'Booking History',
                 tabBarIcon: ({ color }) => (
-                    <AntDesign name="book" size={24} color={color } />
+                    <AntDesign name="book" size={24} color={color} />
                 )
             }} />
             <Tab.Screen name="Services" component={ServicesStack} options={{
@@ -85,16 +85,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingTop: 5,
         borderTopColor: '#fff',
-        height: 70, 
+        height: 70,
         paddingBottom: 10,
-      },
-      tabBarLabel: {
-        fontSize: 12, 
-        paddingBottom: 5, 
-      },
-      tabBarIcon: {
-        marginBottom: -5, 
-      },
+    },
+    tabBarLabel: {
+        fontSize: 12,
+        paddingBottom: 5,
+    },
+    tabBarIcon: {
+        marginBottom: -5,
+    },
 })
 
 export default NavButtons;

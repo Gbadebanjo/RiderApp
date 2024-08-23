@@ -1,12 +1,14 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, Entypo, FontAwesome6,FontAwesome5, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 
-import React, {useState, useRef } from 'react'
+import React, {useState, useEffect } from 'react'
 
 const MenuLanding = ({ navigation }) => {
   const [showReferral, setShowReferral] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const toggleReferral = () => {
     setShowReferral(!showReferral);
@@ -15,18 +17,60 @@ const MenuLanding = ({ navigation }) => {
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   }
+
+  
+  useEffect(() => {
+    setLoading(true);
+    const fetchUserDetails = async () => {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+        // const token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YzdjOTE4NjNhNzVhYzkyMDRkODFkMyIsImlhdCI6MTcyNDM2OTUwNSwiZXhwIjoxNzI0NDU1OTA1fQ.Wm9aQdp5yzYeNjWFKeFEKydLbrIQqSWNugds-BCrTHA;
+        if (!token) {
+          Alert.alert('Error', 'Authorization token not found.');
+          return;
+        }
+
+        const response = await axios.get('https://api-auth.katabenterprises.com/api/dashboard/rider/details', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.data.success) {
+          setUserDetails(response.data.data);
+          console.log('User details:', response.data.data);
+        } else {
+          Alert.alert('Error', 'Failed to fetch user details.');
+        }
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+        Alert.alert('Error', 'An error occurred while fetching user details.');
+      }
+    };
+
+    fetchUserDetails();
+  }, []); 
+
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.container, {justifyContent: 'center'}]}>
+        <ActivityIndicator size="large" color="#212121"/>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.head}>Menu</Text>
-        <TouchableOpacity style={styles.nameContainer} onPress={() => navigation.navigate('Account')}>
+        <TouchableOpacity style={styles.nameContainer} onPress={() => navigation.navigate('Account', { userDetails })}>
           <View style={styles.Img}>
-            <Image source={require('../../assets/Userpic.png')} />
+          <Image source={userDetails?.profilePic ? { uri: userDetails.profilePic } : require('../../assets/Userpic.png')} />
           </View>
           <View style={styles.namContainer}>
-            <Text style={styles.name}>John Doe</Text>
-            <Text style={styles.account}>Individual Account</Text>
-            <Text style={styles.id}>User ID: 234565456755</Text>
+          <Text style={styles.name}>{userDetails?.firstName} {userDetails?.lastName}</Text>
+            <Text style={styles.account}>{userDetails?.accountType} Account</Text>
+            <Text style={styles.id}>User ID: {userDetails?.id}</Text>
           </View>
           <Entypo name={"chevron-thin-right" }
           size={14} color="#98A0B3" />

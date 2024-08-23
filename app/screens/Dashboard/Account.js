@@ -13,11 +13,12 @@ import {
 import { FontAwesome, Entypo, Ionicons, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Account = ({ navigation }) => {
+const Account = ({ navigation, route }) => {
   const [showName, setShowName] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const slideAnim = useRef(new Animated.Value(300)).current; // Initial value for sliding animation
-
+  const { userDetails } = route.params;
+  
   const toggleNameDetails = () => {
     setShowName(!showName);
   };
