@@ -1,6 +1,7 @@
 // import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
+import React, {useState} from 'react';
+import otpApi from './../../../api/auth'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ActivityIndicator, Keyboard } from 'react-native';
 import { MaterialCommunityIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../../components/StyledButton';
@@ -21,6 +22,24 @@ const validationSchema = yup.object().shape({
 });
 
 export default function CreateAccount({navigation}) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const handleSubmit = async (values) => {
+    setLoading(true);
+    setError(false);
+    const response = await otpApi.getOtp(values.email);
+    console.log(response.data)
+    if (!response.ok) {
+      setLoading(false);
+      setError(true);
+      return alert(response.data.message);
+    }
+    setLoading(false);
+    alert(response.data.message);
+    navigation.navigate('VerifySignup', { email: values.email });
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -31,10 +50,7 @@ export default function CreateAccount({navigation}) {
       <Formik
         initialValues={{ email: '' }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          navigation.navigate('VerifySignup', { email: values.email });
-          // navigation.navigate('UserDetails', { email: values.email });
-        }}
+        onSubmit={handleSubmit}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
           <>
@@ -46,7 +62,6 @@ export default function CreateAccount({navigation}) {
             textContentType="email"
             returnKeyType="next"
             width="100%"
-            // marginLeft={1}
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
             value={values.email}
@@ -54,8 +69,17 @@ export default function CreateAccount({navigation}) {
             errorMessage={errors.email}
           />
           <StyledButton
-            title="Continue"
-            onPress={handleSubmit}
+             title={
+              loading ? (
+                <ActivityIndicator color="#fff"/>
+              ) : (
+                'Continue'
+              )
+            }
+            onPress={() => {
+              Keyboard.dismiss();
+              handleSubmit();
+            }}
             width="100%"
             height={53}
             paddingVertical={10}
@@ -113,14 +137,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontWeight: '700',
     alignSelf: 'flex-start',
-    // marginLeft: '10%',
     marginBottom: 20,
   },
   subtitle: {
     fontSize: 26,
     fontWeight: '700',
     alignSelf: 'flex-start',
-    // marginLeft: '10%',
     marginBottom: 0,
   },
   socialsLogo: {
@@ -131,7 +153,6 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 14,
     color: 'red',
-    // marginLeft: '10%',
     marginTop: 0,
     alignSelf: 'flex-start',
   },
