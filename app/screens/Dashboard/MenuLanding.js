@@ -1,12 +1,29 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, Entypo, FontAwesome6,FontAwesome5, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
-
-import React, {useState, useRef } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useState, useEffect } from 'react'
 
 const MenuLanding = ({ navigation }) => {
   const [showReferral, setShowReferral] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const userToken = await AsyncStorage.getItem('userToken');
+        if (userToken !== null) {
+          setToken(userToken);
+          console.log("token", userToken);
+        }
+      } catch (error) {
+        console.error('Failed to fetch the token from storage', error);
+      }
+    };
+
+    fetchToken();
+  }, []);
 
   const toggleReferral = () => {
     setShowReferral(!showReferral);

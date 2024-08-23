@@ -1,6 +1,7 @@
 // import { StatusBar } from 'expo-status-bar';
 import React, {useRef, useState} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
+import otpApi from './../../../api/auth'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../../components/StyledButton';
 import Centerlogo from '../../../components/centerlogo';
@@ -24,12 +25,43 @@ const CELL_COUNT = 6;
 
 export default function FirstScreen({navigation, route}) {
     const { email } = route.params;
+    const [loading, setLoading] = useState(false);
     const [value, setValue] = useState('');
+    const [errorMessage, setErrorMessage] = useState(''); 
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
       value,
       setValue,
     });
+
+    const handleVerify = async (values, {resetForm}) => {
+      setLoading(true);
+      const response = await otpApi.verifyOtp(email, values.code);
+      console.log(response.data.message);
+      Keyboard.dismiss();
+      if (!response.ok) {
+        setLoading(false);
+        return setErrorMessage(response.data.message);
+      }
+      resetForm(); 
+      navigation.navigate('SetPassword', { 
+        email: email,
+      });
+    }
+
+    const handleResend = async () => {
+      // setLoading(true);
+      const response = await otpApi.getOtp(email);
+      console.log(response.data.message);
+      if (!response.ok) {
+        // setLoading(false);
+        return alert(response.data.message);
+      }
+      console.log(response.data.message);
+      return alert(response.data.message);
+      // setLoading(false);
+      // navigation.navigate('VerifySignup', { email: email });
+    }
 
 
   return (
@@ -40,15 +72,12 @@ export default function FirstScreen({navigation, route}) {
       <Text style={styles.title}>Enter the 6-digit code</Text>
       <Text style={styles.subtitle}>Please check your email inbox or spam</Text>
 
+      {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
+
       <Formik
         initialValues={{ code: '' }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          navigation.navigate('SetPassword', { 
-            email: email,
-          });
-        // navigation.navigate('SetPassword');
-        }}
+        onSubmit={handleVerify}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
           <>
@@ -59,7 +88,7 @@ export default function FirstScreen({navigation, route}) {
                 onChangeText={handleChange('code')}
                 cellCount={CELL_COUNT}
                 rootStyle={styles.codeFieldRoot}
-                // keyboardType="number-pad"
+                keyboardType="number-pad"
                 textContentType="oneTimeCode"
                 onSubmitEditing={handleSubmit} 
                 renderCell={({ index, symbol, isFocused }) => (
@@ -100,7 +129,7 @@ export default function FirstScreen({navigation, route}) {
             <View style={styles.buttonContainer}>
                 <StyledButton
                     title="Resend Code"
-                    // onPress={alert('Resend Code')}
+                    onPress={handleResend}
                     width="50%"
                     height={40}
                     fontSize={11}
@@ -175,6 +204,12 @@ const styles = StyleSheet.create({
     color: 'red',
     marginTop: 0,
     alignSelf: 'flex-start',
+  },
+  bigerrorText: {
+    fontSize: 18,
+    color: 'red',
+    marginTop: 10,
+    alignSelf: 'flex-center',
   },
   loginText: {
     fontSize: 16,

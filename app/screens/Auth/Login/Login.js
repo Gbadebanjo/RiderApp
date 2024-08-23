@@ -19,7 +19,7 @@ export default function Login({navigation}) {
           <View style={styles.socialsLogo}>
             <SocialLogo text="Face ID" onPress={()=> navigation.navigate('FacialID')} logo={<AntDesign name="scan1" size={30} color='#7DB7FF'/>} />
             <SocialLogo text="Biometric" onPress={()=> navigation.navigate('Biometric')} logo={<Ionicons name="finger-print" size={30} color='#0F488F' />}/>
-            <SocialLogo text="Email" onPress={()=> alert('Login with Email')} logo={<MaterialCommunityIcons name="email" size={30} color='#000000' />}/>
+            <SocialLogo text="Email" onPress={()=> navigation.navigate('UsePassword')} logo={<MaterialCommunityIcons name="email" size={30} color='#000000' />}/>
             <SocialLogo text="Apple" onPress={()=> alert('Login with Apple')} logo={appleLogo}/>
             <SocialLogo text="Google" onPress={()=> alert('Login with Google')} logo={googleLogo}/>
           </View>
