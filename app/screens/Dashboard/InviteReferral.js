@@ -3,10 +3,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useRef } from 'react';
 import { FontAwesome, Ionicons, Feather } from '@expo/vector-icons';
 
-
 const InviteReferral = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
-    const slideAnim = useRef(new Animated.Value(300)).current; // Initial value for sliding animation
+    const slideAnim = useRef(new Animated.Value(300)).current;
 
     const toggleModal = () => {
         setModalVisible(!modalVisible);

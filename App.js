@@ -6,6 +6,7 @@ import LandingOffer from './app/screens/Welcome/LandingOffer';
 import FirstScreen from './app/screens/Auth/Signup/FirstScreen';
 import CreateAccount from './app/screens/Auth/Signup/CreateAccount';
 import Login from './app/screens/Auth/Login/Login';
+import UsePassword from './app/screens/Auth/Login/UsePassword';
 import WelcomeGuest from './app/screens/Auth/Signup/WelcomeGuest';
 import VerifySignup from './app/screens/Auth/Signup/VerifySignup';
 import SetPassword from './app/screens/Auth/Signup/SetPassword';
@@ -21,6 +22,7 @@ import Pin from './app/screens/Security/Pin';
 import Feedback from './app/screens/Feedback/Feedback';
 import ThankYou from './app/screens/Feedback/ThankYou';
 import Photo from './app/screens/Dashboard/Photo';
+import ReviewPhoto from './app/screens/Dashboard/ReviewPhoto';
 import RewardProgram from './app/screens/Dashboard/RewardProgram';
 import CashbackReward from './app/screens/Dashboard/CashbackReward';
 import MilesPoint from './app/screens/Dashboard/MilesPoint';
@@ -41,6 +43,7 @@ export default function App() {
       <Stack.Screen name='WelcomeGuest' component={WelcomeGuest} options={{ headerShown: false }}/>
       <Stack.Screen name='CreateAccount' component={CreateAccount} options={{ headerShown: false }}/>
       <Stack.Screen name='Login' component={Login} options={{ headerShown: false }}/>
+      <Stack.Screen name='UsePassword' component={UsePassword} options={{ headerShown: false }}/>
       <Stack.Screen name='VerifySignup' component={VerifySignup} options={{ headerShown: false }}/>
       <Stack.Screen name='SetPassword' component={SetPassword} options={{ headerShown: false }}/>
       <Stack.Screen name='MenuLanding' component={NavButtons} options={{ headerShown: false }}/>
@@ -56,6 +59,7 @@ export default function App() {
       <Stack.Screen name='Feedback' component={Feedback} options={{ headerShown: false }}/>
       <Stack.Screen name='ThankYou' component={ThankYou} options={{ headerShown: false }}/>
       <Stack.Screen name='Photo' component={Photo} options={{ headerShown: false }}/>
+      <Stack.Screen name='ReviewPhoto' component={ReviewPhoto} options={{ headerShown: false }}/>
       <Stack.Screen name='RewardProgram' component={RewardProgram} options={{ headerShown: false }}/>
       <Stack.Screen name='CashbackReward' component={CashbackReward} options={{ headerShown: false }}/>
       <Stack.Screen name='MilesPoint' component={MilesPoint} options={{ headerShown: false }}/>

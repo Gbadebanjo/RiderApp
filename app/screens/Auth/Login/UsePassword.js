@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import passwordApi from './../../../api/auth'
+import passwordApi from '../../../api/auth'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ActivityIndicator, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../../components/BackButton';
 import InputField from '../../../components/InputField';
 import StyledButton from '../../../components/StyledButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
@@ -27,31 +28,33 @@ const validationSchema = yup.object().shape({
       value => /^(?=.*[^a-zA-Z0-9]).+$/.test(value),
     )
     .label('Password'),
-  confirmPassword: yup.string()
-    .oneOf([yup.ref('password'), null], 'Passwords must match')
-    .required()
-    .label('Confirm Password'),
+    email: yup
+    .string()
+    .email('Please enter a valid email')
+    .required('Enter your Email Address'),
   });
 
-export default function SetPassword({navigation, route}) {
-    const { email } = route.params;
+export default function UsePassword({navigation, route}) {
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const handleSubmit = async (values, {resetForm}) => {
+    const handleContinue = async (values, {resetForm}) => {
       setLoading(true);
-      const response = await passwordApi.setPassword(email, values.password);
-      console.log(response.data.message);
+      const { email, password } = values;
+        const loginMethod = "Password"; 
+
+      const response = await passwordApi.loginWithPassword(email, password, loginMethod);
       Keyboard.dismiss();
       if (!response.ok) {
         setLoading(false);
-        return setErrorMessage(response.data.message);
+        return setErrorMessage(response.data.data.message);
       }
+
+      await AsyncStorage.setItem('userToken', response.data.data.token);
+
       setLoading(false);
-      resetForm();
-      navigation.navigate('UserDetails', { 
-        email: email,
-      });
-      alert(response.data.message);
+    //   resetForm();
+      navigation.navigate('MenuLanding');
     }
 
     return (
@@ -59,17 +62,34 @@ export default function SetPassword({navigation, route}) {
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
             <View style={styles.titleContainer}> 
                 <BackButton style={styles.Icon} />
-                <Text style={styles.title}>Password</Text>
+                <Text style={styles.title}>Login with Password</Text>
             </View>
-            <Text style={styles.subtitle}>Your Password must be at least 8 characters long, and contain at least one digit and one special character</Text>
+            <Text style={styles.subtitle}>Provide your password to acess your account</Text>
+
+            {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
             
             <Formik
-                initialValues={{ password: '', confirmPassword: '', }}
+                initialValues={{ email: '', password: '', }}
                 validationSchema={validationSchema}
-                onSubmit={handleSubmit}
+                onSubmit={handleContinue}
             >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
               <>
+                <InputField
+                    label="Email"
+                    placeholder="user@rydepro.com"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    textContentType="email"
+                    returnKeyType="next"
+                    width="100%"
+                    onChangeText={handleChange('email')}
+                    onBlur={handleBlur('email')}
+                    value={values.email}
+                    error={touched.email && errors.email}
+                    errorMessage={errors.email}
+                />
+
               <InputField
                 label="Password"
                 placeholder=""
@@ -85,27 +105,12 @@ export default function SetPassword({navigation, route}) {
                 showPasswordToggle={true}
               />
 
-              <InputField
-                label="Confirm Password"
-                placeholder=""
-                autoCapitalize="none"
-                textContentType="password"
-                returnKeyType="next"
-                width="100%"
-                onChangeText={handleChange('confirmPassword')}
-                onBlur={handleBlur('confirmPassword')}
-                value={values.confirmPassword}
-                error={touched.confirmPassword && errors.confirmPassword}
-                errorMessage={errors.confirmPassword}
-                showPasswordToggle={true}
-              />
-
               <StyledButton
                 title={
                   loading ? (
                     <ActivityIndicator color="#fff"/>
                   ) : (
-                    'Confirm'
+                    'Continue'
                   )
                 }
                 onPress={handleSubmit}
@@ -141,14 +146,21 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     title: {
-        fontSize: 28,
+        fontSize: 18,
         fontWeight: '700',
-        marginLeft: '30%',
+        marginLeft: '20%',
     },
     subtitle: {
         fontSize: 16,
         color: '#464646',
         marginTop: 10,
         marginBottom: 15,
+        textAlign: 'center',
     },
+    bigerrorText: {
+        fontSize: 18,
+        color: 'red',
+        marginTop: 10,
+        alignSelf: 'flex-center',
+      },
 });

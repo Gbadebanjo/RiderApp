@@ -1,8 +1,10 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather, Entypo, FontAwesome6,FontAwesome5, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
-
-import React, {useState, useEffect } from 'react'
+import { Feather, Entypo, FontAwesome6, FontAwesome5, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
+import { Alert } from 'react-native';
 
 const MenuLanding = ({ navigation }) => {
   const [showReferral, setShowReferral] = useState(false);
@@ -18,18 +20,16 @@ const MenuLanding = ({ navigation }) => {
     setModalVisible(!modalVisible);
   }
 
-  
+
   useEffect(() => {
     setLoading(true);
     const fetchUserDetails = async () => {
       try {
         const token = await AsyncStorage.getItem('userToken');
-        // const token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YzdjOTE4NjNhNzVhYzkyMDRkODFkMyIsImlhdCI6MTcyNDM2OTUwNSwiZXhwIjoxNzI0NDU1OTA1fQ.Wm9aQdp5yzYeNjWFKeFEKydLbrIQqSWNugds-BCrTHA;
         if (!token) {
           Alert.alert('Error', 'Authorization token not found.');
           return;
         }
-
         const response = await axios.get('https://api-auth.katabenterprises.com/api/dashboard/rider/details', {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -38,23 +38,26 @@ const MenuLanding = ({ navigation }) => {
 
         if (response.data.success) {
           setUserDetails(response.data.data);
-          console.log('User details:', response.data.data);
+          setLoading(false);
         } else {
+          setLoading(false);
           Alert.alert('Error', 'Failed to fetch user details.');
+
         }
       } catch (error) {
         console.error('Error fetching user details:', error);
+        setLoading(false);
         Alert.alert('Error', 'An error occurred while fetching user details.');
       }
     };
 
     fetchUserDetails();
-  }, []); 
+  }, []);
 
   if (loading) {
     return (
-      <SafeAreaView style={[styles.container, {justifyContent: 'center'}]}>
-        <ActivityIndicator size="large" color="#212121"/>
+      <SafeAreaView style={[styles.container, { justifyContent: 'center' }]}>
+        <ActivityIndicator size="large" color="#212121" />
       </SafeAreaView>
     );
   }
@@ -65,38 +68,40 @@ const MenuLanding = ({ navigation }) => {
         <Text style={styles.head}>Menu</Text>
         <TouchableOpacity style={styles.nameContainer} onPress={() => navigation.navigate('Account', { userDetails })}>
           <View style={styles.Img}>
-          <Image source={userDetails?.profilePic ? { uri: userDetails.profilePic } : require('../../assets/Userpic.png')} />
+            <Image source={ userDetails?.profilePic ? { uri: userDetails.profilePic } :require('../../assets/Userpic.png')}
+              style={{ width: 80, height: 80, borderRadius: 50 }} // Set appropriate styles for the image
+            />
           </View>
           <View style={styles.namContainer}>
-          <Text style={styles.name}>{userDetails?.firstName} {userDetails?.lastName}</Text>
+            <Text style={styles.name}>{userDetails?.displayName} </Text>
             <Text style={styles.account}>{userDetails?.accountType} Account</Text>
-            <Text style={styles.id}>User ID: {userDetails?.id}</Text>
+            <Text style={styles.id}>User ID: {userDetails?.accountNumber}</Text>
           </View>
-          <Entypo name={"chevron-thin-right" }
-          size={14} color="#98A0B3" />
+          <Entypo name={"chevron-thin-right"}
+            size={14} color="#98A0B3" />
         </TouchableOpacity>
         <View>
           <View style={styles.details}>
             <View style={styles.detailsrow}>
-            <MaterialCommunityIcons name="lock-off-outline" size={24} color='#D3D3D3' />
+              <MaterialCommunityIcons name="lock-off-outline" size={24} color='#D3D3D3' />
               <Text style={styles.detailname}>Wallet Vault</Text>
               <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
             </View>
             <View style={styles.detailsrow}>
-            <MaterialCommunityIcons name="lock-off-outline" size={24} color='#D3D3D3' />
+              <MaterialCommunityIcons name="lock-off-outline" size={24} color='#D3D3D3' />
               <Text style={styles.detailname}>Share Account</Text>
               <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
             </View>
             <View style={styles.detailsrow}>
-            <MaterialCommunityIcons name="lock-off-outline" size={24} color='#D3D3D3' />
-            <Text style={[styles.detailname, { borderBottomWidth: 0 }]}>Booking History</Text>
+              <MaterialCommunityIcons name="lock-off-outline" size={24} color='#D3D3D3' />
+              <Text style={[styles.detailname, { borderBottomWidth: 0 }]}>Booking History</Text>
               <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
             </View>
           </View>
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => navigation.navigate('RewardProgram')}
-        style={styles.rewards}
+          style={styles.rewards}
         >
           <FontAwesome6 name="hand-holding-dollar" size={24} color="#212121" />
           <Text style={styles.rewardtext}>Rewards Program</Text>
@@ -109,24 +114,24 @@ const MenuLanding = ({ navigation }) => {
             <Entypo name={showReferral ? 'chevron-thin-up' : 'chevron-thin-down'} size={14} color="#98A0B3" />
           </TouchableOpacity>
           {showReferral &&
-          <>
-          <TouchableOpacity 
-            onPress={() => navigation.navigate('TrackReferral')}
-          style={styles.detailsrow2}>
-            <Text style={[styles.detailname, { color: '#464646', fontSize: 15 }]}>Track Referral</Text>
-            <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('InviteReferral')}
-           style={styles.detailsrow2}>
-            <Text style={[styles.detailname, { color: '#464646', fontSize: 15 }]}>Invite Referral</Text>
-            <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
-          </TouchableOpacity>
-          </>
+            <>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('TrackReferral')}
+                style={styles.detailsrow2}>
+                <Text style={[styles.detailname, { color: '#464646', fontSize: 15 }]}>Track Referral</Text>
+                <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('InviteReferral')}
+                style={styles.detailsrow2}>
+                <Text style={[styles.detailname, { color: '#464646', fontSize: 15 }]}>Invite Referral</Text>
+                <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
+              </TouchableOpacity>
+            </>
           }
           <TouchableOpacity
             onPress={() => navigation.navigate('Settings')}
-           style={styles.detailsrow}>
+            style={styles.detailsrow}>
             <Feather name="settings" size={24} color="#212121" />
             <Text style={[styles.detailname, { color: '#464646' }]}>Settings</Text>
             <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
@@ -173,7 +178,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   Img: {
-    borderRadius: 50,
+    // borderRadius: 50,
   },
   namContainer: {
     marginLeft: 20,

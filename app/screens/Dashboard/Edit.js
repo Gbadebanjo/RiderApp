@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -8,9 +8,7 @@ import StyledButton from '../../components/StyledButton';
 import Centerlogo from '../../components/centerlogo';
 import BackButton from '../../components/BackButton';
 import InputField from '../../components/InputField';
-
-const googleLogo = require('./../../assets/GoogleIcon.png');
-const appleLogo = require('./../../assets/AppleLogo.png');
+import axios from 'axios'; // Import axios for making HTTP requests
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
@@ -21,9 +19,28 @@ const validationSchema = yup.object().shape({
   emergencyPhoneNumber: yup.string().required('Emergency Phone Number is required'),
 });
 
-export default function Edit({ navigation }) {
+export default function Edit({ navigation, route }) {
   const [isFocused, setIsFocused] = useState(false);
   const phoneInputRef = useRef(null);
+  const { userDetails } = route.params;
+
+  const handleUpdate = async (values) => {
+    try {
+      const response = await axios.put(`https://api-auth.katabenterprises.com/api/dashboard/rider/update`, {
+        ...values,
+        id: userDetails._id,
+      });
+      if (response.status === 200) {
+        Alert.alert('Success', 'Details updated successfully');
+        navigation.navigate('MenuLanding');
+      } else {
+        Alert.alert('Error', 'Failed to update details');
+      }
+    } catch (error) {
+      console.error('Error updating details:', error);
+      Alert.alert('Error', 'An error occurred while updating details');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -33,20 +50,16 @@ export default function Edit({ navigation }) {
 
         <Formik
           initialValues={{
-            accountType: 'Individual',
-            firstName: '',
-            lastName: '',
-            displayName: '',
-            phoneNumber: '',
-            emergencyContact: '',
-            emergencyPhoneNumber: '',
+            accountType: userDetails.accountType || 'Individual',
+            firstName: userDetails.firstName || '',
+            lastName: userDetails.lastName || '',
+            displayName: userDetails.displayName || '',
+            phoneNumber: userDetails.phoneNumber || '',
+            emergencyContact: '', // If you have emergency contact, pre-fill here
+            emergencyPhoneNumber: '', // If you have emergency phone number, pre-fill here
           }}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            console.log(values);
-            navigation.navigate('MenuLanding');
-            // alert('Details updated');
-          }}
+          onSubmit={(values) => handleUpdate(values)}
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
             <>
@@ -151,7 +164,7 @@ export default function Edit({ navigation }) {
               </View>
 
               <StyledButton
-                title="Continue"
+                title="Update"
                 onPress={handleSubmit} 
                 width="100%"
                 height={53}
