@@ -13,10 +13,12 @@ import {
 import { FontAwesome, Entypo, Ionicons, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Account = ({ navigation }) => {
+const Account = ({ navigation, route }) => {
   const [showName, setShowName] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [isProfilePicHidden, setIsProfilePicHidden] = useState(false); // State to manage profile picture visibility
   const slideAnim = useRef(new Animated.Value(300)).current; // Initial value for sliding animation
+  const { userDetails } = route.params;
 
   const toggleNameDetails = () => {
     setShowName(!showName);
@@ -34,6 +36,11 @@ const Account = ({ navigation }) => {
     }
   };
 
+  const hideProfilePicture = () => {
+    setIsProfilePicHidden(true);
+    toggleModal();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -46,7 +53,9 @@ const Account = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.nameContainer}>
           <View style={styles.Img}>
-            <Image source={require('../../assets/Userpic.png')} />
+            <Image source={isProfilePicHidden || !userDetails?.profilePic ? require('../../assets/Userpic.png') : { uri: userDetails.profilePic }}
+              style={{ width: 80, height: 80, borderRadius: 50 }}
+            />
             <TouchableOpacity
               style={styles.cam}
               onPress={toggleModal} // Open the modal
@@ -55,11 +64,11 @@ const Account = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.namContainer}>
-            <Text style={styles.name}>John Doe</Text>
-            <Text style={styles.account}>Individual Account</Text>
-            <Text style={styles.id}>User ID: 234565456755</Text>
+            <Text style={styles.name}>{userDetails?.displayName}</Text>
+            <Text style={styles.account}>{userDetails?.accountType}</Text>
+            <Text style={styles.id}>User ID: {userDetails?.accountNumber}</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('Edit')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Edit', { userDetails })}>
             <Text style={styles.edit}>Edit</Text>
           </TouchableOpacity>
           {/* <Linking>Edit</Linking> */}
@@ -69,8 +78,8 @@ const Account = ({ navigation }) => {
           onPress={toggleNameDetails}
         >
           <View style={styles.namedetails}>
-            <Text style={styles.namehead}>Full Name</Text>
-            <Text style={styles.nametext}>John Doe</Text>
+            <Text style={styles.namehead}>{userDetails?.accountType}</Text>
+            <Text style={styles.nametext}>{userDetails?.firstName} {userDetails?.lastName}</Text>
           </View>
           <Entypo
             name={showName ? 'chevron-thin-up' : 'chevron-thin-down'}
@@ -83,13 +92,13 @@ const Account = ({ navigation }) => {
             <View style={styles.detailscontainer}>
               <View style={styles.namedetails}>
                 <Text style={styles.namehead}>First Name</Text>
-                <Text style={styles.nametext}>John</Text>
+                <Text style={styles.nametext}>{userDetails?.firstName}</Text>
               </View>
             </View>
             <View style={styles.detailscontainer}>
               <View style={styles.namedetails}>
                 <Text style={styles.namehead}>Last Name</Text>
-                <Text style={styles.nametext}>Doe</Text>
+                <Text style={styles.nametext}>{userDetails?.lastName}</Text>
               </View>
             </View>
           </>
@@ -97,31 +106,31 @@ const Account = ({ navigation }) => {
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Display Name(Alias)</Text>
-            <Text style={styles.nametext}>JohnnyD</Text>
+            <Text style={styles.nametext}>{userDetails?.displayName}</Text>
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Phone Number</Text>
-            <Text style={styles.nametext}>+235 5767465787</Text>
+            <Text style={styles.nametext}>{userDetails?.phoneNumber}</Text>
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Email Address</Text>
-            <Text style={styles.nametext}>jhon.mobbb@gmail.com</Text>
+            <Text style={styles.nametext}>{userDetails?.email}</Text>
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Emergency Contact</Text>
-            <Text style={styles.nametext}>Moses Gabriel</Text>
+            <Text style={styles.nametext}>{userDetails?.emergencyContact ? emergencyContact : "Nil"}</Text>
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Emergency Number</Text>
-            <Text style={styles.nametext}>+111 4567874563</Text>
+            <Text style={styles.nametext}>{userDetails?.emergencyNumber ? emergencyNumber : "Nil"}</Text>
           </View>
         </View>
       </ScrollView>
@@ -143,27 +152,24 @@ const Account = ({ navigation }) => {
           ><View style={styles.modalLineContainer}>
               <Text style={styles.modalTitle}>Edit Account Photo</Text>
             </View>
-            <TouchableOpacity 
-            style={styles.modalLineContainer}
-            onPress={() => {
-              toggleModal(); 
-              // Add functionality to hide profile picture
-            }}
+            <TouchableOpacity
+              style={styles.modalLineContainer}
+              onPress={hideProfilePicture}
             >
               <Text style={styles.modalText}>Hide Profile Picture</Text>
               <FontAwesome name="user-o" size={16} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity 
-            style={styles.modalLineContainer}
-            onPress={() => {
-              toggleModal()
-              navigation.navigate('Photo')
-            }}
-              >
+            <TouchableOpacity
+              style={styles.modalLineContainer}
+              onPress={() => {
+                toggleModal()
+                navigation.navigate('Photo')
+              }}
+            >
               <Text style={styles.modalText}>Take photo</Text>
               <Feather name="camera" size={16} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity  onPress={toggleModal}>
+            <TouchableOpacity onPress={toggleModal}>
               <Text style={styles.modalText}>Cancel</Text>
             </TouchableOpacity>
           </Animated.View>
@@ -303,6 +309,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: '100%',
     textDecorationLine: 'underline',
-  
+
   },
 });

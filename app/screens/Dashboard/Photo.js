@@ -30,6 +30,13 @@ export default function Photo({ navigation }) {
     return <View />;
   }
 
+  const handlePermissionRequest = async () => {
+    const result = await requestPermission();
+    if (!result.granted) {
+      setShowModal(true);
+    }
+  };
+
   if (!permission.granted) {
     return (
       <Modal
@@ -65,7 +72,7 @@ export default function Photo({ navigation }) {
                 style={styles.modalButton}
                 onPress={() => {
                   setShowModal(false);
-                  requestPermission(); // Request permission again
+                  handlePermissionRequest(); // Request permission again
                 }}
               >
                 <Text style={styles.buttonText}>Allow</Text>
@@ -77,6 +84,13 @@ export default function Photo({ navigation }) {
     );
   }
 
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      const photo = await cameraRef.current.takePictureAsync();
+      navigation.navigate('ReviewPhoto', { photo, facing });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.overlayContainer}>
@@ -87,14 +101,14 @@ export default function Photo({ navigation }) {
             ref={cameraRef}
           />
         </View>
-          <Centerlogo />  
-          <Text style={styles.text}>Review Your Photo</Text>
-          
+        <Centerlogo />
+        <Text style={styles.text}>Take a Profile Photo</Text>
+
         <View style={styles.controlsContainer}>
-       
-            
+
+
           <View style={styles.buttonContainer}>
-          <TouchableOpacity
+            <TouchableOpacity
               style={styles.captureSwitch}
               onPress={() => {
                 setFacing(facing === 'back' ? 'front' : 'back');
@@ -102,25 +116,25 @@ export default function Photo({ navigation }) {
             >
               <FontAwesome6 name="arrows-rotate" size={24} color="#212121" />
             </TouchableOpacity>
-          <StyledButton
-            title="Capture"
-            onPress={()=> navigation.navigate('MenuLanding')}
-            width="100%"
-            height={50}
-            paddingVertical={10}
-            marginTop={10}
-            backgroundColor="#212121"
-            TextColor="#fff"
+            <StyledButton
+              title="Capture"
+              onPress={takePicture}
+              width="100%"
+              height={50}
+              paddingVertical={10}
+              marginTop={10}
+              backgroundColor="#212121"
+              TextColor="#fff"
             />
-          <StyledButton
-            title="Cancel"
-            onPress={() => navigation.goBack()}
-            width="100%"
-            height={50}
-            paddingVertical={10}
-            marginTop={10}
-            backgroundColor="#fff"
-            TextColor="#212121"
+            <StyledButton
+              title="Cancel"
+              onPress={() => navigation.goBack()}
+              width="100%"
+              height={50}
+              paddingVertical={10}
+              marginTop={10}
+              backgroundColor="#fff"
+              TextColor="#212121"
             />
           </View>
         </View>
@@ -142,7 +156,7 @@ const styles = StyleSheet.create({
   },
   cameraContainer: {
     position: 'absolute',
-    top: '20%', 
+    top: '20%',
     width: 350,
     height: 400,
     borderRadius: 20,
@@ -172,6 +186,7 @@ const styles = StyleSheet.create({
   },
   captureSwitch: {
     alignItems: 'flex-end',
+    marginRight: 10,
   },
   modalContainer: {
     flex: 1,
