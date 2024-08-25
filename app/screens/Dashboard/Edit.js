@@ -8,7 +8,8 @@ import StyledButton from '../../components/StyledButton';
 import Centerlogo from '../../components/centerlogo';
 import BackButton from '../../components/BackButton';
 import InputField from '../../components/InputField';
-import axios from 'axios'; // Import axios for making HTTP requests
+import axios from 'axios'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
@@ -21,15 +22,21 @@ const validationSchema = yup.object().shape({
 
 export default function Edit({ navigation, route }) {
   const [isFocused, setIsFocused] = useState(false);
+  const [loading, setLoading] = useState(false);
   const phoneInputRef = useRef(null);
   const { userDetails } = route.params;
 
   const handleUpdate = async (values) => {
+    setLoading(true);
+    console.log('values:', values);
+    const token = await AsyncStorage.getItem('userToken');
     try {
-      const response = await axios.put(`https://api-auth.katabenterprises.com/api/dashboard/rider/update`, {
-        ...values,
-        id: userDetails._id,
+      const response = await axios.put('https://api-auth.katabenterprises.com/api/dashboard/rider/update', values, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+      console.log('response:', response);
       if (response.status === 200) {
         Alert.alert('Success', 'Details updated successfully');
         navigation.navigate('MenuLanding');
@@ -50,13 +57,12 @@ export default function Edit({ navigation, route }) {
 
         <Formik
           initialValues={{
-            accountType: userDetails.accountType || 'Individual',
             firstName: userDetails.firstName || '',
             lastName: userDetails.lastName || '',
             displayName: userDetails.displayName || '',
             phoneNumber: userDetails.phoneNumber || '',
-            emergencyContact: '', // If you have emergency contact, pre-fill here
-            emergencyPhoneNumber: '', // If you have emergency phone number, pre-fill here
+            emergencyContact: userDetails.emergencyContact || '', 
+            emergencyPhoneNumber: userDetails.emergencyPhoneNumber || '', 
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => handleUpdate(values)}
@@ -165,6 +171,7 @@ export default function Edit({ navigation, route }) {
 
               <StyledButton
                 title="Update"
+                loading={loading}
                 onPress={handleSubmit} 
                 width="100%"
                 height={53}

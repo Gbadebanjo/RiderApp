@@ -3,9 +3,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useRef } from 'react';
 import { FontAwesome, Ionicons, Feather } from '@expo/vector-icons';
 
-const InviteReferral = ({ navigation }) => {
+const InviteReferral = ({ navigation, route }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const slideAnim = useRef(new Animated.Value(300)).current;
+    const { userDetails } = route.params;
 
     const toggleModal = () => {
         setModalVisible(!modalVisible);
@@ -33,7 +34,7 @@ const InviteReferral = ({ navigation }) => {
                     <Text style={styles.text}>-Refer a friend and get 15% off your next 20 rides once they book! The more you refer, the more you save!</Text>
                     <Text style={styles.text}>-Discounts are non-transferable and expire, so start referring now! Terms and conditions apply</Text>
                     <View style={styles.referrallinkcontainer}>
-                        <Text style={styles.referrallink}>Referral code<Text style={styles.code}> JULYRIDE2024</Text></Text>
+                        <Text style={styles.referrallink}>Referral code<Text style={styles.code}> {userDetails.referralId.individualReferralCode}</Text></Text>
                         <TouchableOpacity
                             onPress={toggleModal}
                             style={styles.copy}
@@ -46,7 +47,7 @@ const InviteReferral = ({ navigation }) => {
                     <Text style={styles.texthead}>Earn up to $10,000 for Each Referral!</Text>
                     <Text style={styles.text}>-Know a Company or Organization (including government and consulates)? Refer them and earn a commission of up to $10,000 when they contract with us! Fill out the form and start earning your commission plus discounts today! Terms and conditions apply</Text>
                     <View style={styles.referrallinkcontainer}>
-                        <Text style={styles.referrallink}>Referral code<Text style={styles.code}> JULYRIDE2024</Text></Text>
+                        <Text style={styles.referrallink}>Referral code<Text style={styles.code}> {userDetails.referralId.orgReferralCode}</Text></Text>
                         <TouchableOpacity
                             onPress={toggleModal}
                             style={styles.copy}
@@ -101,7 +102,8 @@ const InviteReferral = ({ navigation }) => {
                         </View>
                         <View style={styles.lastcontainer}>
 
-                            <TouchableOpacity>
+                            <TouchableOpacity style={styles.copyicon}>
+                                <FontAwesome name="copy" size={24} color="black" />
                                 <Text style={styles.modalText}>Copy Link</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={toggleModal}>
@@ -230,6 +232,11 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingVertical: 25,
         paddingHorizontal: 30,
-
+    },
+    copyicon: {
+        flexDirection: 'row',
+        gap: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 })

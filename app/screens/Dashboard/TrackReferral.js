@@ -16,11 +16,11 @@ const TrackReferral = ({ navigation }) => {
             <Text style={styles.texthead}>Number of Referral that created a RYDEPRO Account using your code</Text>
             <View style={styles.subcontainer}>
                 <Text style={styles.type}>Individual</Text>
-                <Text style={styles.num}>20</Text>
+                <Text style={styles.num}>0</Text>
             </View>
             <View style={styles.subcontainer}>
                 <Text style={styles.type}>Company</Text>
-                <Text style={styles.num}>5</Text>
+                <Text style={styles.num}>0</Text>
             </View>
         </SafeAreaView>
     )

@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 const MenuLanding = ({ navigation }) => {
   const [showReferral, setShowReferral] = useState(false);
@@ -20,39 +21,39 @@ const MenuLanding = ({ navigation }) => {
     setModalVisible(!modalVisible);
   }
 
+  useFocusEffect(
+    React.useCallback(() => { // This function helps to avoid the infinite loop of useEffect
+      const fetchUserDetails = async () => {
+        setLoading(true);
+        try {
+          const token = await AsyncStorage.getItem('userToken');
+          if (!token) {
+            Alert.alert('Error', 'Authorization token not found.');
+            return;
+          }
+          const response = await axios.get('https://api-auth.katabenterprises.com/api/dashboard/rider/details', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
-  useEffect(() => {
-    setLoading(true);
-    const fetchUserDetails = async () => {
-      try {
-        const token = await AsyncStorage.getItem('userToken');
-        if (!token) {
-          Alert.alert('Error', 'Authorization token not found.');
-          return;
-        }
-        const response = await axios.get('https://api-auth.katabenterprises.com/api/dashboard/rider/details', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.data.success) {
-          setUserDetails(response.data.data);
+          if (response.data.success) {
+            setUserDetails(response.data.data);
+          } else {
+            Alert.alert('Error', 'Failed to fetch user details.');
+          }
+        } catch (error) {
+          console.error('Error fetching user details:', error);
+          Alert.alert('Error', 'An error occurred while fetching user details.');
+        } finally {
           setLoading(false);
-        } else {
-          setLoading(false);
-          Alert.alert('Error', 'Failed to fetch user details.');
-
         }
-      } catch (error) {
-        console.error('Error fetching user details:', error);
-        setLoading(false);
-        Alert.alert('Error', 'An error occurred while fetching user details.');
-      }
-    };
+      };
 
-    fetchUserDetails();
-  }, []);
+      fetchUserDetails();
+    }, [])
+  );
+
 
   if (loading) {
     return (
@@ -69,7 +70,7 @@ const MenuLanding = ({ navigation }) => {
         <TouchableOpacity style={styles.nameContainer} onPress={() => navigation.navigate('Account', { userDetails })}>
           <View style={styles.Img}>
             <Image source={ userDetails?.profilePic ? { uri: userDetails.profilePic } :require('../../assets/Userpic.png')}
-              style={{ width: 80, height: 80, borderRadius: 50 }} // Set appropriate styles for the image
+              style={{ width: 80, height: 80, borderRadius: 50 }} 
             />
           </View>
           <View style={styles.namContainer}>
@@ -122,7 +123,7 @@ const MenuLanding = ({ navigation }) => {
                 <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.navigate('InviteReferral')}
+                onPress={() => navigation.navigate('InviteReferral', { userDetails })}
                 style={styles.detailsrow2}>
                 <Text style={[styles.detailname, { color: '#464646', fontSize: 15 }]}>Invite Referral</Text>
                 <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />

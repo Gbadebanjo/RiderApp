@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, Text, Image, SafeAreaView, ActivityIndicator, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, Image, SafeAreaView, Alert } from 'react-native';
 import Centerlogo from '../../components/centerlogo';
 import StyledButton from '../../components/StyledButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,34 +7,39 @@ import axios from 'axios';
 
 export default function ReviewPhoto({ navigation, route }) {
   const { photo, facing } = route.params;
-  
-  const handleSubmit = () => {
-    const token =  AsyncStorage.getItem('userToken');
-    console.log('Token:', token);
-    const formData = new FormData();  
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    const token = await AsyncStorage.getItem('userToken');
+    const formData = new FormData();
     formData.append('image', {
       uri: photo.uri,
-      name: 'profile.jpg', // You can adjust the file name and type if needed
-      type: 'image/jpeg',  // Use the appropriate MIME type
+      name: 'profile.jpg',
+      type: 'image/jpeg',
     });
 
-    try{
-      const response = axios.put('https://api-auth.katabenterprises.com/api/dashboard/rider/upload-profile-image', formData, {
+    try {
+      const response = await axios.put('https://api-auth.katabenterprises.com/api/dashboard/rider/upload-profile-image', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log('Photo upload response:', response);
       if (response.data) {
-        Alert.alert('Success', 'Photo uploaded successfully');
+        Alert.alert('Success', response.data.data.message);
+        navigation.navigate('MenuLanding');
       } else {
         Alert.alert('Error', 'Failed to upload photo');
+        navigation.goBack();
       }
     }
     catch (error) {
       console.error('Error uploading photo:', error);
       Alert.alert('Error', 'An error occurred while uploading photo.');
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -42,7 +47,7 @@ export default function ReviewPhoto({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.overlayContainer}>
         <View style={styles.imageContainer}>
-        <Image
+          <Image
             source={{ uri: photo.uri }}
             style={[
               styles.capturedImage,
@@ -56,6 +61,7 @@ export default function ReviewPhoto({ navigation, route }) {
           <View style={styles.buttonContainer}>
             <StyledButton
               title="Submit"
+              loading={loading}
               onPress={handleSubmit}
               width="100%"
               height={50}

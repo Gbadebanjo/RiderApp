@@ -19,6 +19,7 @@ const Account = ({ navigation, route }) => {
   const [isProfilePicHidden, setIsProfilePicHidden] = useState(false); // State to manage profile picture visibility
   const slideAnim = useRef(new Animated.Value(300)).current; // Initial value for sliding animation
   const { userDetails } = route.params;
+  console.log('userDetails:', userDetails);
 
   const toggleNameDetails = () => {
     setShowName(!showName);
@@ -124,13 +125,13 @@ const Account = ({ navigation, route }) => {
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Emergency Contact</Text>
-            <Text style={styles.nametext}>{userDetails?.emergencyContact ? emergencyContact : "Nil"}</Text>
+            <Text style={styles.nametext}>{userDetails?.emergencyContact ? userDetails.emergencyContact : "Nil"}</Text>
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Emergency Number</Text>
-            <Text style={styles.nametext}>{userDetails?.emergencyNumber ? emergencyNumber : "Nil"}</Text>
+            <Text style={styles.nametext}>{userDetails?.emergencyPhoneNumber ? userDetails.emergencyPhoneNumber : "Nil"}</Text>
           </View>
         </View>
       </ScrollView>
