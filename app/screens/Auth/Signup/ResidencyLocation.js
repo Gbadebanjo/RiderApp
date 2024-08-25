@@ -18,7 +18,10 @@ const validationSchema = yup.object().shape({
     zipcode: yup.string().optional(),
 });
 
-export default function ResidencyLocation({navigation}) {
+export default function ResidencyLocation({navigation, route}) {
+  const { userDetails } = route.params;
+
+  console.log(userDetails);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -130,7 +133,6 @@ export default function ResidencyLocation({navigation}) {
           </>
         )}
       </Formik>
-
       </ScrollView>
     </SafeAreaView>
   );

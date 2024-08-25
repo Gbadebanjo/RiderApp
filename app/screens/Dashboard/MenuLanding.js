@@ -22,7 +22,7 @@ const MenuLanding = ({ navigation }) => {
   }
 
   useFocusEffect(
-    React.useCallback(() => { // This function helps to avoid the infinite loop of useEffect
+    React.useCallback(() => { 
       const fetchUserDetails = async () => {
         setLoading(true);
         try {
@@ -36,9 +36,15 @@ const MenuLanding = ({ navigation }) => {
               Authorization: `Bearer ${token}`,
             },
           });
-
+  
           if (response.data.success) {
-            setUserDetails(response.data.data);
+            const userDetails = response.data.data;
+            // console.log(userDetails);
+            setUserDetails(userDetails);
+  
+            if (userDetails.firstName === null || userDetails.lastName === null) {
+              navigation.navigate('UserDetails', { email: userDetails.email});
+            }
           } else {
             Alert.alert('Error', 'Failed to fetch user details.');
           }
@@ -49,7 +55,7 @@ const MenuLanding = ({ navigation }) => {
           setLoading(false);
         }
       };
-
+  
       fetchUserDetails();
     }, [])
   );

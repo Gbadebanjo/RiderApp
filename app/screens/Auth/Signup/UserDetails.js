@@ -54,8 +54,7 @@ export default function UserDetails({navigation, route}) {
             }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-        navigation.navigate('ResidencyLocation');
-        // alert('Details updated');
+          navigation.navigate('ResidencyLocation', { userDetails: values });
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
