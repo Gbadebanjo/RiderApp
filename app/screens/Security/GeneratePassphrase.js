@@ -1,10 +1,44 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, TextInput} from 'react-native';
+import React, { useState, useEffect} from 'react';
+import api from '../../api/auth'
+import { StyleSheet, Text, View, StatusBar, TextInput, Alert, Keyboard} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../components/BackButton';
 import StyledButton from '../../components/StyledButton';
+import { generate, count } from "random-words";
 
-export default function GeneratePassphrase({navigation}) {
+export default function GeneratePassphrase({navigation, route}) {
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [passPhrase, setPassPhrase] = useState('');
+    const { email } = route.params;
+
+    useEffect(() => {
+        const words = generate({ exactly: 12, join: " " });
+        setPassPhrase(words);
+    }, []);
+
+    const handleSave = async () => {
+        setLoading(true);
+
+        try {
+            const response = await api.createPassphrase(email, passPhrase);
+            Keyboard.dismiss();
+            
+            if (!response.ok) {
+                setLoading(false);
+                const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+                Alert.alert(errorMessage);
+                return setErrorMessage(errorMessage);
+            }
+            setLoading(false);
+            Alert.alert(response.data.message);
+            return navigation.navigate('Feedback');
+        } catch (error) {
+            console.error("API call error:", error);
+            setLoading(false);
+            Alert.alert("An error occurred. Please try again.");
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -16,19 +50,27 @@ export default function GeneratePassphrase({navigation}) {
             <Text style={styles.subTitle}>Passphrase is a sequence of words or phrases used as a password, which is typically longer and more secure than a single-word password</Text>  
             <View style={styles.mainContent}>
 
+            {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
+
                 <View style={styles.generateContainer}>
                     <Text style={styles.generateText}>Auto Generate Passphrase</Text>
 
                     <TextInput
                         style={styles.textInput}
                         multiline={true}
-                        textAlignVertical="top"
+                        textAlignVertical="center"
+                        value={passPhrase}
+                        editable={false}
+                        selectTextOnFocus={true}
+                        onChangeText={setPassPhrase}
                     />
 
                     <StyledButton
                         title="Save"
-                        onPress={() => navigation.navigate('Feedback')}
+                        onPress={handleSave}
+                        // onPress={()=>alert('Gooo')}
                         width="100%"
+                        loading={loading}
                         height={53}
                         paddingVertical={10}
                         marginTop={20}
@@ -39,7 +81,6 @@ export default function GeneratePassphrase({navigation}) {
                     />
                     
                 </View>
-
             </View>        
     </SafeAreaView>
     );
@@ -90,5 +131,11 @@ const styles = StyleSheet.create({
         width: '100%',
         borderRadius: 8,
         padding: 10,
-      }
+    },
+      bigerrorText: {
+        fontSize: 18,
+        color: 'red',
+        // marginTop: 10,
+        alignSelf: 'center',
+    },
 });

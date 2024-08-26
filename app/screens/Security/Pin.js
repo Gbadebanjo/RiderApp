@@ -1,5 +1,6 @@
 import React, {useRef, useState} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
+import api from '../../api/auth'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../components/BackButton';
 import StyledButton from '../../components/StyledButton';
@@ -17,13 +18,33 @@ const validationSchema = yup.object().shape({
   
 const CELL_COUNT = 4;
 
-export default function Pin({navigation}) {
+export default function Pin({navigation, route}) {
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
       value,
       setValue,
     });
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const { email } = route.params;
+
+    const handleSave = async (values) => {
+        setLoading(true);
+    
+        console.log(values.code);
+        const response = await api.createPincode(email, values.code);
+        Keyboard.dismiss();
+        if (!response.ok) {
+          setLoading(false);
+          Alert.alert(response.data.message);
+          return setErrorMessage(response.data.message);
+        }
+    
+        setLoading(false);
+        Alert.alert(response.data.message);
+        return navigation.navigate('Feedback');
+      }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -38,18 +59,16 @@ export default function Pin({navigation}) {
                 </TouchableOpacity>
             </View>  
             <Text style={styles.subTitle}>Create a 4 Digit pin</Text>  
-            <View style={styles.mainContent}>
 
+            {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
+
+            <View style={styles.mainContent}>
                 <View>
                     <Text style={styles.subTitle}>New Pincode</Text>  
                     <Formik
                         initialValues={{ code: '' }}
                         validationSchema={validationSchema}
-                        onSubmit={(values) => {
-                        navigation.navigate('Feedback', { 
-                            pin: values.pin,
-                        });
-                        }}
+                        onSubmit={handleSave}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                         <>
@@ -83,11 +102,10 @@ export default function Pin({navigation}) {
                     </Formik>
                 </View>
 
-                   
-
                 <StyledButton
                     title="Save"
-                    onPress={() => navigation.navigate('Feedback')}
+                    loading={loading}
+                    onPress={handleSave}
                     width="100%"
                     height={53}
                     paddingVertical={10}
@@ -125,13 +143,16 @@ const styles = StyleSheet.create({
     subTitle: {
         fontSize: 16,
         fontWeight: '500',
-        // alignSelf: 'flex-start',
+    },
+    bigerrorText: {
+        fontSize: 18,
+        color: 'red',
+        marginTop: 10,
+        alignSelf: 'center',
     },
     mainContent: {
-        // flex: 1,
         marginTop: 50,
         width: '100%',
-        // justifyContent: 'space-around',
     },
     logoText:{
         fontSize: 18,
