@@ -22,7 +22,7 @@ const MenuLanding = ({ navigation }) => {
   }
 
   useFocusEffect(
-    React.useCallback(() => { // This function helps to avoid the infinite loop of useEffect
+    React.useCallback(() => { 
       const fetchUserDetails = async () => {
         try {
           setLoading(true);
