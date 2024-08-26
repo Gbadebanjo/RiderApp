@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-nativ
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React from 'react'
 import BackButton from '../../components/BackButton';
-import { Entypo, MaterialCommunityIcons, AntDesign, Ionicons, FontAwesome, Octicons } from '@expo/vector-icons';
+import { Entypo, MaterialCommunityIcons, Ionicons, Octicons } from '@expo/vector-icons';
 
 export default function Settings({ navigation }) {
     return (
@@ -10,7 +10,7 @@ export default function Settings({ navigation }) {
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
             <View style={styles.titleContainer}>
                 <BackButton style={styles.Icon} />
-                <Text style={styles.title}>Security</Text>
+                <Text style={styles.title}>Settings</Text>
                 <TouchableOpacity
                     style={styles.Icon}
                     onPress={() => navigation.goBack()}>

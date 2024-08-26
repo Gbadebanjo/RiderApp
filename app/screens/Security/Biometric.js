@@ -18,7 +18,7 @@ export default function Biometric({navigation}) {
                 <Text style={styles.title}>Biometric</Text>
                 <TouchableOpacity
                     style={styles.Icon}
-                    onPress={() => navigation.navigate()}>
+                    onPress={() => navigation.navigate('SettingToggle')}>
                     <Entypo name="dots-three-vertical" size={18} />
                 </TouchableOpacity>
             </View>  
