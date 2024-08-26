@@ -2,10 +2,10 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIn
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, Entypo, FontAwesome6, FontAwesome5, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useState, useEffect } from 'react'
-import axios from 'axios';
+import React, { useState } from 'react';
 import { Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { dashboardClient, setAuthToken } from '../../api/client';
 
 const MenuLanding = ({ navigation }) => {
   const [showReferral, setShowReferral] = useState(false);
@@ -24,41 +24,30 @@ const MenuLanding = ({ navigation }) => {
   useFocusEffect(
     React.useCallback(() => { 
       const fetchUserDetails = async () => {
-        setLoading(true);
         try {
+          setLoading(true);
           const token = await AsyncStorage.getItem('userToken');
           if (!token) {
             Alert.alert('Error', 'Authorization token not found.');
             return;
           }
-          const response = await axios.get('https://api-auth.katabenterprises.com/api/dashboard/rider/details', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-  
-          if (response.data.success) {
-            const userDetails = response.data.data;
-            setUserDetails(userDetails);
-  
-            // if (userDetails.firstName === null || userDetails.lastName === null) {
-            //   navigation.navigate('UserDetails', { email: userDetails.email});
-            // }
+
+          setAuthToken(token);
+          const response = await dashboardClient.get('/details');
+          if (response.ok) {
+            setUserDetails(response.data.data);
           } else {
             Alert.alert('Error', 'Failed to fetch user details.');
           }
         } catch (error) {
-          console.error('Error fetching user details:', error);
           Alert.alert('Error', 'An error occurred while fetching user details.');
         } finally {
           setLoading(false);
         }
       };
-  
       fetchUserDetails();
     }, [])
   );
-
 
   if (loading) {
     return (
@@ -74,8 +63,8 @@ const MenuLanding = ({ navigation }) => {
         <Text style={styles.head}>Menu</Text>
         <TouchableOpacity style={styles.nameContainer} onPress={() => navigation.navigate('Account', { userDetails })}>
           <View style={styles.Img}>
-            <Image source={ userDetails?.profilePic ? { uri: userDetails.profilePic } :require('../../assets/Userpic.png')}
-              style={{ width: 80, height: 80, borderRadius: 50 }} 
+            <Image source={userDetails?.profilePic ? { uri: userDetails.profilePic } : require('../../assets/Userpic.png')}
+              style={{ width: 80, height: 80, borderRadius: 50 }}
             />
           </View>
           <View style={styles.namContainer}>

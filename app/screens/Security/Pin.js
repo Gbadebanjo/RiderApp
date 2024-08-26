@@ -54,7 +54,7 @@ export default function Pin({navigation, route}) {
                 <Text style={styles.title}>Pin</Text>
                 <TouchableOpacity
                     style={styles.Icon}
-                    onPress={() => navigation.navigate()}>
+                    onPress={() => navigation.navigate('SettingToggle')}>
                     <Entypo name="dots-three-vertical" size={18} />
                 </TouchableOpacity>
             </View>  

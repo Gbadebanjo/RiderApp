@@ -19,6 +19,7 @@ import Passphrase from './app/screens/Security/Passphrase';
 import CreatePassphrase from './app/screens/Security/CreatePassphrase';
 import GeneratePassphrase from './app/screens/Security/GeneratePassphrase';
 import Pin from './app/screens/Security/Pin';
+import SettingToggle from './app/screens/Security/SettingToggle';
 import Feedback from './app/screens/Feedback/Feedback';
 import ThankYou from './app/screens/Feedback/ThankYou';
 import Photo from './app/screens/Dashboard/Photo';
@@ -50,6 +51,7 @@ export default function App() {
       <Stack.Screen name='UserDetails' component={UserDetails} options={{ headerShown: false }}/>
       <Stack.Screen name='ResidencyLocation' component={ResidencyLocation} options={{ headerShown: false }}/>
       <Stack.Screen name='Security' component={Security} options={{ headerShown: false }}/>
+      <Stack.Screen name='SettingToggle' component={SettingToggle} options={{ headerShown: false }}/>
       <Stack.Screen name='Biometric' component={Biometric} options={{ headerShown: false }}/>
       <Stack.Screen name='FacialID' component={FacialID} options={{ headerShown: false }}/>
       <Stack.Screen name='Passphrase' component={Passphrase} options={{ headerShown: false }}/>
