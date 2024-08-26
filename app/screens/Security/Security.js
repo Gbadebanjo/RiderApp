@@ -5,13 +5,9 @@ import BackButton from '../../components/BackButton';
 import { Entypo } from '@expo/vector-icons';
 import { MaterialCommunityIcons, AntDesign, Ionicons, FontAwesome } from '@expo/vector-icons';
 
-const Biometric = require('../../assets/finger-scan.png');
-const FacialID = require('../../assets/scanning.png');
-const Passphrase = require('../../assets/passphrase.png');
-const Pin = require('../../assets/pin.png');
-const LockAccount = require('../../assets/lock-slash.png');
-
-export default function Security({navigation}) {
+export default function Security({navigation, route}) {
+    const { email } = route.params;
+    // console.log(email)
 
     return (
         <SafeAreaView style={styles.container}>
@@ -48,7 +44,7 @@ export default function Security({navigation}) {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('Passphrase')}
+                    onPress={() => navigation.navigate('Passphrase', { email })}
                     >
                     <MaterialCommunityIcons name="line-scan" size={25} color='black' />
                     <View style={styles.iconText}>
@@ -58,7 +54,7 @@ export default function Security({navigation}) {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('Pin')}
+                    onPress={() => navigation.navigate('Pin' , { email })}
                     >
                     <FontAwesome name="user-secret" size={25} color='black' />
                     <View style={styles.iconText}>

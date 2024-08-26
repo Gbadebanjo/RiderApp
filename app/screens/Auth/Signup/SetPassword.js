@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import passwordApi from './../../../api/auth'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ActivityIndicator, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ActivityIndicator, Keyboard, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../../components/BackButton';
 import InputField from '../../../components/InputField';
@@ -51,7 +51,7 @@ export default function SetPassword({navigation, route}) {
       navigation.navigate('UserDetails', { 
         email: email,
       });
-      alert(response.data.message);
+      Alert.alert(response.data.message);
     }
 
     return (
@@ -101,13 +101,8 @@ export default function SetPassword({navigation, route}) {
               />
 
               <StyledButton
-                title={
-                  loading ? (
-                    <ActivityIndicator color="#fff"/>
-                  ) : (
-                    'Confirm'
-                  )
-                }
+                title='Confirm'
+                loading={loading}
                 onPress={handleSubmit}
                 width="100%"
                 height={53}

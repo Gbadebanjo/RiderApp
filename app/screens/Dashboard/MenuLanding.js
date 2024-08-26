@@ -39,12 +39,11 @@ const MenuLanding = ({ navigation }) => {
   
           if (response.data.success) {
             const userDetails = response.data.data;
-            // console.log(userDetails);
             setUserDetails(userDetails);
   
-            if (userDetails.firstName === null || userDetails.lastName === null) {
-              navigation.navigate('UserDetails', { email: userDetails.email});
-            }
+            // if (userDetails.firstName === null || userDetails.lastName === null) {
+            //   navigation.navigate('UserDetails', { email: userDetails.email});
+            // }
           } else {
             Alert.alert('Error', 'Failed to fetch user details.');
           }

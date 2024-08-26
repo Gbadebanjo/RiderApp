@@ -2,7 +2,6 @@
 import React, {useState} from 'react';
 import otpApi from './../../../api/auth'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ActivityIndicator, Keyboard } from 'react-native';
-import { MaterialCommunityIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../../components/StyledButton';
 import InputField from '../../../components/InputField';
@@ -27,13 +26,17 @@ export default function CreateAccount({navigation}) {
 
   const handleSubmit = async (values) => {
     setLoading(true);
-    setError(false);
     const response = await otpApi.getOtp(values.email);
-    console.log(response.data)
     if (!response.ok) {
       setLoading(false);
       setError(true);
-      return alert(response.data.message);
+
+      // if (response.data.data?.message) {
+      //   console.log(response.data.data.message)
+      //   return alert('Please check your email address and try again')
+      // }
+      const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+      return alert(errorMessage);
     }
     setLoading(false);
     alert(response.data.message);
