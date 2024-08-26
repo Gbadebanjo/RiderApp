@@ -17,7 +17,7 @@ export default function FacialID({navigation}) {
                 <Text style={styles.title}>Facial ID</Text>
                 <TouchableOpacity
                     style={styles.Icon}
-                    onPress={() => navigation.navigate()}>
+                    onPress={() => navigation.navigate('SettingToggle')}>
                     <Entypo name="dots-three-vertical" size={18} />
                 </TouchableOpacity>
             </View>  
