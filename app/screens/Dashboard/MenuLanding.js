@@ -7,6 +7,7 @@ import { Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { dashboardClient, setAuthToken } from '../../api/client';
 
+
 const MenuLanding = ({ navigation }) => {
   const [showReferral, setShowReferral] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -36,6 +37,7 @@ const MenuLanding = ({ navigation }) => {
           console.log('Response:', response);
           if (response.ok) {
             setUserDetails(response.data.data);
+            await AsyncStorage.setItem('userDetails', JSON.stringify(response.data.data));
           } else {
             Alert.alert('Error', 'Failed to fetch user details.');
           }
