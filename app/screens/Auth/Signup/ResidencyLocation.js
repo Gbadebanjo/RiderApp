@@ -1,7 +1,8 @@
-// import { StatusBar } from 'expo-status-bar';
-import React, {useRef, useState, useEffect} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import api from '../../../api/auth'
+import { StyleSheet, Text, Keyboard, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import StyledButton from '../../../components/StyledButton';
 import Centerlogo from '../../../components/centerlogo';
 import { Formik } from 'formik';
@@ -9,7 +10,6 @@ import InputField from '../../../components/InputField';
 import SelectInput from '../../../components/SelectInput';
 import * as yup from 'yup'; 
 import BackButton from '../../../components/BackButton';
-// import axios from 'axios';
 
 const validationSchema = yup.object().shape({
     country: yup.string().required('Country is required'),
@@ -20,8 +20,57 @@ const validationSchema = yup.object().shape({
 
 export default function ResidencyLocation({navigation, route}) {
   const { userDetails } = route.params;
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [initialValues, setInitialValues] = useState({
+    country: '',
+    state: '',
+    city: '',
+    zipCode: '',
+  });
 
-  console.log(userDetails);
+  useEffect(() => {
+    const fetchLocationDetails = async () => {
+      try {
+        const locationDetails = await AsyncStorage.getItem('userLocation');
+        if (locationDetails) {
+          const parsedDetails = JSON.parse(locationDetails);
+          setInitialValues({
+            country: parsedDetails.country || '',
+            state: parsedDetails.state || '',
+            city: parsedDetails.city || '',
+            zipCode: parsedDetails.zipCode || '',
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch location details:', error);
+      }
+    };
+
+    fetchLocationDetails();
+  }, []);
+
+  const handleConfirm = async (values, { resetForm }) => {
+    setLoading(true);
+
+    const accountDetails = {
+      ...userDetails,
+      ...values
+    };
+
+    const response = await api.additionalInfo(accountDetails);
+    Keyboard.dismiss();
+    if (!response.ok) {
+      setLoading(false);
+      const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+      return setErrorMessage(errorMessage);
+    }
+
+    setLoading(false);
+    // resetForm();
+    alert(response.data.data.message);
+    navigation.navigate('Security', {email: userDetails.email});
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -30,32 +79,28 @@ export default function ResidencyLocation({navigation, route}) {
         <Centerlogo align="left"/>
         <Text style={styles.title}>Residency Location</Text>
 
+      {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
+
       <Formik
-        initialValues={{
-             country: '',
-             state: '',
-             city: '',
-             zipCode: '',
-            }}
+        initialValues={initialValues}
+        enableReinitialize
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-        navigation.navigate('Security');
-        // alert('Details updated');
-        }}
+        onSubmit={handleConfirm}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
            <>
             <SelectInput
                 label="Country"
                 items={[
-                    { label: 'United States', value: 'US' },
-                    { label: 'United Kingdom', value: 'UK' },
-                    { label: 'Nigeria', value: 'Nigeria' },
-                    { label: 'India', value: 'India' },
+                    { label: 'United States', value: 'us' },
+                    { label: 'United Kingdom', value: 'uk' },
+                    { label: 'Nigeria', value: 'nigeria' },
+                    { label: 'India', value: 'india' },
                 ]}
-                placeholder={{ label: 'Select Country', value: ""  }}
+                placeholder='Select Country'
                 onValueChange={handleChange('country')}
                 value={values.country}
+                initialValue={initialValues.country} 
                 width="100%"
                 error={errors.country}
             />
@@ -66,12 +111,13 @@ export default function ResidencyLocation({navigation, route}) {
             <SelectInput
                 label="State"
                 items={[
-                    { label: 'Lagos', value: 'Lagos' },
-                    { label: 'Ogun', value: 'Ogun' },
-                    { label: 'Elderly', value: 'elderly' },
+                    { label: 'Lagos', value: 'lagos' },
+                    { label: 'Ogun', value: 'ogun' },
+                    { label: 'Osun', value: 'osun' },
                     { label: 'Others', value: 'others' },
                 ]}
-                placeholder={{ label: 'Accessibility (Optional)', value: ""  }}
+                placeholder='Select State'
+                initialValue={initialValues.state} 
                 onValueChange={handleChange('state')}
                 value={values.state}
                 width="100%"
@@ -84,12 +130,13 @@ export default function ResidencyLocation({navigation, route}) {
             <SelectInput
                 label="City"
                 items={[
-                    { label: 'Service Dogs', value: 'serviceDogs' },
-                    { label: 'Wheel Chair', value: 'wheelChair' },
-                    { label: 'Elderly', value: 'elderly' },
+                    { label: 'Ikeja', value: 'ikeja' },
+                    { label: 'Lekki', value: 'lekki' },
+                    { label: 'Ibadan', value: 'ibadan' },
                     { label: 'Others', value: 'others' },
                 ]}
-                placeholder={{ label: 'Accessibility (Optional)', value: "" }}
+                placeholder='Select City'
+                initialValue={initialValues.city} 
                 onValueChange={handleChange('city')}
                 value={values.city}
                 width="100%"
@@ -111,8 +158,6 @@ export default function ResidencyLocation({navigation, route}) {
                 value={values.zipCode}
                 error={touched.zipCode && errors.zipCode}
                 errorMessage={errors.zipCode}
-                showPasswordToggle={true}
-                // marginLeft={20}
               />
              {touched.zipCode && errors.zipCode && (
                 <Text style={styles.errorText}>{errors.zipCode}</Text>
@@ -120,6 +165,7 @@ export default function ResidencyLocation({navigation, route}) {
 
             <StyledButton
                 title="Confirm"
+                loading={loading}
                 onPress={handleSubmit}
                 width="100%"
                 height={53}
@@ -168,7 +214,10 @@ const styles = StyleSheet.create({
     marginTop: 0,
     alignSelf: 'flex-start',
   },
-//   formContainer: {
-//     width: '100%',
-//   },
+  bigerrorText: {
+    fontSize: 18,
+    color: 'red',
+    marginTop: 10,
+    alignSelf: 'center',
+  },
 });

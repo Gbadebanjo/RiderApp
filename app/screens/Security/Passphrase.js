@@ -5,7 +5,9 @@ import BackButton from '../../components/BackButton';
 import StyledButton from '../../components/StyledButton';
 import { Entypo } from '@expo/vector-icons';
 
-export default function Passphrase({navigation}) {
+export default function Passphrase({navigation, route}) {
+    const { email } = route.params;
+    // console.log(email)
 
     return (
         <SafeAreaView style={styles.container}>
@@ -27,7 +29,7 @@ export default function Passphrase({navigation}) {
 
                     <StyledButton
                         title="Generate"
-                        onPress={() => navigation.navigate('GeneratePassphrase')}
+                        onPress={() => navigation.navigate('GeneratePassphrase', { email })}
                         width="100%"
                         height={53}
                         paddingVertical={10}
@@ -45,7 +47,7 @@ export default function Passphrase({navigation}) {
 
                     <StyledButton
                         title="Create"
-                        onPress={() => navigation.navigate('CreatePassphrase')}
+                        onPress={() => navigation.navigate('CreatePassphrase', { email })}
                         width="100%"
                         height={53}
                         paddingVertical={10}

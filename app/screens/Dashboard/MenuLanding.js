@@ -32,9 +32,9 @@ const MenuLanding = ({ navigation }) => {
             Alert.alert('Error', 'Authorization token not found.');
             return;
           }
+
           setAuthToken(token);
           const response = await dashboardClient.get('/details');
-          console.log('Response:', response);
           if (response.ok) {
             setUserDetails(response.data.data);
             await AsyncStorage.setItem('userDetails', JSON.stringify(response.data.data));
@@ -42,7 +42,6 @@ const MenuLanding = ({ navigation }) => {
             Alert.alert('Error', 'Failed to fetch user details.');
           }
         } catch (error) {
-          console.error('Error fetching user details:', error);
           Alert.alert('Error', 'An error occurred while fetching user details.');
         } finally {
           setLoading(false);

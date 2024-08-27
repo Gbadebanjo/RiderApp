@@ -1,7 +1,7 @@
 // import { StatusBar } from 'expo-status-bar';
 import React, {useRef, useState} from 'react';
 import otpApi from './../../../api/auth'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../../components/StyledButton';
 import Centerlogo from '../../../components/centerlogo';
@@ -37,29 +37,31 @@ export default function FirstScreen({navigation, route}) {
     const handleVerify = async (values, {resetForm}) => {
       setLoading(true);
       const response = await otpApi.verifyOtp(email, values.code);
-      console.log(response.data.message);
+      // console.log(response.data.message);
       Keyboard.dismiss();
       if (!response.ok) {
         setLoading(false);
         return setErrorMessage(response.data.message);
       }
-      resetForm(); 
+      resetForm();
+      alert(response.data.message);
       navigation.navigate('SetPassword', { 
         email: email,
       });
     }
 
     const handleResend = async () => {
-      // setLoading(true);
+      setLoading(true);
       const response = await otpApi.getOtp(email);
       console.log(response.data.message);
+
       if (!response.ok) {
-        // setLoading(false);
+        setLoading(false);
         return alert(response.data.message);
       }
+      setLoading(false);
       console.log(response.data.message);
       return alert(response.data.message);
-      // setLoading(false);
       // navigation.navigate('VerifySignup', { email: email });
     }
 
@@ -68,6 +70,7 @@ export default function FirstScreen({navigation, route}) {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <BackButton style={styles.Icon} />
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Centerlogo/>
       <Text style={styles.title}>Enter the 6-digit code</Text>
       <Text style={styles.subtitle}>Please check your email inbox or spam</Text>
@@ -88,7 +91,7 @@ export default function FirstScreen({navigation, route}) {
                 onChangeText={handleChange('code')}
                 cellCount={CELL_COUNT}
                 rootStyle={styles.codeFieldRoot}
-                keyboardType="number-pad"
+                keyboardType=""
                 textContentType="oneTimeCode"
                 onSubmitEditing={handleSubmit} 
                 renderCell={({ index, symbol, isFocused }) => (
@@ -129,6 +132,7 @@ export default function FirstScreen({navigation, route}) {
             <View style={styles.buttonContainer}>
                 <StyledButton
                     title="Resend Code"
+                    loading={loading}
                     onPress={handleResend}
                     width="50%"
                     height={40}
@@ -143,6 +147,7 @@ export default function FirstScreen({navigation, route}) {
                     title="Send SMS"
                     // onPress={alert('Send SMS')}
                     width="50%"
+                    loading={loading}
                     height={40}
                     fontSize={13}
                     paddingVertical={10}
@@ -160,6 +165,7 @@ export default function FirstScreen({navigation, route}) {
           Notice and can unsubscribe by emailing 
           <Text style={styles.boldText} onPress={() => alert('Privacy Notice clicked')}> "Unsubscribe" </Text>
       </Text>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -168,13 +174,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    width: '100%',
     paddingHorizontal: 30,
     paddingTop: 30,
   },
   Icon: {
     alignSelf: 'flex-start',
+  },
+  scrollContainer: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
   },
   logo: {
     width: '20%',
@@ -209,7 +218,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'red',
     marginTop: 10,
-    alignSelf: 'flex-center',
+    alignSelf: 'center',
   },
   loginText: {
     fontSize: 16,
@@ -225,8 +234,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#212121',
     width: '100%',
-    marginBottom: 20,
-  },
+    marginBottom: 30,
+    },
   buttonContainer:{
     width: '70%',
     flexDirection: 'row',

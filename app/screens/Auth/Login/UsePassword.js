@@ -47,14 +47,23 @@ export default function UsePassword({ navigation, route }) {
     Keyboard.dismiss();
     if (!response.ok) {
       setLoading(false);
-      return setErrorMessage(response.data.data.message);
+      const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+      return setErrorMessage(errorMessage);
+    }
+
+    if (response.data.data.isComplete === false) {
+      return navigation.navigate('UserDetails', { email })
+    }
+
+    if (Array.isArray(response.data.data.isSecured) && response.data.data.isSecured.length < 2) {
+      return navigation.navigate('Security', { email });
     }
 
     await AsyncStorage.setItem('userToken', response.data.data.token);
 
     setLoading(false);
-    //   resetForm();
-    navigation.navigate('MenuLanding');
+      resetForm();
+     return navigation.navigate('MenuLanding');
   }
 
   return (

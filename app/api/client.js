@@ -1,14 +1,3 @@
-// import {create} from 'apisauce';
-
-
-// const apiClient = create({
-//     baseURL: 'https://api-auth.katabenterprises.com/api/auth/rider'
-// })
-
-// export default apiClient;
-
-
-
 import { create } from 'apisauce';
 
 const authClient = create({
@@ -19,7 +8,6 @@ const authClient = create({
         'Expires': '0'
     }
 });
-
 const dashboardClient = create({
     baseURL: 'https://api-auth.katabenterprises.com/api/dashboard/rider',
     headers: {
