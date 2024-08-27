@@ -55,9 +55,7 @@ export default function UsePassword({ navigation, route }) {
       return navigation.navigate('UserDetails', { email })
     }
 
-    console.log(response.data.data.isSecured)
-
-    if (Array.isArray(response.data.data.isSecured) && response.data.data.isSecured.length < 3) {
+    if (Array.isArray(response.data.data.isSecured) && response.data.data.isSecured.length < 2) {
       return navigation.navigate('Security', { email });
     }
 

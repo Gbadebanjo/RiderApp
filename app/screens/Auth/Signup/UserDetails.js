@@ -127,7 +127,7 @@ export default function UserDetails({navigation, route}) {
                     { label: 'Elderly', value: 'elderly' },
                     { label: 'Others', value: 'others' },
                 ]}
-                placeholder={{ label: 'Accessibility (Optional)', value: null }}
+                placeholder='Accessibility (Optional)'
                 onValueChange={handleChange('accessibility')}
                 value={values.accessibility}
                 width="100%"

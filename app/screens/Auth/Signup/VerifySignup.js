@@ -37,7 +37,7 @@ export default function FirstScreen({navigation, route}) {
     const handleVerify = async (values, {resetForm}) => {
       setLoading(true);
       const response = await otpApi.verifyOtp(email, values.code);
-      console.log(response.data.message);
+      // console.log(response.data.message);
       Keyboard.dismiss();
       if (!response.ok) {
         setLoading(false);
