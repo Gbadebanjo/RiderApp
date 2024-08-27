@@ -8,7 +8,6 @@ const authClient = create({
         'Expires': '0'
     }
 });
-
 const dashboardClient = create({
     baseURL: 'https://api-auth.katabenterprises.com/api/dashboard/rider',
     headers: {

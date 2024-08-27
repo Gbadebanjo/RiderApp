@@ -3,15 +3,16 @@ import { StyleSheet, View, Text } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { AntDesign } from '@expo/vector-icons';
 
-const SelectInput = ({ label, items, placeholder, onValueChange, width }) => {
+const SelectInput = ({ label, items, initialValue, placeholder, value, onValueChange, width }) => {
     const [isFocused, setIsFocused] = useState(false);
 
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
       <RNPickerSelect
-        placeholder={placeholder}
+         placeholder={{ label: initialValue || placeholder, value: initialValue || "" }}
         items={items}
+        value={value}
         onValueChange={onValueChange}
         style={{
           iconContainer: {...styles.iconContainer, right: width === '90%' ? '10%' : '5%'} ,
