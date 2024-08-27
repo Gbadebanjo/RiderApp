@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { FontAwesome, Entypo, Ionicons, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Account = ({ navigation, route }) => {
   const [showName, setShowName] = useState(false);
@@ -19,6 +20,7 @@ const Account = ({ navigation, route }) => {
   const [isProfilePicHidden, setIsProfilePicHidden] = useState(false); // State to manage profile picture visibility
   const slideAnim = useRef(new Animated.Value(300)).current; // Initial value for sliding animation
   const { userDetails } = route.params;
+  // const userDetails = JSON.parse( AsyncStorage.getItem('userDetails'));
   console.log('userDetails:', userDetails);
 
   const toggleNameDetails = () => {

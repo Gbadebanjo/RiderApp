@@ -66,11 +66,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#fff',
         paddingHorizontal: 20,
-        width: '100%',
     },
     titleContainer: {
         marginTop: 30,
-        width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 20,

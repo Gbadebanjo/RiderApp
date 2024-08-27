@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Modal, Animated, Easing, } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Modal, Animated, Easing, Alert, Linking } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useRef } from 'react';
-import { FontAwesome, Ionicons, Feather } from '@expo/vector-icons';
+import { FontAwesome, Ionicons, Fontisto } from '@expo/vector-icons';
+import * as Clipboard from 'expo-clipboard';
 
 const InviteReferral = ({ navigation, route }) => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -19,6 +20,27 @@ const InviteReferral = ({ navigation, route }) => {
             }).start();
         }
     };
+
+    const copyToClipboard = async (text) => {
+        await Clipboard.setStringAsync(text);
+        Alert.alert('Copied to Clipboard!', `${text} has been copied to your clipboard.`);
+        toggleModal();
+    };
+
+    const openSocialMedia = async (urlScheme, fallbackUrl) => {
+        try {
+            const supported = await Linking.canOpenURL(urlScheme);
+            if (supported) {
+                await Linking.openURL(urlScheme);
+            } else {
+                await Linking.openURL(fallbackUrl);
+            }
+        } catch (error) {
+            console.error('An error occurred', error);
+            Alert.alert('Error', 'Unable to open this link.');
+        }
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -79,30 +101,56 @@ const InviteReferral = ({ navigation, route }) => {
                     >
                         <Text style={styles.modalTitle}>Share</Text>
                         <View style={styles.iconcontainer}>
-                            <TouchableOpacity style={styles.eachicon}>
+                            <TouchableOpacity style={styles.eachicon} onPress={() => openSocialMedia('mailto:?subject=Check%20this%20out&body=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.individualReferralCode)}>
                                 <FontAwesome name="envelope" size={24} color="black" />
                                 <Text style={styles.modalText}>Email</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.eachicon}>
+                            <TouchableOpacity
+                                style={styles.eachicon}
+                                onPress={() => openSocialMedia(
+                                    'whatsapp://send?text=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.individualReferralCode,
+                                    'https://web.whatsapp.com/send?text=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.individualReferralCode
+                                )}
+                            >
                                 <FontAwesome name="whatsapp" size={24} color="black" />
-                                <Text style={styles.modalText}>Whatsapp</Text>
+                                <Text style={styles.modalText}>WhatsApp</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.eachicon}>
-                                <FontAwesome name="x" size={24} color="black" />
+
+                            <TouchableOpacity
+                                style={styles.eachicon}
+                                onPress={() => openSocialMedia(
+                                    'twitter://post?message=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.individualReferralCode,
+                                    'https://twitter.com/intent/tweet?text=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.individualReferralCode
+                                )}
+                            >
+                                <Fontisto name="twitter" size={24} color="black" />
                                 <Text style={styles.modalText}>X</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.eachicon}>
+
+                            <TouchableOpacity
+                                style={styles.eachicon}
+                                onPress={() => openSocialMedia(
+                                    'fb://page/123456789',
+                                    'https://www.facebook.com/yourpage'
+                                )}
+                            >
                                 <FontAwesome name="facebook" size={24} color="black" />
                                 <Text style={styles.modalText}>Facebook</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.eachicon}>
-                                <FontAwesome name="Apple" size={24} color="black" />
+
+                            <TouchableOpacity
+                                style={styles.eachicon}
+                                onPress={() => openSocialMedia(
+                                    'apple://',
+                                    'https://www.apple.com'
+                                )}
+                            >
+                                <FontAwesome name="apple" size={24} color="black" />
                                 <Text style={styles.modalText}>Apple</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.lastcontainer}>
-
-                            <TouchableOpacity style={styles.copyicon}>
+                            <TouchableOpacity style={styles.copyicon} onPress={() => copyToClipboard('https://yourapp.com/referral?code=' + userDetails.referralId.individualReferralCode)}>
                                 <FontAwesome name="copy" size={24} color="black" />
                                 <Text style={styles.modalText}>Copy Link</Text>
                             </TouchableOpacity>
@@ -230,7 +278,7 @@ const styles = StyleSheet.create({
     lastcontainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingVertical: 25,
+        paddingVertical: 30,
         paddingHorizontal: 30,
     },
     copyicon: {
