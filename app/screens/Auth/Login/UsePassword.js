@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import passwordApi from '../../../api/auth'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ActivityIndicator, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../../components/BackButton';
 import InputField from '../../../components/InputField';
@@ -51,6 +51,9 @@ export default function UsePassword({ navigation, route }) {
       return setErrorMessage(errorMessage);
     }
 
+    await AsyncStorage.setItem('userToken', response.data.data.token);
+    await AsyncStorage.setItem('email', email);
+
     if (response.data.data.isComplete === false) {
       return navigation.navigate('UserDetails', { email })
     }
@@ -59,9 +62,7 @@ export default function UsePassword({ navigation, route }) {
       return navigation.navigate('Security', { email });
     }
 
-    await AsyncStorage.setItem('userToken', response.data.data.token);
-
-    setLoading(false);
+      setLoading(false);
       resetForm();
      return navigation.navigate('MenuLanding');
   }

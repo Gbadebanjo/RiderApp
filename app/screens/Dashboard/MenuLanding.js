@@ -22,6 +22,15 @@ const MenuLanding = ({ navigation }) => {
     setModalVisible(!modalVisible);
   }
 
+  const logout = async () => {
+    try {
+      await AsyncStorage.clear();
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   useFocusEffect(
     React.useCallback(() => { 
       const fetchUserDetails = async () => {
@@ -138,7 +147,7 @@ const MenuLanding = ({ navigation }) => {
             <Text style={[styles.detailname, { color: '#464646' }]}>Legal</Text>
             <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.detailsrow}>
+          <TouchableOpacity style={styles.detailsrow} onPress={logout}>
             <MaterialCommunityIcons name="logout" size={22} color="#212121" />
             <Text style={[styles.detailname, { borderBottomWidth: 0, color: '#464646' }]}>Logout</Text>
             <Entypo name="chevron-thin-right" size={14} color="#98A0B3" />

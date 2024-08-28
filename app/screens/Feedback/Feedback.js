@@ -90,14 +90,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    marginTop: 40,
+    marginTop: 30,
     fontWeight: '700',
     alignSelf: 'center',
     marginBottom: 10,
   },
   subTitle: {
     fontSize: 14,
-    marginTop: 40,
+    marginTop: 30,
     alignSelf: 'center',
     textAlign: 'center',
     width: '90%',

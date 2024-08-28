@@ -65,6 +65,8 @@ export default function ResidencyLocation({navigation, route}) {
       const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
       return setErrorMessage(errorMessage);
     }
+    console.log(response.data.data);
+    await AsyncStorage.setItem('userToken', response.data.data.token);
 
     setLoading(false);
     // resetForm();

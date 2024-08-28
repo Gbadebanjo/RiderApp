@@ -25,8 +25,8 @@ export default function Login({navigation}) {
           </View>
 
           <View style={styles.socialsLogo2}>
-            <SocialLogo text="Pincode" onPress={()=> navigation.navigate('Pin')} logo={<Ionicons name="key-outline" size={30} color='#0B6703' />}/>
-            <SocialLogo text="Passphrase" onPress={()=> navigation.navigate('Passphrase')} logo={<MaterialCommunityIcons name="line-scan" size={30} color='black' />}/>
+            <SocialLogo text="Pincode" onPress={()=> navigation.navigate('UsePincode')} logo={<Ionicons name="key-outline" size={30} color='#0B6703' />}/>
+            <SocialLogo text="Passphrase" onPress={()=> navigation.navigate('UsePassphrase')} logo={<MaterialCommunityIcons name="line-scan" size={30} color='black' />}/>
           </View>
 
           <TouchableOpacity onPress={() => alert('Account Recovery')}>

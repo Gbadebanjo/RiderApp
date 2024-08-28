@@ -7,6 +7,8 @@ import FirstScreen from './app/screens/Auth/Signup/FirstScreen';
 import CreateAccount from './app/screens/Auth/Signup/CreateAccount';
 import Login from './app/screens/Auth/Login/Login';
 import UsePassword from './app/screens/Auth/Login/UsePassword';
+import UsePassphrase from './app/screens/Auth/Login/UsePassphrase';
+import UsePincode from './app/screens/Auth/Login/UsePincode';
 import WelcomeGuest from './app/screens/Auth/Signup/WelcomeGuest';
 import VerifySignup from './app/screens/Auth/Signup/VerifySignup';
 import SetPassword from './app/screens/Auth/Signup/SetPassword';
@@ -45,6 +47,8 @@ export default function App() {
       <Stack.Screen name='CreateAccount' component={CreateAccount} options={{ headerShown: false }}/>
       <Stack.Screen name='Login' component={Login} options={{ headerShown: false }}/>
       <Stack.Screen name='UsePassword' component={UsePassword} options={{ headerShown: false }}/>
+      <Stack.Screen name='UsePassphrase' component={UsePassphrase} options={{ headerShown: false }}/>
+      <Stack.Screen name='UsePincode' component={UsePincode} options={{ headerShown: false }}/>
       <Stack.Screen name='VerifySignup' component={VerifySignup} options={{ headerShown: false }}/>
       <Stack.Screen name='SetPassword' component={SetPassword} options={{ headerShown: false }}/>
       <Stack.Screen name='MenuLanding' component={NavButtons} options={{ headerShown: false }}/>

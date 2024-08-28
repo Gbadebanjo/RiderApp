@@ -1,13 +1,26 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackButton from '../../components/BackButton';
 import { Entypo } from '@expo/vector-icons';
 import { MaterialCommunityIcons, AntDesign, Ionicons, FontAwesome } from '@expo/vector-icons';
 
-export default function Security({navigation, route}) {
-    const { email } = route.params;
-    // console.log(email)
+export default function Security({navigation}) {
+    const [email, setEmail] = useState('');
+
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const email = await AsyncStorage.getItem('email');
+            setEmail(email);
+          } catch (error) {
+            console.error('Error retrieving data from AsyncStorage:', error);
+          }
+        };
+    
+        fetchData();
+      }, []);
 
     return (
         <SafeAreaView style={styles.container}>
