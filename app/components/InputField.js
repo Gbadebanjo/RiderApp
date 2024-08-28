@@ -11,11 +11,15 @@ const InputField = ({
   value,
   width,
   marginLeft,
+  marginTop = 10,
   paddingLeft,
   error,
   errorMessage,
   showPasswordToggle,
-  flex = 0
+  flex = 0,
+  fullBorder = false,
+  borderRadius = 0,
+  paddingVertical = 5
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -23,7 +27,7 @@ const InputField = ({
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-  const styles = getStyles(width, marginLeft, paddingLeft, flex, isFocused);
+  const styles = getStyles(width, marginLeft, paddingLeft, flex, isFocused, fullBorder, borderRadius, paddingVertical, marginTop);
 
   return (
     <View style={styles.inputContainer}>
@@ -53,7 +57,7 @@ const InputField = ({
   );
 };
 
-const getStyles = (width, marginLeft, paddingLeft, flex, isFocused ) =>
+const getStyles = (width, marginLeft, paddingLeft, flex, isFocused, fullBorder, borderRadius, paddingVertical, marginTop ) =>
   StyleSheet.create({
     inputContainer: {
       flex: flex,
@@ -69,13 +73,15 @@ const getStyles = (width, marginLeft, paddingLeft, flex, isFocused ) =>
       marginLeft: marginLeft,
     },
     input: {
-      // width: '100%',
       borderColor: isFocused ? '#212121' : '#CCCCCC',
-      borderBottomWidth: 2,
-      marginTop: 10,
+      borderBottomWidth: 1,
+      borderWidth: fullBorder ? 1 : 0,
+      borderRadius: fullBorder ? borderRadius : 0,
+      marginTop: marginTop,
       fontSize: 14,
-      paddingVertical: 5,
+      paddingVertical: paddingVertical,
       marginLeft: marginLeft,
+      paddingLeft: paddingLeft,
     },
     error : {
       borderColor: 'red',
@@ -93,8 +99,6 @@ const getStyles = (width, marginLeft, paddingLeft, flex, isFocused ) =>
     eyeIconContainer: {
       right: 30,
       marginBottom: 4
-      // top: 2,
-      // bottom: ,
     },
   });
 

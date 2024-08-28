@@ -2,6 +2,7 @@
 import React, {useRef, useState} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import StyledButton from '../../../components/StyledButton';
 import Centerlogo from '../../../components/centerlogo';
 import { Formik } from 'formik';
@@ -10,8 +11,6 @@ import SelectInput from '../../../components/SelectInput';
 import PhoneInput from 'react-native-phone-number-input';
 import * as yup from 'yup';
 import BackButton from '../../../components/BackButton';
-const googleLogo = require('./../../../assets/GoogleIcon.png');
-const appleLogo = require('./../../../assets/AppleLogo.png');
 
 const validationSchema = yup.object().shape({
     accountType: yup.string().required('Account Type is required'),
@@ -29,11 +28,11 @@ const validationSchema = yup.object().shape({
 
 export default function UserDetails({navigation, route}) {
     const { email } = route.params;
-    const [value, setValue] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const phoneInputRef = useRef(null);
 
+    const saveEmail = AsyncStorage.setItem('email', email);
 
   return (
     <SafeAreaView style={styles.container}>

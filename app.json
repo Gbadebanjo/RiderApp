@@ -2,6 +2,32 @@
   "expo": {
     "name": "RidersRydePRO",
     "slug": "RidersRydePRO",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "splash": {
+      "image": "./app/assets/Logo Image.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8ccd55a7-c729-4593-a8e5-6c6c1505f961"
+      }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ],
+    "android": {
+      "package": "com.omolounnuoluwafemi.RidersRydePRO"
+    }
   }
 }

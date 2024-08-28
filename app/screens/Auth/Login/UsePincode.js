@@ -1,24 +1,30 @@
 import React, {useRef, useState} from 'react';
-import api from '../../api/auth'
+import api from '../../../api/auth'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import BackButton from '../../components/BackButton';
-import StyledButton from '../../components/StyledButton';
+import BackButton from '../../../components/BackButton';
+import InputField from '../../../components/InputField';
+import StyledButton from '../../../components/StyledButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Entypo } from '@expo/vector-icons';
 
 const validationSchema = yup.object().shape({
-    code: yup
+    pinCode: yup
       .string()
       .length(4, 'Code must be exactly 4 digits')
       .required('Enter the 4-digit code'),
+    email: yup
+      .string()
+      .email('Please enter a valid email')
+      .required('Enter your Email Address'),
   });
   
 const CELL_COUNT = 4;
 
-export default function Pin({navigation, route}) {
+export default function UsePincode({navigation}) {
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -27,24 +33,35 @@ export default function Pin({navigation, route}) {
     });
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const { email } = route.params;
 
-    const handleSave = async (values) => {
+    const handleContinue = async (values, { resetForm }) => {
         setLoading(true);
+        const { email, pinCode } = values;
+        const loginMethod = "pinCode";
     
-        const response = await api.createPincode(email, values.code);
+        const response = await api.loginWithPincode(email, pinCode, loginMethod);
         Keyboard.dismiss();
-  
         if (!response.ok) {
           setLoading(false);
+          console.log(response.data)
           const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
-          Alert.alert(errorMessage);
           return setErrorMessage(errorMessage);
         }
 
+        await AsyncStorage.setItem('userToken', response.data.data.token);
+        await AsyncStorage.setItem('email', email);
+    
+        if (response.data.data.isComplete === false) {
+          return navigation.navigate('UserDetails', { email })
+        }
+    
+        if (Array.isArray(response.data.data.isSecured) && response.data.data.isSecured.length < 2) {
+          return navigation.navigate('Security', { email });
+        }
+    
         setLoading(false);
-        Alert.alert(response.data.data.message);
-        return navigation.navigate('Feedback');
+          resetForm();
+         return navigation.navigate('MenuLanding');
       }
 
     return (
@@ -59,30 +76,48 @@ export default function Pin({navigation, route}) {
                     <Entypo name="dots-three-vertical" size={18} />
                 </TouchableOpacity>
             </View>  
-            <Text style={styles.subTitle}>Create a 4 Digit pin</Text>  
+            <Text style={styles.subTitle}>Login with your 4 Digit pin</Text>  
 
             {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
 
             <View style={styles.mainContent}>
                 <View>
-                    <Text style={styles.subTitle}>New Pincode</Text>  
                     <Formik
-                        initialValues={{ code: '' }}
+                        initialValues={{ email: '', pinCode: '', }}
                         validationSchema={validationSchema}
-                        onSubmit={handleSave}
+                        onSubmit={handleContinue}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                         <>
+                            <InputField
+                                label="Email"
+                                placeholder="user@rydepro.com"
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                textContentType="email"
+                                returnKeyType="next"
+                                width="100%"
+                                onChangeText={handleChange('email')}
+                                onBlur={handleBlur('email')}
+                                value={values.email}
+                                paddingLeft={0}
+                                marginTop={0}
+                                paddingVertical={5}
+                                error={touched.email && errors.email}
+                                errorMessage={errors.email}
+                            />
+
+                            <Text style={styles.Pincode}>Pincode</Text>  
                             <CodeField
                                 ref={ref}
                                 {...props}
-                                value={values.code}
-                                onChangeText={handleChange('code')}
+                                value={values.pinCode}
+                                onChangeText={handleChange('pinCode')}
                                 cellCount={CELL_COUNT}
                                 rootStyle={styles.codeFieldRoot}
                                 // keyboardType="number-pad"
                                 textContentType="oneTimeCode"
-                                onSubmitEditing={handleSubmit} 
+                                // onSubmitEditing={handleSubmit} 
                                 renderCell={({ index, symbol, isFocused }) => (
                                 <Text
                                     key={index}
@@ -98,6 +133,7 @@ export default function Pin({navigation, route}) {
                                 )}
                                 />
                             {touched.code && errors.code && <Text style={styles.errorText}>{errors.code}</Text>}
+
                             <StyledButton
                                 title="Save"
                                 loading={loading}
@@ -105,14 +141,16 @@ export default function Pin({navigation, route}) {
                                 width="100%"
                                 height={53}
                                 paddingVertical={10}
-                                marginTop={40}
+                                marginTop={70}
                                 backgroundColor="#212121"
                                 borderWidth={2}
                                 TextColor="#fff"
                                 iconName="angle-right" 
-                                />
+                            />
                         </>
                         )}
+
+
                     </Formik>
                 </View>
             </View>        
@@ -143,6 +181,11 @@ const styles = StyleSheet.create({
     subTitle: {
         fontSize: 16,
         fontWeight: '500',
+    },
+    Pincode: {
+        marginTop: 20,
+        fontSize: 16,
+        fontWeight: '400',
     },
     bigerrorText: {
         fontSize: 18,

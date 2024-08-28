@@ -24,9 +24,8 @@ export default function CreatePassphrase({navigation, route}) {
                 return setErrorMessage(errorMessage);
             }
 
-            console.log(response.data);
             setLoading(false);
-            Alert.alert(response.data.message);
+            Alert.alert(response.data.data.message);
             return navigation.navigate('Feedback');
         } catch (error) {
             console.error("API call error:", error);
