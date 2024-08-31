@@ -1,15 +1,142 @@
-// import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import api from '../../../api/auth';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as LocalAuthentication from 'expo-local-authentication';
 import StyledButton from '../../../components/StyledButton';
 import Centerlogo from '../../../components/centerlogo';
 import SocialLogo from '../../../components/SocialLogo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 const googleLogo = require('./../../../assets/GoogleIcon.png');
 const appleLogo = require('./../../../assets/AppleLogo.png');
 
 export default function Login({navigation}) {
+  const [isBiometricSupported, setIsBiometricSupported] = useState(false);  
+  
+  useEffect(() => {
+    (async () => {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+      setIsBiometricSupported(compatible);
+    })();
+  }, []);
+
+  const handleBiometricAuth = async () => {
+    const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+    if (!savedBiometrics) {
+      return Alert.alert(
+        'Biometric record not found',
+        'Please ensure you have set up biometrics in your device settings.',
+        [{ text: 'OK' }]
+      );
+    }
+  
+    const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
+    if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
+      return Alert.alert(
+        'Fingerprint not supported',
+        'Please ensure your device supports fingerprint authentication.',
+        [{ text: 'OK' }]
+      );
+    }
+  
+    const { success, error } = await LocalAuthentication.authenticateAsync({
+      promptMessage: 'Place your Finger to access your account',
+      fallbackLabel: 'Enter Password',
+    });
+  
+    if (success) {      
+      // retrieve biometricToken from asyncStorage
+      const biometricToken = await AsyncStorage.getItem('biometricToken');
+      if (!biometricToken) {
+        Alert.alert('Error', 'You have not setup Biometric Authentication on your account. Access your account through other authentication methods', [{ text: 'OK' }])
+        return;
+      }
+  
+      // send request to login with biometric authentication
+      const response = await api.biometricsLogin(biometricToken);
+      if (!response.ok) {
+        const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+        return Alert.alert('Error', errorMessage, [
+            {
+              text: 'OK',
+            },
+        ]);
+      }
+  
+      // save the biometricToken and token received in asyncStorage
+      await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
+      await AsyncStorage.setItem('token', response.data.data.token);
+  
+      return Alert.alert('Success', response.data.data.message, [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('MenuLanding'), 
+        },
+      ]);
+    } else {
+      Alert.alert('Authentication Failed', error, [{ text: 'OK' }]);
+    }
+  };
+
+  const handleFacialIDAuth = async () => {
+    const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+    if (!savedBiometrics) {
+      return Alert.alert(
+        'Biometric record not found',
+        'Please ensure you have set up biometrics in your device settings.',
+        [{ text: 'OK' }]
+      );
+    }
+  
+    const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
+    if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
+      return Alert.alert(
+        'Facial recognition not supported',
+        'Please ensure your device supports Facial recognition authentication.',
+        [{ text: 'OK' }]
+      );
+    }
+  
+    const { success, error } = await LocalAuthentication.authenticateAsync({
+      promptMessage: 'Use facial recognition to access your account',
+      fallbackLabel: 'Enter Password',
+    });
+  
+    if (success) {      
+      // retrieve biometricToken from asyncStorage
+      const biometricToken = await AsyncStorage.getItem('biometricToken');
+      if (!biometricToken) {
+        Alert.alert('Error', 'You have not setup Face ID Authentication on your account. Access your account through other authentication methods', [{ text: 'OK' }])
+        return;
+      }
+  
+      // send request to login with face ID authentication
+      const response = await api.biometricsLogin(biometricToken);
+      if (!response.ok) {
+        const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+        return Alert.alert('Error', errorMessage, [
+            {
+              text: 'OK',
+            },
+        ]);
+      }
+  
+      // save the biometricToken and token received in asyncStorage
+      await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
+      await AsyncStorage.setItem('token', response.data.data.token);
+  
+      return Alert.alert('Success', response.data.data.message, [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('MenuLanding'), 
+        },
+      ]);
+    } else {
+      Alert.alert('Authentication Failed', error, [{ text: 'OK' }]);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -17,8 +144,8 @@ export default function Login({navigation}) {
       <Text style={styles.title}>Login to your Account</Text>
 
           <View style={styles.socialsLogo}>
-            <SocialLogo text="Face ID" onPress={()=> navigation.navigate('FacialID')} logo={<AntDesign name="scan1" size={30} color='#7DB7FF'/>} />
-            <SocialLogo text="Biometric" onPress={()=> navigation.navigate('Biometric')} logo={<Ionicons name="finger-print" size={30} color='#0F488F' />}/>
+            <SocialLogo text="Face ID" onPress={handleFacialIDAuth} logo={<AntDesign name="scan1" size={30} color='#7DB7FF'/>} />
+            <SocialLogo text="Biometric" onPress={handleBiometricAuth} logo={<Ionicons name="finger-print" size={30} color='#0F488F' />}/>
             <SocialLogo text="Email" onPress={()=> navigation.navigate('UsePassword')} logo={<MaterialCommunityIcons name="email" size={30} color='#000000' />}/>
             <SocialLogo text="Apple" onPress={()=> alert('Login with Apple')} logo={appleLogo}/>
             <SocialLogo text="Google" onPress={()=> alert('Login with Google')} logo={googleLogo}/>

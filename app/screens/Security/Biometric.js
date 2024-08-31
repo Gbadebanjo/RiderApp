@@ -1,14 +1,141 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { authClient, setAuthToken } from '../../api/client';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as LocalAuthentication from 'expo-local-authentication';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackButton from '../../components/BackButton';
-import StyledButton from '../../components/StyledButton';
-import { Entypo } from '@expo/vector-icons';
-import Centerlogo from '../../components/centerlogo';
-
-const biometricLogo = require('../../assets/GoogleIcon.png');
+// import StyledButton from '../../components/StyledButton';
+import { Entypo, Ionicons } from '@expo/vector-icons';
 
 export default function Biometric({navigation}) {
+    const [isBiometricSupported, setIsBiometricSupported] = useState(false); 
+    const [errorMessage, setErrorMessage] = useState('');
+  
+    useEffect(() => {
+      (async () => {
+        const compatible = await LocalAuthentication.hasHardwareAsync();
+        setIsBiometricSupported(compatible);
+      })();
+    }, []);
+  
+    // const handleBiometricAuth = async () => {
+    //   const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+    //   if (!savedBiometrics) {
+    //     return Alert.alert(
+    //       'Biometric record not found',
+    //       'Please ensure you have set up biometrics in your device settings.',
+    //       [{ text: 'OK' }]
+    //     );
+    //   }
+  
+    //   const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
+    //   const { success, error } = await LocalAuthentication.authenticateAsync({
+    //     promptMessage: 'Place your Finger to access your account',
+    //     fallbackLabel: 'Enter Password',
+    //   });
+  
+    //   if (success) {
+    //     let biometricType = 'Unknown';
+    //     if (biometricTypes.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
+    //       biometricType = 'Fingerprint';
+    //     } else if (biometricTypes.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
+    //       biometricType = 'Facial Recognition';
+    //     }
+    //     console.log(biometricType);
+
+    //     // retreieve token from asyncStorage and setAuth token
+    //     const token = await AsyncStorage.getItem('userToken');
+    //     if (!token) {
+    //       Alert.alert('Error', 'Authorization token not found.');
+    //       return;
+    //     }
+    //     setAuthToken(token);        
+        
+    //     // send request to enable biometric authentication
+    //     const response = await authClient.put('/enable-biometric');
+    //     if (!response.ok) {
+    //         const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+    //         return Alert.alert('Error', errorMessage, [
+    //             {
+    //                 text: 'OK',
+    //                 onPress: () => navigation.navigate('Feedback'),
+    //               },
+    //         ]);
+    //     }
+
+    //     // save the biometricToken token recieved in asyncStorage
+    //     await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
+        
+    //     return Alert.alert('Success', response.data.data.message, [
+    //         {
+    //           text: 'OK',
+    //           onPress: () => navigation.navigate('Feedback'),
+    //         },
+    //       ]);
+    //   } else {
+    //     Alert.alert('Authentication Failed', error, [{ text: 'OK' }]);
+    //   }
+    // };
+
+    const handleBiometricAuth = async () => {
+        const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+        if (!savedBiometrics) {
+          return Alert.alert(
+            'Biometric record not found',
+            'Please ensure you have set up biometrics in your device settings.',
+            [{ text: 'OK' }]
+          );
+        }
+      
+        const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
+        if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
+          return Alert.alert(
+            'Fingerprint not supported',
+            'Please ensure your device supports fingerprint authentication.',
+            [{ text: 'OK' }]
+          );
+        }
+      
+        const { success, error } = await LocalAuthentication.authenticateAsync({
+          promptMessage: 'Place your Finger to access your account',
+          fallbackLabel: 'Enter Password',
+        });
+      
+        if (success) {      
+          // retrieve token from asyncStorage and setAuth token
+          const token = await AsyncStorage.getItem('userToken');
+          if (!token) {
+            Alert.alert('Error', 'Authorization token not found.');
+            return;
+          }
+          setAuthToken(token);
+      
+          // send request to enable biometric authentication
+          const response = await authClient.put('/enable-biometric');
+          if (!response.ok) {
+            const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+            return Alert.alert('Error', errorMessage, [
+                {
+                  text: 'OK',
+                   onPress: () => navigation.navigate('Feedback'), 
+                },
+            ]);
+          }
+      
+          // save the biometricToken token received in asyncStorage
+          await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
+      
+          return Alert.alert('Success', response.data.data.message, [
+            {
+              text: 'OK',
+              onPress: () => navigation.navigate('Feedback'), 
+            },
+          ]);
+        } else {
+          Alert.alert('Authentication Failed', error, [{ text: 'OK' }]);
+        }
+      };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -22,15 +149,16 @@ export default function Biometric({navigation}) {
                     <Entypo name="dots-three-vertical" size={18} />
                 </TouchableOpacity>
             </View>  
-            <Text style={styles.subTitle}>Place your Thumb to setup your biometric</Text>  
+            <Text style={styles.subTitle}>Click below to setup your Biometric Authentication</Text>  
             <View style={styles.mainContent}>
 
-                <View>
-                <Centerlogo logoSource={biometricLogo} logoWidth={100} logoHeight={100} />
-                <Text style={styles.logoText}>Biometric</Text>
-                </View>
+                    <TouchableOpacity  
+                        onPress={handleBiometricAuth}>
+                        <Ionicons name="finger-print" size={150} style={styles.fingerprint}/>
+                    </TouchableOpacity>
+                    {/* <Text style={styles.logoText}>Biometric</Text> */}
 
-                <StyledButton
+                {/* <StyledButton
                     title="Update"
                     onPress={() => navigation.navigate('Feedback')}
                     width="100%"
@@ -41,7 +169,7 @@ export default function Biometric({navigation}) {
                     borderWidth={2}
                     TextColor="#fff"
                     iconName="angle-right" 
-                    />
+                    /> */}
             </View>        
     </SafeAreaView>
     );
@@ -69,13 +197,18 @@ const styles = StyleSheet.create({
     },
     subTitle: {
         fontSize: 16,
+        marginTop: 30,
         fontWeight: '500',
-        // alignSelf: 'flex-start',
+        textAlign: 'center'
     },
     mainContent: {
-        flex: 1,
+        // flex: 1,
         width: '100%',
-        justifyContent: 'space-around',
+        // justifyContent: 'space-around',
+        marginTop: 100
+    },
+    fingerprint: {
+        alignSelf: 'center',
     },
     iconText: {
         flexDirection: 'row',

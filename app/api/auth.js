@@ -9,6 +9,9 @@ const loginWithPincode = (email, pinCode, loginMethod) => authClient.post('login
 const additionalInfo = (accountDetails) => authClient.put('additional-info', accountDetails);
 const createPassphrase = (email, passPhrase) => authClient.post('create/passphrase', {email, passPhrase});
 const createPincode = (email, pinCode) => authClient.post('create/pincode', {email, pinCode});
+const enableBiometrics = () => authClient.put('enable-biometric');
+const biometricsLogin = (biometricToken) => authClient.post('biometric-login', { biometricToken });
+
 const fetchUserDetails = () => dashboardClient.get('dashboard/rider/details');
 
 export default {
@@ -22,5 +25,7 @@ export default {
     createPassphrase,
     createPincode,
     fetchUserDetails,
-    setAuthToken
+    setAuthToken,
+    enableBiometrics,
+    biometricsLogin
 }

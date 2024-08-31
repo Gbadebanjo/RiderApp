@@ -19,7 +19,6 @@ const validationSchema = yup.object().shape({
 });
 
 export default function ResidencyLocation({navigation, route}) {
-  const { userDetails } = route.params;
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [initialValues, setInitialValues] = useState({
@@ -52,26 +51,34 @@ export default function ResidencyLocation({navigation, route}) {
 
   const handleConfirm = async (values, { resetForm }) => {
     setLoading(true);
-
-    const accountDetails = {
-      ...userDetails,
-      ...values
-    };
-
-    const response = await api.additionalInfo(accountDetails);
-    Keyboard.dismiss();
-    if (!response.ok) {
+  
+    try {
+      const userDetailsString = await AsyncStorage.getItem('userDetails');
+      const userDetails = JSON.parse(userDetailsString);
+      console.log("user details from residency page", userDetails);
+  
+      const accountDetails = {
+        ...userDetails,
+        ...values
+      };
+    
+      const response = await api.additionalInfo(accountDetails);
+      Keyboard.dismiss();
+      if (!response.ok) {
+        setLoading(false);
+        const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+        return setErrorMessage(errorMessage);
+      }
+      await AsyncStorage.setItem('userToken', response.data.data.token);
+  
       setLoading(false);
-      const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
-      return setErrorMessage(errorMessage);
+      alert(response.data.data.message);
+      navigation.navigate('Security', { email: userDetails.email });
+    } catch (error) {
+      setLoading(false);
+      console.error('Error handling confirm:', error);
+      setErrorMessage('An error occurred while processing your request.');
     }
-    console.log(response.data.data);
-    await AsyncStorage.setItem('userToken', response.data.data.token);
-
-    setLoading(false);
-    // resetForm();
-    alert(response.data.data.message);
-    navigation.navigate('Security', {email: userDetails.email});
   }
 
   return (
