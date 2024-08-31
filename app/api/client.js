@@ -20,6 +20,7 @@ const dashboardClient = create({
 // Function to set the authorization token
 const setAuthToken = (token) => {
     dashboardClient.setHeader('Authorization', `Bearer ${token}`);
+    authClient.setHeader('Authorization', `Bearer ${token}`);
 };
 
 export { authClient, dashboardClient, setAuthToken };

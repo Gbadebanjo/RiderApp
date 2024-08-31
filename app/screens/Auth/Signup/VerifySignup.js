@@ -53,16 +53,14 @@ export default function FirstScreen({navigation, route}) {
     const handleResend = async () => {
       setLoading(true);
       const response = await otpApi.getOtp(email);
-      console.log(response.data.message);
 
       if (!response.ok) {
         setLoading(false);
         return alert(response.data.message);
       }
       setLoading(false);
-      console.log(response.data.message);
+      // console.log(response.data.message);
       return alert(response.data.message);
-      // navigation.navigate('VerifySignup', { email: email });
     }
 
 
@@ -145,7 +143,7 @@ export default function FirstScreen({navigation, route}) {
 
                 <StyledButton
                     title="Send SMS"
-                    // onPress={alert('Send SMS')}
+                    onPress={alert('Send SMS')}
                     width="50%"
                     loading={loading}
                     height={40}
