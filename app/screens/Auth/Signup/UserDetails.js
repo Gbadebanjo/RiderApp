@@ -52,8 +52,13 @@ export default function UserDetails({navigation, route}) {
              referralCode: '',
             }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          navigation.navigate('ResidencyLocation', { userDetails: values });
+        onSubmit={async (values) => {
+          try {
+            await AsyncStorage.setItem('userDetails', JSON.stringify(values));
+            navigation.navigate('ResidencyLocation');
+          } catch (error) {
+            Alert.alert('Error', 'Failed to save user details.');
+          }
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
@@ -200,7 +205,6 @@ export default function UserDetails({navigation, route}) {
           </>
         )}
       </Formik>
-
       </ScrollView>
     </SafeAreaView>
   );

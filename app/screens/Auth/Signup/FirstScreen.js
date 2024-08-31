@@ -33,7 +33,7 @@ export default function FirstScreen({ navigation }) {
     if (address.length > 0) {
       const { country, region: state, city, postalCode: zipCode } = address[0];
       const locationDetails = { country, state, city, zipCode };
-      // console.log('Location Details:', locationDetails); 
+      console.log('Location Details:', locationDetails);
       await AsyncStorage.setItem('userLocation', JSON.stringify(locationDetails));
     }
   };
@@ -124,8 +124,6 @@ const styles = StyleSheet.create({
   },
   logo: {
     marginTop: 30,
-    // width: 100,
-    // height: 100,
   },
   title: {
     width: '80%',
@@ -151,10 +149,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   modalView: {
-    width: '80%',
+    width: '95%',
     backgroundColor: '#212121',
     borderRadius: 15,
-    paddingVertical: 20,
+    paddingVertical: 30,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -181,24 +179,26 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   button: {
-    padding: 10,
+    padding: 2, 
   },
   buttonCancel: {
     borderTopColor: '#FFFFFF',
     borderBottomColor: '#FFFFFF',
-    // borderTopWidth: 1,
     borderBottomWidth: 1,
+    padding: 10,
   },
   buttonOK: {
     borderTopColor: '#FFFFFF',
     borderBottomColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderTopWidth: 1,
+    padding: 10,
   },
   buttonOnce: {
     borderTopColor: '#FFFFFF',
     borderBottomColor: '#FFFFFF',
     borderTopWidth: 1,
+    padding: 10,
   },
   textStyle: {
     color: 'white',

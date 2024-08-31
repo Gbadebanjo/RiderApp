@@ -30,7 +30,6 @@ export default function UsePassphrase({navigation, route}) {
         Keyboard.dismiss();
         if (!response.ok) {
           setLoading(false);
-        //   console.log(response.data)
           const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
           return setErrorMessage(errorMessage);
         }

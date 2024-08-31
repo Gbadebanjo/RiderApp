@@ -1,13 +1,81 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { authClient, setAuthToken } from '../../api/client';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../components/BackButton';
-import { Entypo } from '@expo/vector-icons';
-import Centerlogo from '../../components/centerlogo';
+import * as LocalAuthentication from 'expo-local-authentication';
+import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 
-const biometricLogo = require('../../assets/GoogleIcon.png');
 
 export default function FacialID({navigation}) {
+    const [isBiometricSupported, setIsBiometricSupported] = useState(false); 
+    const [errorMessage, setErrorMessage] = useState('');
+
+    useEffect(() => {
+        (async () => {
+          const compatible = await LocalAuthentication.hasHardwareAsync();
+          setIsBiometricSupported(compatible);
+        })();
+      }, []);
+
+      const handleFacialIDAuth = async () => {
+        const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+        if (!savedBiometrics) {
+          return Alert.alert(
+            'Biometric record not found',
+            'Please ensure you have set up biometrics in your device settings.',
+            [{ text: 'OK' }]
+          );
+        }
+      
+        const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
+        if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
+          return Alert.alert(
+            'Facial recognition not supported',
+            'Please ensure your device supports Facial recognition authentication.',
+            [{ text: 'OK' }]
+          );
+        }
+      
+        const { success, error } = await LocalAuthentication.authenticateAsync({
+          promptMessage: 'Use facial recognition to access your account',
+          fallbackLabel: 'Enter Password',
+        });
+      
+        if (success) {      
+          // retrieve token from asyncStorage and setAuth token
+          const token = await AsyncStorage.getItem('userToken');
+          if (!token) {
+            Alert.alert('Error', 'Authorization token not found.');
+            return;
+          }
+          setAuthToken(token);
+      
+          // send request to enable biometric authentication
+          const response = await authClient.put('/enable-biometric');
+          if (!response.ok) {
+            const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+            return Alert.alert('Error', errorMessage, [
+                {
+                  text: 'OK',
+                   onPress: () => navigation.navigate('Feedback'), 
+                },
+            ]);
+          }
+      
+          // save the biometricToken token received in asyncStorage
+          await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
+      
+          return Alert.alert('Success', response.data.data.message, [
+            {
+              text: 'OK',
+              onPress: () => navigation.navigate('Feedback'), 
+            },
+          ]);
+        } else {
+          Alert.alert('Authentication Failed', error, [{ text: 'OK' }]);
+        }
+      };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -21,14 +89,13 @@ export default function FacialID({navigation}) {
                     <Entypo name="dots-three-vertical" size={18} />
                 </TouchableOpacity>
             </View>  
-            <Text style={styles.subTitle}>Scan your face for authentication</Text>  
+            <Text style={styles.subTitle}>Click below to setup your Face-ID Authentication</Text>  
             <View style={styles.mainContent}>
 
-                <TouchableOpacity
-                onPress={()=> navigation.navigate('Feedback')}>
-                    <Centerlogo logoSource={biometricLogo} logoWidth={100} logoHeight={100} />
-                    <Text style={styles.logoText}>Face ID</Text>
-                </TouchableOpacity>
+                <TouchableOpacity  
+                        onPress={handleFacialIDAuth}>
+                        <MaterialCommunityIcons name="face-recognition" size={150} style={styles.face}/>
+                    </TouchableOpacity>
             </View>        
     </SafeAreaView>
     );
@@ -56,16 +123,20 @@ const styles = StyleSheet.create({
     },
     subTitle: {
         fontSize: 16,
+        marginTop: 20,
         fontWeight: '500',
-        // alignSelf: 'flex-start',
+        textAlign: 'center'
     },
     mainContent: {
-        marginTop: 100,
+        marginTop: 150,
     },
     logoText:{
         fontSize: 18,
         fontWeight: '500',
         marginTop: 10,
+        alignSelf: 'center',
+    },
+    face: {
         alignSelf: 'center',
     },
 });
