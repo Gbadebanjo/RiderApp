@@ -9,7 +9,10 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "We need to use Face ID to authenticate your identity."
+      }
     },
     "extra": {
       "eas": {

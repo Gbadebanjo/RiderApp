@@ -55,7 +55,6 @@ export default function ResidencyLocation({navigation, route}) {
     try {
       const userDetailsString = await AsyncStorage.getItem('userDetails');
       const userDetails = JSON.parse(userDetailsString);
-      console.log("user details from residency page", userDetails);
   
       const accountDetails = {
         ...userDetails,
@@ -64,13 +63,14 @@ export default function ResidencyLocation({navigation, route}) {
     
       const response = await api.additionalInfo(accountDetails);
       Keyboard.dismiss();
+
       if (!response.ok) {
         setLoading(false);
         const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
         return setErrorMessage(errorMessage);
       }
-      await AsyncStorage.setItem('userToken', response.data.data.token);
-  
+      const token = await AsyncStorage.setItem('userToken', response.data.data.token);
+
       setLoading(false);
       alert(response.data.data.message);
       navigation.navigate('Security', { email: userDetails.email });

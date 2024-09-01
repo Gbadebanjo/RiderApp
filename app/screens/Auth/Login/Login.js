@@ -51,10 +51,11 @@ export default function Login({navigation}) {
       if (!biometricToken) {
         Alert.alert('Error', 'You have not setup Biometric Authentication on your account. Access your account through other authentication methods', [{ text: 'OK' }])
         return;
-      }
+      } 
+      const loginMethod = "biometric";
   
       // send request to login with biometric authentication
-      const response = await api.biometricsLogin(biometricToken);
+      const response = await api.biometricsLogin( biometricToken, loginMethod);
       if (!response.ok) {
         const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
         return Alert.alert('Error', errorMessage, [
@@ -105,14 +106,15 @@ export default function Login({navigation}) {
   
     if (success) {      
       // retrieve biometricToken from asyncStorage
-      const biometricToken = await AsyncStorage.getItem('biometricToken');
-      if (!biometricToken) {
+      const facialToken = await AsyncStorage.getItem('facialToken');
+      if (!facialToken) {
         Alert.alert('Error', 'You have not setup Face ID Authentication on your account. Access your account through other authentication methods', [{ text: 'OK' }])
         return;
       }
+      const loginMethod = "facial";
   
       // send request to login with face ID authentication
-      const response = await api.biometricsLogin(biometricToken);
+      const response = await api.biometricsLogin(facialToken, loginMethod);
       if (!response.ok) {
         const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
         return Alert.alert('Error', errorMessage, [
@@ -123,7 +125,7 @@ export default function Login({navigation}) {
       }
   
       // save the biometricToken and token received in asyncStorage
-      await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
+      await AsyncStorage.setItem('facialToken', response.data.data.facialToken);
       await AsyncStorage.setItem('token', response.data.data.token);
   
       return Alert.alert('Success', response.data.data.message, [
