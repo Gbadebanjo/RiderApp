@@ -1,5 +1,5 @@
 // import { StatusBar } from 'expo-status-bar';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import otpApi from './../../../api/auth'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ActivityIndicator, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,6 +10,9 @@ import SocialLogo from '../../../components/SocialLogo';
 import OrSeparator from '../../../components/OrSeparator';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import { makeRedirectUri } from 'expo-auth-session';
 const googleLogo = require('./../../../assets/GoogleIcon.png');
 const appleLogo = require('./../../../assets/AppleLogo.png');
 
@@ -20,9 +23,48 @@ const validationSchema = yup.object().shape({
     .required('Enter your Email Address'),
 });
 
+const webClientId = '885225392728-7il9kro2mi9pihunob2jsqqg6qdepv0m.apps.googleusercontent.com'
+const iosClientId = '885225392728-lutft160jr5nb1q7b3o05gklt5g8u6r2.apps.googleusercontent.com'
+const androidClientId = '885225392728-5pvillr8b61p1t9tvtbp189okeeenn02.apps.googleusercontent.com'
+
+WebBrowser.maybeCompleteAuthSession();
+
 export default function CreateAccount({navigation}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+
+  const redirectUri = makeRedirectUri({
+    useProxy: true,
+  });
+
+  const config = {
+    webClientId,
+    iosClientId,
+    androidClientId,
+  }
+
+  console.log("Generated Redirect URI:", redirectUri);
+
+  const [request, response, promptAsync] = Google.useAuthRequest(config);
+
+  // const getUserProfile = async (token) =>{
+  //   if(!token) return;
+  //   try{
+  //     const response = await fetch("https://www.googleapis.com/auth/userinfo/v2/me")
+  //   }
+  // }
+
+  const handleToken = () => {
+    if (response?.type === "success"){
+      const { authentication } = response;
+      const token = authentication?.accessToken;
+      console.log('access token', token);
+    }
+  }
+
+  useEffect(() => {
+    handleToken();
+  }, [response]);
 
   const handleSubmit = async (values) => {
     setLoading(true);
@@ -98,7 +140,7 @@ export default function CreateAccount({navigation}) {
 
           <View style={styles.socialsLogo}>
             {/* <SocialLogo text="Email" onPress={()=> alert('Login with Email')} logo={<MaterialCommunityIcons name="email" size={30} color='#000000' />}/> */}
-            <SocialLogo text="Google" onPress={()=> alert('Login with Google')} logo={googleLogo}/>
+            <SocialLogo text="Google" onPress={()=> promptAsync()} logo={googleLogo}/>
             <SocialLogo text="Apple" onPress={()=> alert('Login with Apple')} logo={appleLogo}/>
           </View>
 

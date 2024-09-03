@@ -112,7 +112,7 @@ export default function Biometric({navigation}) {
           setAuthToken(token);
       
           // send request to enable biometric authentication
-          const response = await authClient.put('/enable-biometric');
+          const response = await authClient.put('/enable-biometric', { authToEnable: 'biometric' });
           if (!response.ok) {
             const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
             return Alert.alert('Error', errorMessage, [
