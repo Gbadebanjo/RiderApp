@@ -12,7 +12,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSFaceIDUsageDescription": "We need to use Face ID to authenticate your identity."
-      }
+      },
+      "bundleIdentifier": "com.omolounnuoluwafemi.RidersRydePRO"
     },
     "extra": {
       "eas": {
@@ -31,6 +32,7 @@
     ],
     "android": {
       "package": "com.omolounnuoluwafemi.RidersRydePRO"
-    }
+    }, 
+    "scheme": "rydepro"
   }
 }
