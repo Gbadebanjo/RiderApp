@@ -100,7 +100,8 @@ export default function Login({navigation}) {
   
     const { success, error } = await LocalAuthentication.authenticateAsync({
       promptMessage: 'Use facial recognition to access your account',
-      fallbackLabel: 'Enter Password',
+      // fallbackLabel: 'Enter Password',
+      // disableDeviceFallback: true,
     });
   
     if (success) {      

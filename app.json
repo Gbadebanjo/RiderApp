@@ -11,6 +11,9 @@
     "ios": {
       "supportsTablet": true
     },
+    "infoPlist": {
+      "NSFaceIDUsageDescription": "We need to use Face ID to authenticate your identity."
+    },
     "extra": {
       "eas": {
         "projectId": "8ccd55a7-c729-4593-a8e5-6c6c1505f961"
