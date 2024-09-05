@@ -9,7 +9,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "We need to use Face ID to authenticate your identity."
+      },
+      "bundleIdentifier": "com.omolounnuoluwafemi.RidersRydePRO"
     },
     "infoPlist": {
       "NSFaceIDUsageDescription": "We need to use Face ID to authenticate your identity."
@@ -31,6 +35,7 @@
     ],
     "android": {
       "package": "com.omolounnuoluwafemi.RidersRydePRO"
-    }
+    }, 
+    "scheme": "rydepro"
   }
 }

@@ -10,7 +10,7 @@ const additionalInfo = (accountDetails) => authClient.put('additional-info', acc
 const createPassphrase = (email, passPhrase) => authClient.post('create/passphrase', {email, passPhrase});
 const createPincode = (email, pinCode) => authClient.post('create/pincode', {email, pinCode});
 const enableBiometrics = () => authClient.put('enable-biometric');
-const biometricsLogin = (biometricToken) => authClient.post('biometric-login', { biometricToken });
+const biometricsLogin = (biometricToken, loginMethod) => authClient.post('biometric-login', { biometricToken, loginMethod });
 
 const fetchUserDetails = () => dashboardClient.get('dashboard/rider/details');
 

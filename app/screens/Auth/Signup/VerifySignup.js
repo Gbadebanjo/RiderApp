@@ -143,7 +143,7 @@ export default function FirstScreen({navigation, route}) {
 
                 <StyledButton
                     title="Send SMS"
-                    onPress={alert('Send SMS')}
+                    // onPress={alert('Send SMS')}
                     width="50%"
                     loading={loading}
                     height={40}

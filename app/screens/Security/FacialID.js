@@ -52,7 +52,8 @@ export default function FacialID({navigation}) {
           setAuthToken(token);
       
           // send request to enable biometric authentication
-          const response = await authClient.put('/enable-biometric');
+          const response = await authClient.put('/enable-biometric', { authToEnable: 'facial' });
+          
           if (!response.ok) {
             const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
             return Alert.alert('Error', errorMessage, [
@@ -64,7 +65,7 @@ export default function FacialID({navigation}) {
           }
       
           // save the biometricToken token received in asyncStorage
-          await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
+          await AsyncStorage.setItem('facialToken', response.data.data.facialToken);
       
           return Alert.alert('Success', response.data.data.message, [
             {

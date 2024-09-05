@@ -24,7 +24,7 @@ const MenuLanding = ({ navigation }) => {
 
   const logout = async () => {
     try {
-      await AsyncStorage.clear();
+      await AsyncStorage.removeItem('userToken');
       navigation.navigate('Login');
     } catch (error) {
       console.error('Error logging out:', error);
@@ -37,12 +37,17 @@ const MenuLanding = ({ navigation }) => {
         try {
           setLoading(true);
           const token = await AsyncStorage.getItem('userToken');
-          if (!token) {
+          const biometricToken = await AsyncStorage.getItem('biometricToken');
+          const facialToken = await AsyncStorage.getItem('facialToken');
+
+          const authToken = token || biometricToken || facialToken;
+
+          if (!authToken ) {
             Alert.alert('Error', 'Authorization token not found.');
             return;
           }
 
-          setAuthToken(token);
+          setAuthToken(authToken);
           const response = await dashboardClient.get('/details');
           if (response.ok) {
             setUserDetails(response.data.data);
