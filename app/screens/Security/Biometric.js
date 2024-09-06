@@ -19,65 +19,6 @@ export default function Biometric({navigation}) {
       })();
     }, []);
   
-    // const handleBiometricAuth = async () => {
-    //   const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
-    //   if (!savedBiometrics) {
-    //     return Alert.alert(
-    //       'Biometric record not found',
-    //       'Please ensure you have set up biometrics in your device settings.',
-    //       [{ text: 'OK' }]
-    //     );
-    //   }
-  
-    //   const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
-    //   const { success, error } = await LocalAuthentication.authenticateAsync({
-    //     promptMessage: 'Place your Finger to access your account',
-    //     fallbackLabel: 'Enter Password',
-    //   });
-  
-    //   if (success) {
-    //     let biometricType = 'Unknown';
-    //     if (biometricTypes.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
-    //       biometricType = 'Fingerprint';
-    //     } else if (biometricTypes.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
-    //       biometricType = 'Facial Recognition';
-    //     }
-    //     console.log(biometricType);
-
-    //     // retreieve token from asyncStorage and setAuth token
-    //     const token = await AsyncStorage.getItem('userToken');
-    //     if (!token) {
-    //       Alert.alert('Error', 'Authorization token not found.');
-    //       return;
-    //     }
-    //     setAuthToken(token);        
-        
-    //     // send request to enable biometric authentication
-    //     const response = await authClient.put('/enable-biometric');
-    //     if (!response.ok) {
-    //         const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
-    //         return Alert.alert('Error', errorMessage, [
-    //             {
-    //                 text: 'OK',
-    //                 onPress: () => navigation.navigate('Feedback'),
-    //               },
-    //         ]);
-    //     }
-
-    //     // save the biometricToken token recieved in asyncStorage
-    //     await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
-        
-    //     return Alert.alert('Success', response.data.data.message, [
-    //         {
-    //           text: 'OK',
-    //           onPress: () => navigation.navigate('Feedback'),
-    //         },
-    //       ]);
-    //   } else {
-    //     Alert.alert('Authentication Failed', error, [{ text: 'OK' }]);
-    //   }
-    // };
-
     const handleBiometricAuth = async () => {
         const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
         if (!savedBiometrics) {
@@ -104,7 +45,8 @@ export default function Biometric({navigation}) {
       
         if (success) {      
           // retrieve token from asyncStorage and setAuth token
-          const token = await AsyncStorage.getItem('userToken');
+          const token = await AsyncStorage.getItem('token');
+          console.log(token);
           if (!token) {
             Alert.alert('Error', 'Authorization token not found.');
             return;
@@ -113,6 +55,7 @@ export default function Biometric({navigation}) {
       
           // send request to enable biometric authentication
           const response = await authClient.put('/enable-biometric', { authToEnable: 'biometric' });
+          console.log(response.data);
           if (!response.ok) {
             const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
             return Alert.alert('Error', errorMessage, [
@@ -122,7 +65,7 @@ export default function Biometric({navigation}) {
                 },
             ]);
           }
-      
+          // console.log(response.data);
           // save the biometricToken token received in asyncStorage
           await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
       
