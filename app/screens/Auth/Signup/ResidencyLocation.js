@@ -69,7 +69,7 @@ export default function ResidencyLocation({navigation, route}) {
         const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
         return setErrorMessage(errorMessage);
       }
-      const token = await AsyncStorage.setItem('userToken', response.data.data.token);
+      const token = await AsyncStorage.setItem('token', response.data.data.token);
 
       setLoading(false);
       alert(response.data.data.message);

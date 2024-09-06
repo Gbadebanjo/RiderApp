@@ -50,8 +50,15 @@ export default function UsePassword({ navigation, route }) {
       const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
       return setErrorMessage(errorMessage);
     }
-
+    
     await AsyncStorage.setItem('userToken', response.data.data.token);
+
+    if (response.data.data.facialToken){
+      await AsyncStorage.setItem('facialToken', response.data.data.facialToken );
+    }
+    if (response.data.data.bioToken){
+      await AsyncStorage.setItem('biometricToken', response.data.data.bioToken );
+    }
     await AsyncStorage.setItem('email', email);
 
     if (response.data.data.isComplete === false) {

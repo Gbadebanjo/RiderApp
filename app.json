@@ -3,6 +3,7 @@
     "name": "RidersRydePRO",
     "slug": "RidersRydePRO",
     "version": "1.0.0",
+    "scheme": "ridersrydepro",
     "splash": {
       "image": "./app/assets/Logo Image.png",
       "resizeMode": "contain",
@@ -21,7 +22,8 @@
     "extra": {
       "eas": {
         "projectId": "8ccd55a7-c729-4593-a8e5-6c6c1505f961"
-      }
+      },
+      "redirectUri": "https://auth.expo.io/@omolounnuoluwafemi/RidersRydePRO"
     },
     "plugins": [
       [
@@ -31,11 +33,17 @@
             "usesCleartextTraffic": true
           }
         }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.885225392728-lutft160jr5nb1q7b3o05gklt5g8u6r2"
+        }
       ]
     ],
     "android": {
       "package": "com.omolounnuoluwafemi.RidersRydePRO"
     }, 
-    "scheme": "rydepro"
+    "platforms": ["android", "ios"]
   }
 }

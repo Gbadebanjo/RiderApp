@@ -12,7 +12,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { makeRedirectUri } from 'expo-auth-session';
+import * as AuthSession from 'expo-auth-session';
 const googleLogo = require('./../../../assets/GoogleIcon.png');
 const appleLogo = require('./../../../assets/AppleLogo.png');
 
@@ -23,31 +23,36 @@ const validationSchema = yup.object().shape({
     .required('Enter your Email Address'),
 });
 
-const webClientId = '885225392728-7il9kro2mi9pihunob2jsqqg6qdepv0m.apps.googleusercontent.com'
+WebBrowser.maybeCompleteAuthSession();
+
+const webClientId = '885225392728-vp2u1j99mgau3q6c3k8tmg8lag0bkvfa.apps.googleusercontent.com'
 const iosClientId = '885225392728-lutft160jr5nb1q7b3o05gklt5g8u6r2.apps.googleusercontent.com'
 const androidClientId = '885225392728-5pvillr8b61p1t9tvtbp189okeeenn02.apps.googleusercontent.com'
 
-WebBrowser.maybeCompleteAuthSession();
+const redirectUri = AuthSession.makeRedirectUri({
+  useProxy: true,
+  native: 'ridersrydepro://'
+});
+
+console.log("redirectUri1;", redirectUri)
 
 export default function CreateAccount({navigation}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const redirectUri = makeRedirectUri({
-    useProxy: true,
-  });
-
   const config = {
-    webClientId,
+    webClientId: webClientId,
+    expoClientId: webClientId,
     iosClientId,
-    androidClientId,
+    androidClientId: androidClientId,
+    redirectUri
   }
 
-  console.log("Generated Redirect URI:", redirectUri);
+  console.log("redirectUri2;", config.redirectUri)
 
   const [request, response, promptAsync] = Google.useAuthRequest(config);
 
-  // const getUserProfile = async (token) =>{
+  // const getUserProfile = async (token) => {
   //   if(!token) return;
   //   try{
   //     const response = await fetch("https://www.googleapis.com/auth/userinfo/v2/me")

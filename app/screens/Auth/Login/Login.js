@@ -48,6 +48,7 @@ export default function Login({navigation}) {
     if (success) {      
       // retrieve biometricToken from asyncStorage
       const biometricToken = await AsyncStorage.getItem('biometricToken');
+      console.log(biometricToken);
       if (!biometricToken) {
         Alert.alert('Error', 'You have not setup Biometric Authentication on your account. Access your account through other authentication methods', [{ text: 'OK' }])
         return;
@@ -55,7 +56,9 @@ export default function Login({navigation}) {
       const loginMethod = "biometric";
   
       // send request to login with biometric authentication
-      const response = await api.biometricsLogin( biometricToken, loginMethod);
+      const response = await api.biometricsLogin (biometricToken, loginMethod);
+      console.log(response.data);
+      console.log(response.data.data.token);
       if (!response.ok) {
         const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
         return Alert.alert('Error', errorMessage, [
@@ -64,7 +67,6 @@ export default function Login({navigation}) {
             },
         ]);
       }
-  
       // save the biometricToken and token received in asyncStorage
       await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
       await AsyncStorage.setItem('token', response.data.data.token);
