@@ -31,6 +31,7 @@ const androidClientId = '885225392728-5pvillr8b61p1t9tvtbp189okeeenn02.apps.goog
 
 const redirectUri = AuthSession.makeRedirectUri({
   useProxy: true,
+  native: 'ridersrydepro://'
 });
 
 console.log("redirectUri1;", redirectUri)

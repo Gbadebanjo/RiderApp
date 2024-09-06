@@ -44,7 +44,7 @@ export default function FacialID({navigation}) {
       
         if (success) {      
           // retrieve token from asyncStorage and setAuth token
-          const token = await AsyncStorage.getItem('userToken');
+          const token = await AsyncStorage.getItem('token');
           if (!token) {
             Alert.alert('Error', 'Authorization token not found.');
             return;
