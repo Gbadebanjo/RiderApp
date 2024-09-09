@@ -14,13 +14,16 @@
       "infoPlist": {
         "NSFaceIDUsageDescription": "We need to use Face ID to authenticate your identity."
       },
-      "bundleIdentifier": "com.omolounnuoluwafemi.RidersRydePRO"
+      "bundleIdentifier": "com.RidersRydePRO"
     },
+    // "infoPlist": {
+    //   "NSFaceIDUsageDescription": "We need to use Face ID to authenticate your identity."
+    // },
     "extra": {
       "eas": {
         "projectId": "8ccd55a7-c729-4593-a8e5-6c6c1505f961"
-      },
-      "redirectUri": "https://auth.expo.io/@omolounnuoluwafemi/RidersRydePRO"
+      }
+      // "redirectUri": "https://auth.expo.io/@omolounnuoluwafemi/RidersRydePRO"
     },
     "plugins": [
       [
@@ -39,8 +42,9 @@
       ]
     ],
     "android": {
-      "package": "com.omolounnuoluwafemi.RidersRydePRO"
+      "package": "com.RidersRydePRO"
     }, 
     "platforms": ["android", "ios"]
   }
 }
+

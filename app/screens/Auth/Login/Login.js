@@ -58,13 +58,12 @@ export default function Login({navigation}) {
       // send request to login with biometric authentication
       const response = await api.biometricsLogin (biometricToken, loginMethod);
       console.log(response.data);
-      console.log(response.data.data.token);
       if (!response.ok) {
         const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
         return Alert.alert('Error', errorMessage, [
-            {
-              text: 'OK',
-            },
+          {
+            text: 'OK',
+          },
         ]);
       }
       // save the biometricToken and token received in asyncStorage
@@ -83,11 +82,11 @@ export default function Login({navigation}) {
   };
 
   const handleFacialIDAuth = async () => {
-    const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
-    if (!savedBiometrics) {
+    const savedFaceId = await LocalAuthentication.isEnrolledAsync();
+    if (!savedFaceId) {
       return Alert.alert(
-        'Biometric record not found',
-        'Please ensure you have set up biometrics in your device settings.',
+        'FaceId record not found',
+        'Please ensure you have set up FaceId  in your device settings.',
         [{ text: 'OK' }]
       );
     }
@@ -103,8 +102,11 @@ export default function Login({navigation}) {
   
     const { success, error } = await LocalAuthentication.authenticateAsync({
       promptMessage: 'Use facial recognition to access your account',
-      fallbackLabel: 'Enter Password',
+      // fallbackLabel: 'Enter Password',
+      // disableDeviceFallback: true,
     });
+
+
   
     if (success) {      
       // retrieve biometricToken from asyncStorage

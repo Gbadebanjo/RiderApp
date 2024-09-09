@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../components/BackButton';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function FacialID({navigation}) {
     const [isBiometricSupported, setIsBiometricSupported] = useState(false); 
