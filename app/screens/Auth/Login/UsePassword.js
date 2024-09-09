@@ -51,7 +51,7 @@ export default function UsePassword({ navigation, route }) {
       return setErrorMessage(errorMessage);
     }
     
-    await AsyncStorage.setItem('userToken', response.data.data.token);
+    await AsyncStorage.setItem('token', response.data.data.token);
 
     if (response.data.data.facialToken){
       await AsyncStorage.setItem('facialToken', response.data.data.facialToken );
