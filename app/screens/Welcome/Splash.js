@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import { View, StyleSheet, Animated, Image } from 'react-native';
+import Logo from '../../assets/newRydeproLogo.png';
 
 const Landing = ({ navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -8,11 +9,11 @@ const Landing = ({ navigation }) => {
     Animated.timing(fadeAnim, {
       toValue: 1, 
       duration: 9000, 
-      useNativeDriver: true, // Use native driver for better performance
+      useNativeDriver: true, 
     }).start();
 
     const timeout = setTimeout(() => {
-        navigation.navigate('LandingOffer');
+        navigation.navigate('Onboarding');
     }, 9000);
 
     return () => clearTimeout(timeout);
@@ -20,10 +21,9 @@ const Landing = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Animated.Image
-        source={require('../../assets/Logo Image.png')}
-        style={ { opacity: fadeAnim }} 
-      />
+      <Animated.View style={{ opacity: fadeAnim }}>
+      <Image source={Logo} style={{ width: 250, height: 200 }} /> 
+      </Animated.View>
     </View>
   );
 };
