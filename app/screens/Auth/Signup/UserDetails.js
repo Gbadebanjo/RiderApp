@@ -7,7 +7,7 @@ import StyledButton from '../../../components/StyledButton';
 import Centerlogo from '../../../components/centerlogo';
 import { Formik } from 'formik';
 import InputField from '../../../components/InputField';
-import SelectInput from '../../../components/SelectInput';
+// import SelectInput from '../../../components/SelectInput';
 import PhoneInput from 'react-native-phone-number-input';
 import * as yup from 'yup';
 import BackButton from '../../../components/BackButton';
@@ -38,7 +38,9 @@ export default function UserDetails({navigation, route}) {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <BackButton style={styles.Icon} />
-        <Centerlogo align="left"/>
+        <View style={styles.logo} >
+          <Centerlogo align="left" />
+        </View>
 
       <Formik
         initialValues={{
@@ -55,7 +57,7 @@ export default function UserDetails({navigation, route}) {
         onSubmit={async (values) => {
           try {
             await AsyncStorage.setItem('userDetails', JSON.stringify(values));
-            navigation.navigate('ResidencyLocation');
+            navigation.navigate('SecurityIntro');
           } catch (error) {
             Alert.alert('Error', 'Failed to save user details.');
           }
@@ -76,6 +78,7 @@ export default function UserDetails({navigation, route}) {
                 error={touched.accountType && errors.accountType}
                 errorMessage={errors.accountType}
                 showPasswordToggle={false}
+                style={styles.formik}
             />
 
             <InputField
@@ -122,7 +125,7 @@ export default function UserDetails({navigation, route}) {
                 errorMessage={errors.displayName}
                 showPasswordToggle={false}
             />
-
+          {/* 
             <SelectInput
                 label="Accessibility (Optional)"
                 items={[
@@ -136,7 +139,7 @@ export default function UserDetails({navigation, route}) {
                 value={values.accessibility}
                 width="100%"
                 error={errors.accessibility}
-            />
+            /> */}
 
             <InputField
                 label="Email Address"
@@ -153,7 +156,7 @@ export default function UserDetails({navigation, route}) {
                 showPasswordToggle={false}
             />
 
-            <Text style={styles.label}>Phone Number</Text>
+            <Text style={styles.phonelabel}>Phone Number</Text>
                 <View style={styles.phoneContainer}>
                     <PhoneInput
                     ref={phoneInputRef}
@@ -191,7 +194,7 @@ export default function UserDetails({navigation, route}) {
             />
 
             <StyledButton
-                title="Confirm"
+                title="Continue"
                 onPress={handleSubmit}
                 width="100%"
                 height={53}
@@ -200,7 +203,7 @@ export default function UserDetails({navigation, route}) {
                 backgroundColor="#212121"
                 borderWidth={2}
                 TextColor="#fff"
-                iconName="angle-right" 
+                borderRadius={30} 
             />
           </>
         )}
@@ -216,8 +219,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 30,
-    paddingTop: 30,
+    paddingHorizontal: 20,
     paddingBottom: 30,
   },
   Icon: {
@@ -225,86 +227,10 @@ const styles = StyleSheet.create({
      marginBottom: 10,
   },
   logo: {
-    // marginTop: 200,
-  },
-  title: {
-    fontSize: 24,
-    // marginTop: 20,
-    fontWeight: '700',
-    alignSelf: 'flex-start',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: '400',
-    alignSelf: 'flex-start',
-    marginBottom: 0,
-  },
-  socialsLogo: {
-    flexDirection: 'row',
-    gap: 30,
-    marginTop: 30,
-  },
-  errorText: {
-    fontSize: 14,
-    color: 'red',
-    marginTop: 0,
-    alignSelf: 'flex-start',
-  },
-  loginText: {
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: 30,
-    color: '#212121',
-    textDecorationLine: 'underline',
-  },
-  proceedText:{
-    fontSize: 12,
-    fontWeight: '500',
-    textAlign: 'center',
-    color: '#212121',
-    width: '100%',
     marginBottom: 20,
   },
-  buttonContainer:{
-    width: '70%',
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 20,
-  },
-  boldText: {
-    fontWeight: 'bold',
-  },
-  flexSpacer: {
-    flex: 1,
-  },
-  resendText:{
-    textAlign: 'center',
-  },
-  codeFieldRoot: {
-    marginTop: 40,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  cell: {
-    width: 40,
-    height: 40,
-    lineHeight: 38,
-    fontSize: 24,
-    borderBottomWidth: 2,
-    borderColor: '#CCCCCC',
-    textAlign: 'center',
-  },
-  focusCell: {
-    borderColor: '#000000',
-  },
-  completeCell: {
-    borderColor: '#000000',
-},
-  inputText: {
-    color: 'black', 
-    fontSize: 18,
+  phonelabel: {
+    marginTop: 15,
   },
   phoneContainer: {
     height: 50,
@@ -313,9 +239,7 @@ const styles = StyleSheet.create({
   },
   phoneFlagContainer: {
     height: '100%',
-    // borderColor: isFocused ? '#212121' : '#CCCCCC',
     borderColor: '#CCCCCC',
-    // borderColor: 'gray',
     borderBottomWidth: 2,
     width: '100%',
   },

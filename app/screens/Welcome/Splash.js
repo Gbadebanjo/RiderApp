@@ -22,7 +22,7 @@ const Landing = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Animated.View style={{ opacity: fadeAnim }}>
-      <Image source={Logo} style={{ width: 250, height: 200 }} /> 
+      <Image source={Logo} style={{ width: '40%', height: undefined, aspectRatio: 1, resizeMode: 'contain' }} /> 
       </Animated.View>
     </View>
   );

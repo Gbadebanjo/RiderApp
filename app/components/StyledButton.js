@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Image } from 'react-native';
+import { FontAwesome, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 
 function StyledButton({
   title,
@@ -18,7 +18,11 @@ function StyledButton({
   iconName,
   paddingVertical,
   fontSize = 18,
-  loading,  //  Added Prop to handle loading state
+  loading, 
+  borderRadius= 10,
+  appleLogo,
+  googleLogo,
+  emailLogo
 }) {
   return (
     <TouchableOpacity
@@ -35,6 +39,7 @@ function StyledButton({
         { borderWidth },
         { borderColor },
         { paddingVertical },
+        {borderRadius}
       ]}
       disabled={loading}  // Disable button when loading
     >
@@ -42,9 +47,14 @@ function StyledButton({
         {loading ? (
           <ActivityIndicator color={TextColor || '#fff'} />
         ) : (
-          <Text style={[styles.text, { fontSize }, { color: TextColor || '#fff' }]}>
-            {title}
-          </Text>
+          <>
+            {appleLogo && <AntDesign name="apple1" size={20} color={TextColor || '#fff'}/>}
+            {googleLogo && <Image source={googleLogo} style={styles.logo} />}
+            {emailLogo && <MaterialCommunityIcons name="email-outline" size={20} color={TextColor || '#fff'}/>}
+            <Text style={[styles.text, { fontSize }, { color: TextColor || '#fff' }]}>
+              {title}
+            </Text>
+          </>
         )}
         {!loading && iconName && (
           <FontAwesome name={iconName} size={22} color="#fff" style={styles.icon} />
@@ -56,7 +66,6 @@ function StyledButton({
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: 8,
     padding: 17,
     justifyContent: 'center',
     alignItems: 'center',
@@ -68,13 +77,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    gap: 10,
   },
   text: {
-    flex: 1,
+    // flex: 1,
     textAlign: 'center',
   },
   icon: {
-    marginLeft: 10,  // Add some space between the text and icon
+    marginLeft: 10,  
+  },
+  logo: {
+    width: 20,
+    height: 20,
   },
 });
 
