@@ -7,18 +7,18 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MenuLanding from '../screens/Dashboard/MenuLanding';
 import Account from '../screens/Dashboard/Account';
 import Services from '../screens/Services/Services';
-import BookRide from '../screens/Ride/BookRide';
 import BookingHistory from '../screens/History/BookingHistory';
 import Edit from '../screens/Dashboard/Edit';
 import Settings from '../screens/Dashboard/Settings';
+import WelcomeHome from '../screens/HomeScreens/WelcomeHome';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-function BookRideStack() {
+function HomeStack() {
     return (
         <Stack.Navigator>
-            <Stack.Screen name="BookRide" component={BookRide} options={{ headerShown: false }} />
+            <Stack.Screen name="WelcomeHome" component={WelcomeHome} options={{ headerShown: false }} />
         </Stack.Navigator>
     )
 }
@@ -52,9 +52,9 @@ function MenuStack() {
 
 function NavButtons() {
     return (
-        <Tab.Navigator initialRouteName="Menu" screenOptions={{ tabBarHideOnKeyboard: true, headerShown: false, tabBarShowLabel: true, tabBarStyle: styles.tabBar, tabBarActiveTintColor: '#000', tabBarInactiveTintColor: 'gray', tabBarLabelStyle: styles.tabBarLabel, tabBarIconStyle: styles.tabBarIcon, }}>
-            <Tab.Screen name="BookRide" component={BookRideStack} options={{
-                tabBarLabel: 'Book Ride', tabBarIcon: ({ color }) => (
+        <Tab.Navigator initialRouteName="HomeStack" screenOptions={{ tabBarHideOnKeyboard: true, headerShown: false, tabBarShowLabel: true, tabBarStyle: styles.tabBar, tabBarActiveTintColor: '#000', tabBarInactiveTintColor: 'gray', tabBarLabelStyle: styles.tabBarLabel, tabBarIconStyle: styles.tabBarIcon, }}>
+            <Tab.Screen name="HomeStack" component={HomeStack} options={{
+                tabBarLabel: 'Home', tabBarIcon: ({ color }) => (
                     <AntDesign name="car" size={24} color={color} />
                 )
             }} />
