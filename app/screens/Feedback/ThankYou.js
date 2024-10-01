@@ -1,15 +1,16 @@
 // import { StatusBar } from 'expo-status-bar';
-import React, {useRef, useState, useEffect} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native';
+import React from 'react';
+import { StyleSheet, StatusBar, Text, View, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../components/StyledButton';
 import Centerlogo from '../../components/centerlogo';
-const image = require('./../../assets/rafiki.png');
+const image = require('./../../assets/hello.png');
 
 export default function ThankYou({navigation}) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Centerlogo align="left"/>
         <View>
@@ -24,13 +25,13 @@ export default function ThankYou({navigation}) {
                     width="100%"
                     height={53}
                     paddingVertical={10}
-                    marginTop={40}
+                    marginTop={50}
                     backgroundColor="#212121"
                     borderWidth={2}
                     TextColor="#fff"
-                    iconName="angle-right" 
+                    fontSize={16}
+                    borderRadius={30}
                 />
-
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -63,10 +64,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    marginTop: 40,
+    marginTop: 20,
     fontWeight: '600',
     alignSelf: 'center',
-    // marginBottom: 10,
   },
   subTitle: {
     fontSize: 14,
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   image: {
-    marginTop: 30,
+    marginTop: 25,
     alignSelf: 'center',
     marginBottom: 30,
   },
