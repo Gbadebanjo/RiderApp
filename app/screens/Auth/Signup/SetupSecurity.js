@@ -5,14 +5,17 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackButton from '../../../components/BackButton';
 import StyledButton from '../../../components/StyledButton';
+import SecurityModal from '../../../components/SecurityModal';
 
-const logo = require('../../../assets/newRydeproLogo.png');
+const face = require('../../../assets/Face.png');
 
 export default function SetupSecurity({navigation}) {
     const [isFingerprintEnabled, setIsFingerprintEnabled] = useState(false);
     const [isFingerprintSupported, setIsFingerprintSupported] = useState(false);
+    const [isAnyAuthEnabled, setIsAnyAuthEnabled] = useState(false);
     const [isFaceIDSupported, setIsFaceIDSupported] = useState(false);
     const [isFacialIDEnabled, setIsFacialIDEnabled] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const slideAnim = useRef(new Animated.Value(Dimensions.get('window').height)).current;
 
     useEffect(() => {
@@ -33,6 +36,7 @@ export default function SetupSecurity({navigation}) {
   
     const toggleFacialID = () => {
       setIsFacialIDEnabled(!isFacialIDEnabled);
+      setIsAnyAuthEnabled(!isAnyAuthEnabled);
     };
 
     const handleSwitchChange = async (value) => {
@@ -40,6 +44,7 @@ export default function SetupSecurity({navigation}) {
       if (value) {
         await handleFingerprintAuth();
       }
+      setIsAnyAuthEnabled(value);
     };
 
     useEffect(() => {
@@ -103,7 +108,7 @@ export default function SetupSecurity({navigation}) {
           return Alert.alert('Success', 'fingerprint registered successfully', [
             {
               text: 'OK',
-              onPress: () => navigation.navigate('ThankYou'),
+              // onPress: () => alert('ThankYou'),
             },
           ]);
         } else {
@@ -184,9 +189,14 @@ export default function SetupSecurity({navigation}) {
         }
       };
 
-    const handleSubmit = () => {
-        navigation.navigate('SetupSecurity');
+      const handleSubmit = () => {
+      setIsModalVisible(true);
     }
+
+    const handleModalProceed = () => {
+      setIsModalVisible(false);
+      navigation.navigate('SetupAdditionalSecurity');
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -225,14 +235,15 @@ export default function SetupSecurity({navigation}) {
                 </View>
             </View>
 
-            <View style={styles.buttonContainer}>
+            {isAnyAuthEnabled && (
+              <View style={styles.buttonContainer}>
                 <StyledButton
                     title="Cancel"
                     // onPress={handleSubmit}
                     width="30%"
                     paddingVertical={10}
                     marginTop={0}
-                    backgroundColor="#000000"
+                    backgroundColor="#111"
                     borderWidth={0}
                     TextColor="#FFFFFF"
                     borderRadius={10}
@@ -251,36 +262,43 @@ export default function SetupSecurity({navigation}) {
                     borderRadius={15} 
                     fontSize={15}
                 />
-        </View>   
+              </View>   
+            )}
 
           <Modal
               transparent={true}
               visible={isFacialIDEnabled}
               animationType="none"
-              // onRequestClose={toggleFacialID}
+              onRequestClose={toggleFacialID}
             >
-          <Animated.View style={[styles.modal, { transform: [{ translateY: slideAnim }] }]}>
-            <View style={styles.modalContent}>
-                <View style={styles.topSection}>
-                  <Text style={styles.modalTitle}>Verify It's You</Text>
-                  <Text style={styles.modalText}>You can use face authentication to secure your accounts</Text>
-                  <Image source={logo} style={styles.logo} />
-                  <Text style={styles.modalCenterText}>Tap Confirm to complete</Text>
+              <Animated.View style={[styles.modal, { transform: [{ translateY: slideAnim }] }]}>
+                <View style={styles.modalContent}>
+                    <View style={styles.topSection}>
+                      <Text style={styles.modalTitle}>Verify It's You</Text>
+                      <Text style={styles.modalText}>You can use face authentication to secure your accounts</Text>
+                      <Image source={face} style={styles.logo}/>
+                      {/* <FontAwesome6 name="face-kiss-beam" size={100} color="grey" style={styles.logo} /> */}
+                      <Text style={styles.modalCenterText}>Tap Confirm to complete</Text>
+                    </View>
+
+                    <View style={styles.bottomSection}>
+                      <TouchableOpacity style={styles.cancelbutton} onPress={toggleFacialID}>
+                        <Text style={styles.buttonText1}>Cancel</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.confirmbutton} onPress={handleFacialIDAuth}>
+                        <Text style={styles.buttonText2}>Confirm</Text>
+                      </TouchableOpacity>
+                    </View>
+
                 </View>
+              </Animated.View>
+        </Modal> 
 
-
-                <View style={styles.bottomSection}>
-                  <TouchableOpacity style={styles.cancelbutton} onPress={toggleFacialID}>
-                    <Text style={styles.buttonText1}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.confirmbutton} onPress={handleFacialIDAuth}>
-                    <Text style={styles.buttonText2}>Confirm</Text>
-                  </TouchableOpacity>
-                </View>
-
-            </View>
-          </Animated.View>
-        </Modal>     
+            <SecurityModal
+              visible={isModalVisible}
+              onClose={() => setIsModalVisible(false)}
+              onProceed={handleModalProceed}
+            />       
     </SafeAreaView>
     );
 }
@@ -374,7 +392,6 @@ const styles = StyleSheet.create({
     },
     topSection: {
       // flex: 1,
-      // justifyContent: 'flex-start'
     },
     logo: {
       width: '30%',
@@ -385,6 +402,7 @@ const styles = StyleSheet.create({
       marginBottom: 20,
     },
     bottomSection: {
+      top: '25%',
       flexDirection: 'row',
       justifyContent: 'space-between',
       bottom: 0, 

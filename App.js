@@ -15,6 +15,7 @@ import SetPassword from './app/screens/Auth/Signup/SetPassword';
 import UserDetails from './app/screens/Auth/Signup/UserDetails';
 import SecurityIntro from './app/screens/Auth/Signup/SecurityIntro';
 import SetupSecurity from './app/screens/Auth/Signup/SetupSecurity';
+import SetupAdditionalSecurity from './app/screens/Auth/Signup/SetupAdditionalSecurity';
 import Security from './app/screens/Security/Security'
 import Biometric from './app/screens/Security/Biometric';
 import FacialID from './app/screens/Security/FacialID';
@@ -56,6 +57,7 @@ export default function App() {
       <Stack.Screen name='UserDetails' component={UserDetails} options={{ headerShown: false }}/>
       <Stack.Screen name='SecurityIntro' component={SecurityIntro} options={{ headerShown: false }}/>
       <Stack.Screen name='SetupSecurity' component={SetupSecurity} options={{ headerShown: false }}/>
+      <Stack.Screen name='SetupAdditionalSecurity' component={SetupAdditionalSecurity} options={{ headerShown: false }}/>
       <Stack.Screen name='Security' component={Security} options={{ headerShown: false }}/>
       <Stack.Screen name='SettingToggle' component={SettingToggle} options={{ headerShown: false }}/>
       <Stack.Screen name='Biometric' component={Biometric} options={{ headerShown: false }}/>
