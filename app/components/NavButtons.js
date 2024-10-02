@@ -1,16 +1,17 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { AntDesign, FontAwesome } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import MenuLanding from '../screens/Dashboard/MenuLanding';
-import Account from '../screens/Dashboard/Account';
-import Services from '../screens/Services/Services';
-import BookingHistory from '../screens/History/BookingHistory';
-import Edit from '../screens/Dashboard/Edit';
+import Account from '../screens/Settings/Account';
+import PromotionsScreen from '../screens/Promotions/PromotionsScreen';
+import ProfileLanding from '../screens/Profile/ProfileLanding';
+import Edit from '../screens/Settings/Edit';
 import Settings from '../screens/Dashboard/Settings';
 import WelcomeHome from '../screens/HomeScreens/WelcomeHome';
+import SettingHome from '../screens/Settings/SettingHome';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -23,18 +24,18 @@ function HomeStack() {
     )
 }
 
-function BookingHistoryStack() {
+function ProfileStack() {
     return (
         <Stack.Navigator>
-            <Stack.Screen name="BookingHistory" component={BookingHistory} options={{ headerShown: false }} />
+            <Stack.Screen name="ProfileLanding" component={ProfileLanding} options={{ headerShown: false }} />
         </Stack.Navigator>
     )
 }
 
-function ServicesStack() {
+function PromotionsStack() {
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Services" component={Services} options={{ headerShown: false }} />
+            <Stack.Screen name="PromotionsScreen" component={PromotionsScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
     )
 }
@@ -42,10 +43,18 @@ function ServicesStack() {
 function MenuStack() {
     return (
         <Stack.Navigator>
-            <Stack.Screen name="MenuLanding" component={MenuLanding} options={{ headerShown: false }} />
-            <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
-            <Stack.Screen name="Edit" component={Edit} options={{ headerShown: false }} />
             <Stack.Screen name="Settings" component={Settings} options={{ headerShown: false }} />
+        </Stack.Navigator>
+    )
+}
+
+function SettingsStack() {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name="SettingHome" component={SettingHome} options={{ headerShown: false }} />
+            <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
+            <Stack.Screen name="MenuLanding" component={MenuLanding} options={{ headerShown: false }} />
+            <Stack.Screen name="Edit" component={Edit} options={{ headerShown: false }} />
         </Stack.Navigator>
     )
 }
@@ -58,22 +67,22 @@ function NavButtons() {
                     <AntDesign name="car" size={24} color={color} />
                 )
             }} />
-            <Tab.Screen name="BookingHistory" component={BookingHistoryStack} options={{
-                tabBarLabel: 'Booking History',
+            <Tab.Screen name="ProfileStack" component={ProfileStack} options={{
+                tabBarLabel: 'Profile',
+                tabBarIcon: ({ color }) => (
+                    <FontAwesome name="user-o" size={24} color={color} />
+                )
+            }} />
+            <Tab.Screen name="PromotionsStack" component={PromotionsStack} options={{
+                tabBarLabel: 'Promotions',
                 tabBarIcon: ({ color }) => (
                     <AntDesign name="book" size={24} color={color} />
                 )
             }} />
-            <Tab.Screen name="Services" component={ServicesStack} options={{
-                tabBarLabel: 'Services',
+            <Tab.Screen name="SettingsStack" component={SettingsStack} options={{
+                tabBarLabel: 'Settings',
                 tabBarIcon: ({ color }) => (
-                    <AntDesign name="appstore-o" size={24} color={color} />
-                )
-            }} />
-            <Tab.Screen name="Menu" component={MenuStack} options={{
-                tabBarLabel: 'Menu',
-                tabBarIcon: ({ color }) => (
-                    <FontAwesome name="user-o" size={24} color={color} />
+                    <Ionicons name="settings-outline" size={24} color={color} />
                 )
             }} />
         </Tab.Navigator>

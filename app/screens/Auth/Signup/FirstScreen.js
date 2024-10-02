@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StatusBar, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, StatusBar, StyleSheet, Alert, ScrollView, SafeAreaView } from 'react-native';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import StyledButton from '../../../components/StyledButton';
 
-const logo = require('../../../assets/Logo Image.png');
+const logo = require('../../../assets/newRydeproLogo.png');
+const signupImage = require('../../../assets/signupImage.png');
 
 export default function FirstScreen({ navigation }) {
   useEffect(() => {
@@ -30,66 +31,108 @@ export default function FirstScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <Image source={logo} style={styles.logo} />
-      <Text style={styles.title}>New Era of On Demand Transportation.</Text>
-      <View style={styles.buttonContainer}>
-        <StyledButton
-          title="Create an Account"
-          onPress={() => navigation.navigate('CreateAccount')}
-          width="80%"
-          height={53}
-          paddingVertical={10}
-          marginTop={10}
-          backgroundColor="#212121"
-          borderWidth={2}
-          TextColor="#fff"
-          iconName="angle-right" />
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+        <Image source={logo} style={styles.logo} />
+        <Image source={signupImage} style={styles.signupImage} />
+        <Text style={styles.title}>Getting Started?</Text>
+        <View style={styles.buttonContainer}>
+          <StyledButton
+            title="Create an account"
+            onPress={() => navigation.navigate('MenuLanding')}
+            appleLogo={true}
+            width="88%"
+            height={53}
+            fontSize={16}
+            paddingVertical={10}
+            marginTop={10}
+            backgroundColor="#212121"
+            borderWidth={2}
+            borderRadius={30}
+            TextColor="#fff"
+            />
 
-        <StyledButton
-          title="Login"
-          onPress={() => navigation.navigate('Login')}
-          width="80%"
-          height={53}
-          paddingVertical={10}
-          marginTop={10}
-          backgroundColor="#fff"
-          borderColor="#212121"
-          borderWidth={1}
-          TextColor="#212121"
-          iconName="angle-right" />
+          <StyledButton
+            title="Create an account"
+            onPress={() => navigation.navigate('CreateAccount')}
+            googleLogo={require('../../../assets/GoogleIcon.png')}
+            width="88%"
+            height={53}
+            fontSize={16}
+            paddingVertical={10}
+            marginTop={10}
+            backgroundColor="#ffffff"
+            borderWidth={1}
+            borderRadius={30}
+            borderColor='rgba(17, 17, 17, 0.1)'
+            TextColor="#111111"
+             />
 
-        <TouchableOpacity onPress={() => navigation.navigate('WelcomeGuest')}>
-          <Text style={styles.guestText}>Continue as Guest</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <StyledButton
+            title="Create an account"
+            onPress={() => navigation.navigate('CreateAccount')}
+            emailLogo={true}
+            width="88%"
+            height={53}
+            fontSize={16}
+            paddingVertical={10}
+            marginTop={10}
+            backgroundColor="#ffffff"
+            borderColor='rgba(17, 17, 17, 0.1)'
+            borderWidth={1}
+            borderRadius={30}
+            TextColor="#111111"
+             />
+
+          {/* <TouchableOpacity onPress={() => navigation.navigate('WelcomeGuest')}>
+            <Text style={styles.guestText}>Continue as Guest</Text>
+          </TouchableOpacity> */}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
+    backgroundColor: '#fff',
+  },
+  container: {
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
-    paddingVertical: 40,
+    paddingVertical: 30,
     width: '100%',
   },
   logo: {
-    marginTop: 30,
+    // marginTop: 30,
+    width: '30%',
+    height: undefined,
+    aspectRatio: 1,
+    resizeMode: 'contain',
+  },
+  signupImage: {
+    marginTop: 40,
+    width: '60%',
+    height: undefined,
+    aspectRatio: 1,
+    resizeMode: 'contain',
+    marginBottom: 80,
   },
   title: {
     width: '80%',
     fontSize: 22,
     fontWeight: '600',
     textAlign: 'center',
+    marginBottom: 15,
   },
   buttonContainer: {
     width: '100%',
     alignItems: 'center',
-    gap: 15,
+    gap: 7,
+    // marginBottom: 100,
   },
   guestText: {
     fontSize: 16,

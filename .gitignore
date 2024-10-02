@@ -9,6 +9,7 @@ ios/
 
 # Expo
 .expo/
+.vscode/
 dist/
 web-build/
 

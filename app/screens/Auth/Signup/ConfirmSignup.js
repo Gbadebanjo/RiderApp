@@ -1,6 +1,6 @@
 // import { StatusBar } from 'expo-status-bar';
 import React, {useRef, useState} from 'react';
-import otpApi from './../../../api/auth'
+import otpApi from '../../../api/auth'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../../components/StyledButton';
@@ -23,7 +23,7 @@ const validationSchema = yup.object().shape({
 
 const CELL_COUNT = 6;
 
-export default function FirstScreen({navigation, route}) {
+export default function ConfirmSignup({navigation, route}) {
     const { email } = route.params;
     const [loading, setLoading] = useState(false);
     const [value, setValue] = useState('');
@@ -36,16 +36,16 @@ export default function FirstScreen({navigation, route}) {
 
     const handleVerify = async (values, {resetForm}) => {
       setLoading(true);
-      const response = await otpApi.verifyOtp(email, values.code);
-      // console.log(response.data.message);
-      Keyboard.dismiss();
-      if (!response.ok) {
-        setLoading(false);
-        return setErrorMessage(response.data.message);
-      }
-      resetForm();
-      alert(response.data.message);
-      navigation.navigate('SetPassword', { 
+      // const response = await otpApi.verifyOtp(email, values.code);
+      // // console.log(response.data.message);
+      // Keyboard.dismiss();
+      // if (!response.ok) {
+      //   setLoading(false);
+      //   return setErrorMessage(response.data.message);
+      // }
+      // resetForm();
+      // alert(response.data.message);
+      navigation.navigate('UserDetails', { 
         email: email,
       });
     }
@@ -70,7 +70,7 @@ export default function FirstScreen({navigation, route}) {
       <BackButton style={styles.Icon} />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Centerlogo/>
-      <Text style={styles.title}>Enter the 6-digit code</Text>
+      <Text style={styles.title}>Confirm 6-digit code</Text>
       <Text style={styles.subtitle}>Please check your email inbox or spam</Text>
 
       {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
@@ -110,59 +110,19 @@ export default function FirstScreen({navigation, route}) {
           </>
         )}
       </Formik>
-
-          <View style={styles.socialsLogo}>
-            <SocialLogo text="Google" logo={googleLogo} />
-            <SocialLogo text="Apple" logo={appleLogo}/>
-          </View>
-
-          <OrSeparator />
-     
-      <TouchableOpacity onPress={() => alert('Logged In User')}>
-        <Text style={styles.loginText}>Login</Text>
-      </TouchableOpacity>
-
-      <View style={styles.flexSpacer} />
         
-        <View>
-            <Text style={styles.resendText}>I didn’t receive any code? 00.04</Text>
+        <View style={styles.lowerparts}>
+            <Text style={styles.resendText}>I didn’t receive any code? 00:04</Text>
 
             <View style={styles.buttonContainer}>
-                <StyledButton
-                    title="Resend Code"
-                    loading={loading}
-                    onPress={handleResend}
-                    width="50%"
-                    height={40}
-                    fontSize={11}
-                    paddingVertical={10}
-                    marginTop={20}
-                    backgroundColor="#D3D3D3"
-                    TextColor="#fff"
-                />
-
-                <StyledButton
-                    title="Send SMS"
-                    // onPress={alert('Send SMS')}
-                    width="50%"
-                    loading={loading}
-                    height={40}
-                    fontSize={13}
-                    paddingVertical={10}
-                    marginTop={20}
-                    backgroundColor="#D3D3D3"
-                    TextColor="#fff"
-            />
+               <TouchableOpacity>
+                    <Text style={styles.resendCode}>Resend code</Text>
+               </TouchableOpacity>
+               <TouchableOpacity>
+                    <Text style={styles.resendCode}>Send SMS</Text>
+               </TouchableOpacity>
             </View>
         </View>
-
-        <Text style={styles.proceedText}>
-          By proceeding, you agree to RYDEPRO’s  
-          <Text style={styles.linkText} onPress={() => alert('Terms clicked')}> Terms, </Text>
-          <Text style={styles.linkText} onPress={() => alert('Privacy Notice clicked')}> Privacy </Text> 
-          Notice and can unsubscribe by emailing 
-          <Text style={styles.boldText} onPress={() => alert('Privacy Notice clicked')}> "Unsubscribe" </Text>
-      </Text>
       </ScrollView>
     </SafeAreaView>
   );
@@ -173,7 +133,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 30,
-    paddingTop: 30,
+    paddingTop: 15,
   },
   Icon: {
     alignSelf: 'flex-start',
@@ -190,9 +150,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    marginTop: 20,
+    marginTop: 30,
     fontWeight: '700',
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
     marginBottom: 10,
   },
   subtitle: {
@@ -200,11 +160,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     alignSelf: 'flex-start',
     marginBottom: 0,
-  },
-  socialsLogo: {
-    flexDirection: 'row',
-    gap: 30,
-    marginTop: 30,
   },
   errorText: {
     fontSize: 14,
@@ -218,27 +173,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignSelf: 'center',
   },
-  loginText: {
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: 30,
-    color: '#212121',
-    textDecorationLine: 'underline',
-  },
-  proceedText:{
-    fontSize: 12,
-    fontWeight: '500',
-    textAlign: 'center',
-    color: '#212121',
-    width: '100%',
-    marginBottom: 30,
+  lowerparts:{
+    marginTop: 80,
     },
   buttonContainer:{
-    width: '70%',
     flexDirection: 'row',
-    gap: 10,
-    marginBottom: 20,
+    gap: 30,
+    marginTop: 20,
+    justifyContent: 'center',
   },
   boldText: {
     fontWeight: 'bold',
@@ -249,8 +191,11 @@ const styles = StyleSheet.create({
   resendText:{
     textAlign: 'center',
   },
+  resendCode:{
+    fontWeight: '700',
+  },
   codeFieldRoot: {
-    marginTop: 40,
+    marginTop: 70,
     width: '100%',
     alignSelf: 'center',
   },
