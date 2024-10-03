@@ -1,15 +1,42 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator, StatusBar, Platform } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator, StatusBar, Modal, Easing, TouchableWithoutFeedback, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign, Feather, Entypo, FontAwesome6, FontAwesome5, MaterialCommunityIcons, Octicons, Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { dashboardClient, setAuthToken } from '../../api/client';
 
 export default function SettingHome({ navigation }) {
-    const [showReferral, setShowReferral] = useState(false);
+    // const [showReferral, setShowReferral] = useState(false);
+    const [showLogOut, setShowLogOut] = useState(false);
+    const slideAnim = useRef(new Animated.Value(300)).current;
+
+
+    const logOut = async () => {
+        try {
+            await AsyncStorage.removeItem('token');
+            setAuthToken(null);
+            navigation.navigate('FirstScreen');
+            toggleModal();
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
+
+    const toggleModal = () => {
+        setShowLogOut(!showLogOut);
+        if (!showLogOut) {
+            Animated.timing(slideAnim, {
+                toValue: 0,
+                duration: 300,
+                easing: Easing.out(Easing.ease),
+                useNativeDriver: true,
+            }).start();
+        }
+    };
+
 
     return (
         <LinearGradient
@@ -19,7 +46,7 @@ export default function SettingHome({ navigation }) {
             end={{ x: 0, y: 1 }}
             style={styles.linearGradient}
         >
-            <SafeAreaView>
+            <SafeAreaView style={styles.safeArea}>
                 <StatusBar barStyle="light-content" backgroundColor='#212121' translucent={false} />
                 <View>
                     <View style={styles.head}>
@@ -46,7 +73,7 @@ export default function SettingHome({ navigation }) {
                         <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.eachItem}
-                        onPress={() => navigation.navigate('MenuLanding')}>
+                        onPress={() => navigation.navigate('Security')}>
                         <Text style={styles.eachItemText}>Manage Security Options</Text>
                         <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
                     </TouchableOpacity>
@@ -62,26 +89,47 @@ export default function SettingHome({ navigation }) {
                         <Text style={styles.eachItemText}>Rewards Program</Text>
                         <Ionicons name="chevron-down" size={20} color="#000" style={styles.forwardIcon} />
                     </TouchableOpacity>
-                    {showReferral &&
-                        <>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('TrackReferral')}
-                                style={styles.eachItem}
-                            >
-                                <Text style={{ color: '#000', fontSize: 16, padding: 10 }}>Track Referral</Text>
-                                <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('InviteReferral')}
-                                style={styles.eachItem}
-                            >
-                                <Text style={{ color: '#000', fontSize: 16, padding: 10 }}>Invite Referral</Text>
-                                <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
-                            </TouchableOpacity>
-                        </>
-                    }
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('InviteReferral')}
+                        style={styles.eachItem}
+                    >
+                        <Text style={styles.eachItemText}>Invite Referral</Text>
+                        <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={toggleModal}
+                        style={styles.eachItem}
+                    >
+                        <Text style={{ color: '#c92014', fontSize: 16, padding: 10 }}>Logout</Text>
+                        <Ionicons name="chevron-forward" size={20} color="#c92014" style={styles.forwardIcon} />
+                    </TouchableOpacity>
                 </ScrollView>
             </SafeAreaView>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showLogOut}
+                onRequestClose={() => {
+                    setShowReferral(false);
+                }}
+            >
+                <TouchableWithoutFeedback onPress={toggleModal}>
+                    <View style={styles.modalBackground}>
+                        <View style={styles.modalContainer}>
+                            <Text style={styles.logOut}>Do you want to logout?</Text>
+                            <View style={styles.buttonContainer}>
+                                <TouchableOpacity onPress={toggleModal} style={[styles.eachButton, { backgroundColor: '#909090' }]}>
+                                    <Text style={{ color: '#fff' }}>No</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={logOut} style={[styles.eachButton, { backgroundColor: '#000' }]}>
+                                    <Text style={{ color: '#fff' }}>Yes</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
+            </Modal>
         </LinearGradient>
     );
 }
@@ -90,8 +138,13 @@ const styles = StyleSheet.create({
     linearGradient: {
         flex: 1,
     },
+    safeArea: {
+        flex: 1,
+    },
     scrollView: {
         backgroundColor: '#fff',
+        flexGrow: 1,
+
     },
     notification: {
         backgroundColor: '#464646',
@@ -155,5 +208,37 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         paddingVertical: 15,
         borderRadius: 10,
+    },
+    modalBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContainer: {
+        width: '80%',
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 25,
+        height: 180,
+    },
+    logOut: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#000',
+        textAlign: 'center',
+        paddingTop: 30,
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: 30,
+    },
+    eachButton: {
+        padding: 13,
+        borderRadius: 10,
+        width: 80,
+        alignItems: 'center',
+        color: '#fff',
     },
 });

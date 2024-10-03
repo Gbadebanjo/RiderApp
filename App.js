@@ -16,7 +16,7 @@ import UserDetails from './app/screens/Auth/Signup/UserDetails';
 import SecurityIntro from './app/screens/Auth/Signup/SecurityIntro';
 import SetupSecurity from './app/screens/Auth/Signup/SetupSecurity';
 import SetupAdditionalSecurity from './app/screens/Auth/Signup/SetupAdditionalSecurity';
-import Security from './app/screens/Security/Security'
+import Security from './app/screens/Settings/Security';    // In use
 import Biometric from './app/screens/Security/Biometric';
 import FacialID from './app/screens/Security/FacialID';
 import Passphrase from './app/screens/Security/Passphrase';
@@ -31,7 +31,7 @@ import ReviewPhoto from './app/screens/Dashboard/ReviewPhoto';
 import RewardProgram from './app/screens/Dashboard/RewardProgram';
 import CashbackReward from './app/screens/Dashboard/CashbackReward';
 import MilesPoint from './app/screens/Dashboard/MilesPoint';
-import InviteReferral from './app/screens/Dashboard/InviteReferral';
+import InviteReferral from './app/screens/Settings/InviteReferral';
 import TrackReferral from './app/screens/Dashboard/TrackReferral';
 
 import NavButtons from './app/components/NavButtons';
