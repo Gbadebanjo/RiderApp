@@ -50,9 +50,6 @@ export default function SettingHome({ navigation }) {
                 <StatusBar barStyle="light-content" backgroundColor='#212121' translucent={false} />
                 <View>
                     <View style={styles.head}>
-                        <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <Text style={{ color: '#c92014' }}>Logout</Text>
-                        </TouchableOpacity>
                         <TouchableOpacity style={styles.notification}>
                             <AntDesign name="search1" size={17} color="#fff" style={styles.notification} />
                         </TouchableOpacity>
@@ -77,7 +74,8 @@ export default function SettingHome({ navigation }) {
                         <Text style={styles.eachItemText}>Manage Security Options</Text>
                         <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.eachItem}>
+                    <TouchableOpacity style={styles.eachItem}
+                        onPress={() => navigation.navigate('HelpAndSupport')}>
                         <Text style={styles.eachItemText}>Help and Support</Text>
                         <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
                     </TouchableOpacity>
@@ -158,7 +156,7 @@ const styles = StyleSheet.create({
     },
     head: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         alignItems: 'center',
         paddingHorizontal: 20,
         marginTop: 10,
