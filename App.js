@@ -26,15 +26,20 @@ import Pin from './app/screens/Security/Pin';
 import SettingToggle from './app/screens/Security/SettingToggle';
 import Feedback from './app/screens/Feedback/Feedback';
 import ThankYou from './app/screens/Feedback/ThankYou';
-import Photo from './app/screens/Dashboard/Photo';
-import ReviewPhoto from './app/screens/Dashboard/ReviewPhoto';
+import Photo from './app/screens/Dashboard/Photo';  // In use
+import ReviewPhoto from './app/screens/Dashboard/ReviewPhoto';  // In use
 import RewardProgram from './app/screens/Dashboard/RewardProgram';
 import CashbackReward from './app/screens/Dashboard/CashbackReward';
 import MilesPoint from './app/screens/Dashboard/MilesPoint';
-import InviteReferral from './app/screens/Settings/InviteReferral';
-import TrackReferral from './app/screens/Dashboard/TrackReferral';
+import InviteReferral from './app/screens/Settings/InviteReferral';  // In use
+import HelpAndSupport from './app/screens/Settings/HelpAndSupport';   // In use
+import BotLoading from './app/screens/Settings/BotLoading';  // In use
+import ChatBot from './app/screens/Settings/ChatBot';
+import CustomerServiceCenter from './app/screens/Settings/CustomerServiceCenter';   // In use
+import LiveChat from './app/screens/Settings/LiveChat';
+import TrackReferral from './app/screens/Dashboard/TrackReferral';  // In use
 
-import NavButtons from './app/components/NavButtons';
+import NavButtons from './app/components/NavButtons';  // In use
 
 const Stack = createStackNavigator();
 
@@ -75,6 +80,11 @@ export default function App() {
       <Stack.Screen name='MilesPoint' component={MilesPoint} options={{ headerShown: false }}/>
       <Stack.Screen name='InviteReferral' component={InviteReferral} options={{ headerShown: false }}/>
       <Stack.Screen name='TrackReferral' component={TrackReferral} options={{ headerShown: false }}/>
+      <Stack.Screen name='BotLoading' component={BotLoading} options={{headerShown: false}} />
+      <Stack.Screen name='ChatBot' component={ChatBot} options={{headerShown: false}}/>
+      <Stack.Screen name='LiveChat' component={LiveChat} options={{headerShown: false}}/>
+      <Stack.Screen name='CustomerServiceCenter' component={CustomerServiceCenter} options={{ headerShown: false }}/>
+      <Stack.Screen name='HelpAndSupport' component={HelpAndSupport} options={{ headerShown: false }}/>
     </Stack.Navigator>
    </NavigationContainer>
   );

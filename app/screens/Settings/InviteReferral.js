@@ -186,7 +186,6 @@ const styles = StyleSheet.create({
     },
     head: {
         fontSize: 26,
-        fontWeight: 400,
         color: '#fff',
         textAlign: 'center',
         flex: 1,
@@ -268,7 +267,6 @@ const styles = StyleSheet.create({
     iconcontainer: {
         flexDirection: 'row',
         padding: 5,
-
     },
     eachicon: {
         alignItems: 'center',
