@@ -3,12 +3,11 @@ import api from '../../../api/auth';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as LocalAuthentication from 'expo-local-authentication';
-import StyledButton from '../../../components/StyledButton';
 import Centerlogo from '../../../components/centerlogo';
 import SocialLogo from '../../../components/SocialLogo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MaterialCommunityIcons, AntDesign, Ionicons } from '@expo/vector-icons';
-const googleLogo = require('./../../../assets/GoogleIcon.png');
+import { Entypo, AntDesign, Ionicons } from '@expo/vector-icons';
+
 const appleLogo = require('./../../../assets/AppleLogo.png');
 
 export default function Login({navigation}) {
@@ -146,49 +145,28 @@ export default function Login({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <Centerlogo/>
-      <Text style={styles.title}>Login to your Account</Text>
-
-          <View style={styles.socialsLogo}>
-            <SocialLogo text="Face ID" onPress={handleFacialIDAuth} logo={<AntDesign name="scan1" size={30} color='#7DB7FF'/>} />
-            <SocialLogo text="Biometric" onPress={handleBiometricAuth} logo={<Ionicons name="finger-print" size={30} color='#0F488F' />}/>
-            <SocialLogo text="Email" onPress={()=> navigation.navigate('UsePassword')} logo={<MaterialCommunityIcons name="email" size={30} color='#000000' />}/>
-            <SocialLogo text="Apple" onPress={()=> alert('Login with Apple')} logo={appleLogo}/>
-            <SocialLogo text="Google" onPress={()=> alert('Login with Google')} logo={googleLogo}/>
+       <View style={styles.mainContent}>
+          <View style={styles.topContent}>
+            <Centerlogo logoWidth='100%' logoHeight= '40%'/>
+            <TouchableOpacity style={styles.dotsContainer}>
+              <Entypo name="dots-three-horizontal" size={24} color="black" />
+            </TouchableOpacity>
           </View>
 
-          <View style={styles.socialsLogo2}>
-            <SocialLogo text="Pincode" onPress={()=> navigation.navigate('UsePincode')} logo={<Ionicons name="key-outline" size={30} color='#0B6703' />}/>
-            <SocialLogo text="Passphrase" onPress={()=> navigation.navigate('UsePassphrase')} logo={<MaterialCommunityIcons name="line-scan" size={30} color='black' />}/>
+          <View style={styles.centerContent}>
+            <View style={styles.socialsLogo}>
+              <SocialLogo text="Fingerprint" onPress={ ()=> navigation.navigate('UseFingerprint')} logo={<Ionicons name="finger-print" size={40} color='#fff' style={styles.logo} />} containerWidth='20%'/>
+              <SocialLogo text="Face ID" onPress={()=> navigation.navigate('UseFaceid')} logo={<AntDesign name="scan1" size={40} color='#fff' style={styles.logo}/>} containerWidth='20%'/>
+            </View>
+
+            <TouchableOpacity onPress={() => navigation.navigate('LoginOptions')}>
+              <Text style={styles.otherLogin}>Other Login Options</Text>
+            </TouchableOpacity>
           </View>
-
-          <TouchableOpacity onPress={() => alert('Account Recovery')}>
-            <Text style={styles.loginText}>Account Recovery</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('CreateAccount')}>
+            <Text style={styles.loginText}>Sign Up</Text>
           </TouchableOpacity>
-
-          <StyledButton
-            title="Create an Account"
-            onPress={()=> navigation.navigate('CreateAccount')}
-            width="100%"
-            height={53}
-            paddingVertical={10}
-            marginTop={40}
-            backgroundColor="#212121"
-            borderWidth={2}
-            TextColor="#fff"
-            iconName="angle-right" 
-            />
-
-          <TouchableOpacity onPress={() => alert('Continue as Guest')}>
-            <Text style={styles.loginText}>Continue as Guest</Text>
-          </TouchableOpacity>
-
-      <View style={styles.flexSpacer} />
-
-      <Text style={styles.proceedText}>
-        By proceeding, you agree to RYDEPRO’s Terms, Privacy Notice and can unsubscribe by emailing 
-        <Text style={styles.boldText}> "Unsubscribe" </Text>
-      </Text>
+        </View>
     </SafeAreaView>
   );
 }
@@ -197,15 +175,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
     width: '100%',
-    paddingTop: 30,
-    paddingHorizontal:30,
   },
-  logo: {
-    width: '20%',
-    resizeMode: 'contain',
-    marginTop: 20,
+  mainContent: {
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: 30,
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  topContent: {
+    width: '100%',
+    flexDirection: 'row',
+  },
+  dotsContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 4,
+    padding: 10,
   },
   title: {
     marginTop: 40,
@@ -214,12 +201,22 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#212121'
   },
+  centerContent:{
+    flex: 1,
+    width: '100%',
+  },
   socialsLogo: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'center',
-    marginTop: 30,
+    gap: 30,
+  },
+  logo: {
+    backgroundColor: '#909090',
+    borderRadius: 100,
+    borderColor: '#000',
+    paddingLeft: '22%',
     width: '100%',
+    paddingVertical: '24%', 
   },
   socialsLogo2: {
     flexDirection: 'row',
@@ -229,19 +226,19 @@ const styles = StyleSheet.create({
     gap: 20,
     width: '100%',
   },
-  errorText: {
-    fontSize: 14,
-    color: 'red',
-    marginTop: 0,
-    alignSelf: 'flex-start',
-  },
-  loginText: {
+  otherLogin: {
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
-    marginTop: 30,
+    marginTop: '15%',
+    color: '#464646',
+  },
+  loginText: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
     color: '#212121',
-    textDecorationLine: 'underline',
+    marginBottom: '10%'
   },
   proceedText:{
     fontSize: 12,

@@ -6,6 +6,9 @@ import Onboarding from './app/screens/Welcome/Onboarding';
 import FirstScreen from './app/screens/Auth/Signup/FirstScreen';
 import CreateAccount from './app/screens/Auth/Signup/CreateAccount';
 import Login from './app/screens/Auth/Login/Login';
+import UseFingerprint from './app/screens/Auth/Login/UseFingerprint';
+import UseFaceid from './app/screens/Auth/Login/UseFaceid';
+import LoginOptions from './app/screens/Auth/Login/LoginOptions';
 import UsePassword from './app/screens/Auth/Login/UsePassword';
 import UsePassphrase from './app/screens/Auth/Login/UsePassphrase';
 import UsePincode from './app/screens/Auth/Login/UsePincode';
@@ -53,6 +56,9 @@ export default function App() {
       <Stack.Screen name='WelcomeGuest' component={WelcomeGuest} options={{ headerShown: false }}/>
       <Stack.Screen name='CreateAccount' component={CreateAccount} options={{ headerShown: false }}/>
       <Stack.Screen name='Login' component={Login} options={{ headerShown: false }}/>
+      <Stack.Screen name='UseFingerprint' component={UseFingerprint} options={{ headerShown: false }}/>
+      <Stack.Screen name='UseFaceid' component={UseFaceid} options={{ headerShown: false }}/>
+      <Stack.Screen name='LoginOptions' component={LoginOptions} options={{ headerShown: false }}/>
       <Stack.Screen name='UsePassword' component={UsePassword} options={{ headerShown: false }}/>
       <Stack.Screen name='UsePassphrase' component={UsePassphrase} options={{ headerShown: false }}/>
       <Stack.Screen name='UsePincode' component={UsePincode} options={{ headerShown: false }}/>
