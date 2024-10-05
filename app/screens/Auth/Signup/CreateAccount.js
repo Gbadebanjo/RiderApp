@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import otpApi from './../../../api/auth'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ActivityIndicator, Keyboard } from 'react-native';
+import { StyleSheet, Text, StatusBar, ActivityIndicator, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../../components/StyledButton';
 import InputField from '../../../components/InputField';
 import Centerlogo from '../../../components/centerlogo';
-import SocialLogo from '../../../components/SocialLogo';
-import OrSeparator from '../../../components/OrSeparator';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import * as AuthSession from 'expo-auth-session';
 import zxcvbn from 'zxcvbn';
-// const googleLogo = require('./../../../assets/GoogleIcon.png');
-// const appleLogo = require('./../../../assets/AppleLogo.png');
 
 const validationSchema = yup.object().shape({
   email: yup
@@ -202,25 +198,6 @@ export default function CreateAccount({ navigation }) {
           </>
         )}
       </Formik>
-{/* 
-      <View style={styles.socialsLogo}>
-        <SocialLogo text="Google" onPress={() => promptAsync()} logo={googleLogo} />
-        <SocialLogo text="Apple" onPress={() => alert('Login with Apple')} logo={appleLogo} />
-      </View>
-
-      <OrSeparator />
-
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.loginText}>Login</Text>
-      </TouchableOpacity> */}
-
-      {/* <Text style={styles.proceedText}>
-        By proceeding, you agree to RYDEPRO’s
-        <Text style={styles.linkText} onPress={() => alert('Terms clicked')}> Terms,</Text>
-        <Text style={styles.linkText} onPress={() => alert('Privacy Notice clicked')}> Privacy </Text>
-        Notice and can unsubscribe by emailing
-        <Text style={styles.boldText} onPress={() => alert('Privacy Notice clicked')}> "Unsubscribe" </Text>
-      </Text> */}
     </SafeAreaView>
   );
 }

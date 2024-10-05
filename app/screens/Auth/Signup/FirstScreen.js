@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StatusBar, StyleSheet, Alert, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, Image, StatusBar, StyleSheet, Alert, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import StyledButton from '../../../components/StyledButton';
@@ -85,9 +85,9 @@ export default function FirstScreen({ navigation }) {
             TextColor="#111111"
              />
 
-          {/* <TouchableOpacity onPress={() => navigation.navigate('WelcomeGuest')}>
-            <Text style={styles.guestText}>Continue as Guest</Text>
-          </TouchableOpacity> */}
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.guestText}>Sign in</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -138,6 +138,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
-    marginTop: 15,
+    marginTop: '4%',
   },
 });

@@ -55,22 +55,23 @@ export default function UsePassphrase({navigation, route}) {
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
             <View style={styles.titleContainer}> 
                 <BackButton style={styles.Icon} />
-                <Text style={styles.title}>Login With Passphrase</Text>
+                <Text style={styles.title}>Sign In using passphrase</Text>
             </View>  
-            <Text style={styles.subTitle}>Provide your passphrase to acess your account</Text>  
+            <Text style={styles.subTitle}>Kindly provide phrase accordingly to login</Text>  
             <View style={styles.mainContent}>
 
              {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
 
                 <View style={styles.generateContainer}>
                     <Formik
+                        // initialValues={{ email: '', passPhrase: '', }}
                         initialValues={{ email: '', passPhrase: '', }}
                         validationSchema={validationSchema}
                         onSubmit={handleContinue}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                         <>
-                            <InputField
+                            {/* <InputField
                                 label="Email"
                                 placeholder="user@rydepro.com"
                                 keyboardType="email-address"
@@ -88,9 +89,8 @@ export default function UsePassphrase({navigation, route}) {
                                 paddingVertical={10}
                                 error={touched.email && errors.email}
                                 errorMessage={errors.email}
-                            />
+                            /> */}
 
-                            <Text style={styles.passPhrase}>Passphrase</Text>  
                             <TextInput
                                 style={styles.textInput}
                                 multiline={true}
@@ -99,9 +99,10 @@ export default function UsePassphrase({navigation, route}) {
                                 placeholder='Provide your passphrase here'
                                 value={values.passPhrase}
                             />
+                            <Text>0 of 1000 characters</Text>
 
                             <StyledButton
-                                title="Save"
+                                title="Login"
                                 onPress={handleSubmit}
                                 width="100%"
                                 height={53}
@@ -111,7 +112,7 @@ export default function UsePassphrase({navigation, route}) {
                                 backgroundColor="#212121"
                                 borderWidth={2}
                                 TextColor="#fff"
-                                iconName="angle-right" 
+                                borderRadius={20}
                             />  
                         </>
                         )}
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 23,
         fontWeight: '700',
-        marginLeft: '10%'
+        marginLeft: '5%'
     },
     subTitle: {
         fontSize: 16,
@@ -162,7 +163,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     generateContainer: {
-        marginTop: 0,
+        flex: 1,
+        marginTop: '15%',
+        justifyContent: 'space-between',
+        marginBottom: '10%'
     },
     generateText:{
         fontSize: 16,
@@ -180,6 +184,7 @@ const styles = StyleSheet.create({
         borderColor: '#AAB1BC',
         borderWidth: 1,
         width: '100%',
+        height: 50,
         borderRadius: 8,
         padding: 10,
       }
