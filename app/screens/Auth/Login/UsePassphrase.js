@@ -20,6 +20,9 @@ const validationSchema = yup.object().shape({
 export default function UsePassphrase({navigation, route}) {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [passPhraseCount, setPassPhraseCount] = useState(0);
+    const [buttonColor, setButtonColor] = useState('#21212133');
+    const [buttonDisabled, setButtonDisabled] = useState(true); 
 
     const handleContinue = async (values, { resetForm }) => {
         setLoading(true);
@@ -64,7 +67,6 @@ export default function UsePassphrase({navigation, route}) {
 
                 <View style={styles.generateContainer}>
                     <Formik
-                        // initialValues={{ email: '', passPhrase: '', }}
                         initialValues={{ email: '', passPhrase: '', }}
                         validationSchema={validationSchema}
                         onSubmit={handleContinue}
@@ -91,15 +93,29 @@ export default function UsePassphrase({navigation, route}) {
                                 errorMessage={errors.email}
                             /> */}
 
-                            <TextInput
-                                style={styles.textInput}
-                                multiline={true}
-                                textAlignVertical="center"
-                                onChangeText={handleChange('passPhrase')}
-                                placeholder='Provide your passphrase here'
-                                value={values.passPhrase}
-                            />
-                            <Text>0 of 1000 characters</Text>
+                            <View>
+                                <TextInput
+                                    style={styles.textInput}
+                                    multiline={true}
+                                    textAlignVertical="center"
+                                    onChangeText={(text) => {
+                                        handleChange('passPhrase')(text);
+                                        setPassPhraseCount(text.length);
+                                        if (text.length > 0) {
+                                            setButtonColor('#212121'); // Change to black
+                                            setButtonDisabled(false); // Enable button
+                                          } else {
+                                            setButtonColor('#808080'); // Keep grey
+                                            setButtonDisabled(true); // Disable button
+                                          }
+                                      }}
+                                    placeholder='Provide your passphrase here'
+                                    onBlur={handleBlur('passPhrase')}
+                                    value={values.passPhrase}
+                                />
+                                <Text style={styles.characterCount}>{passPhraseCount} of 1000 characters</Text>
+                                                            
+                            </View>
 
                             <StyledButton
                                 title="Login"
@@ -109,10 +125,11 @@ export default function UsePassphrase({navigation, route}) {
                                 loading={loading}
                                 paddingVertical={10}
                                 marginTop={50}
-                                backgroundColor="#212121"
-                                borderWidth={2}
+                                backgroundColor={buttonColor}
+                                borderWidth={0}
                                 TextColor="#fff"
                                 borderRadius={20}
+                                disabled={buttonDisabled}
                             />  
                         </>
                         )}
@@ -145,7 +162,7 @@ const styles = StyleSheet.create({
     },
     subTitle: {
         fontSize: 16,
-        fontWeight: '500',
+        fontWeight: '400',
         width: '100%',
         textAlign: 'center',
     },
@@ -181,11 +198,15 @@ const styles = StyleSheet.create({
     },
     textInput: {
         marginTop: 2,
-        borderColor: '#AAB1BC',
+        borderColor: '#3C3C3C',
         borderWidth: 1,
         width: '100%',
-        height: 50,
         borderRadius: 8,
-        padding: 10,
-      }
+        padding: 20,
+    },
+    characterCount:{
+        textAlign: 'right',
+        color: '#909090',
+        fontSize: 12,
+    }
 });
