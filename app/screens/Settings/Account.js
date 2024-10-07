@@ -19,9 +19,9 @@ const Account = ({ navigation, route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isProfilePicHidden, setIsProfilePicHidden] = useState(false); // State to manage profile picture visibility
   const slideAnim = useRef(new Animated.Value(300)).current; // Initial value for sliding animation
-  const { userDetails } = route.params;
+  // const { userDetails } = route.params;
   // const userDetails = JSON.parse( AsyncStorage.getItem('userDetails'));
-  console.log('userDetails:', userDetails);
+  // console.log('userDetails:', userDetails);
 
   const toggleNameDetails = () => {
     setShowName(!showName);
@@ -56,7 +56,10 @@ const Account = ({ navigation, route }) => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.nameContainer}>
           <View style={styles.Img}>
-            <Image source={isProfilePicHidden || !userDetails?.profilePic ? require('../../assets/Userpic.png') : { uri: userDetails.profilePic }}
+            {/* <Image source={isProfilePicHidden || !userDetails?.profilePic ? require('../../assets/Userpic.png') : { uri: userDetails.profilePic }} */}
+            {/* style={{ width: 80, height: 80, borderRadius: 50 }} */}
+            {/* /> */}
+            <Image source={require('../../assets/ProfileTemplate.png')}
               style={{ width: 80, height: 80, borderRadius: 50 }}
             />
             <TouchableOpacity
@@ -67,11 +70,12 @@ const Account = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.namContainer}>
-            <Text style={styles.name}>{userDetails?.displayName}</Text>
-            <Text style={styles.account}>{userDetails?.accountType}</Text>
-            <Text style={styles.id}>User ID: {userDetails?.accountNumber}</Text>
+            <Text style={styles.name}>Daniel James</Text>
+            <Text style={styles.account}>Individual</Text>
+            <Text style={styles.id}>User ID: 13456754567</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('Edit', { userDetails })}>
+          <TouchableOpacity onPress={() => navigation.navigate('Edit')}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate('Edit', { userDetails })}> */}
             <Text style={styles.edit}>Edit</Text>
           </TouchableOpacity>
           {/* <Linking>Edit</Linking> */}
@@ -81,13 +85,13 @@ const Account = ({ navigation, route }) => {
           onPress={toggleNameDetails}
         >
           <View style={styles.namedetails}>
-            <Text style={styles.namehead}>{userDetails?.accountType}</Text>
-            <Text style={styles.nametext}>{userDetails?.firstName} {userDetails?.lastName}</Text>
+            <Text style={styles.namehead}>Name</Text>
+            <Text style={styles.nametext}>John Doe</Text>
           </View>
-          <Entypo
-            name={showName ? 'chevron-thin-up' : 'chevron-thin-down'}
+          <Ionicons
+            name={showName ? 'chevron-up' : 'chevron-down'}
             size={14}
-            color="#212121"
+            color="#000"
           />
         </TouchableOpacity>
         {showName && (
@@ -95,13 +99,14 @@ const Account = ({ navigation, route }) => {
             <View style={styles.detailscontainer}>
               <View style={styles.namedetails}>
                 <Text style={styles.namehead}>First Name</Text>
-                <Text style={styles.nametext}>{userDetails?.firstName}</Text>
+                <Text style={styles.nametext}>John</Text>
               </View>
             </View>
             <View style={styles.detailscontainer}>
               <View style={styles.namedetails}>
                 <Text style={styles.namehead}>Last Name</Text>
-                <Text style={styles.nametext}>{userDetails?.lastName}</Text>
+                {/* <Text style={styles.nametext}>{userDetails?.lastName}</Text> */}
+                <Text style={styles.nametext}>Doe</Text>
               </View>
             </View>
           </>
@@ -109,31 +114,36 @@ const Account = ({ navigation, route }) => {
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Display Name(Alias)</Text>
-            <Text style={styles.nametext}>{userDetails?.displayName}</Text>
+            {/* <Text style={styles.nametext}>{userDetails?.displayName}</Text> */}
+            <Text style={styles.nametext}>James</Text>
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Phone Number</Text>
-            <Text style={styles.nametext}>{userDetails?.phoneNumber}</Text>
+            <Text style={styles.nametext}>098765456789</Text>
+            {/* <Text style={styles.nametext}>{userDetails?.phoneNumber}</Text> */}
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Email Address</Text>
-            <Text style={styles.nametext}>{userDetails?.email}</Text>
+            <Text style={styles.nametext}>oluwagbogo@gmail</Text>
+            {/* <Text style={styles.nametext}>{userDetails?.email}</Text> */}
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Emergency Contact</Text>
-            <Text style={styles.nametext}>{userDetails?.emergencyContact ? userDetails.emergencyContact : "Nil"}</Text>
+            <Text style={styles.nametext}>0987654567898</Text>
+            {/* <Text style={styles.nametext}>{userDetails?.emergencyContact ? userDetails.emergencyContact : "Nil"}</Text> */}
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Emergency Number</Text>
-            <Text style={styles.nametext}>{userDetails?.emergencyPhoneNumber ? userDetails.emergencyPhoneNumber : "Nil"}</Text>
+            <Text style={styles.nametext}>0987678987</Text>
+            {/* <Text style={styles.nametext}>{userDetails?.emergencyPhoneNumber ? userDetails.emergencyPhoneNumber : "Nil"}</Text> */}
           </View>
         </View>
       </ScrollView>
@@ -209,7 +219,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F7FA',
     borderRadius: 10,
     width: '100%',
-    height: 110,
+    height: 100,
     marginTop: 20,
   },
   Img: {
