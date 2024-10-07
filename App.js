@@ -28,16 +28,17 @@ import Feedback from './app/screens/Feedback/Feedback';
 import ThankYou from './app/screens/Feedback/ThankYou';
 import Photo from './app/screens/Dashboard/Photo';  // In use
 import ReviewPhoto from './app/screens/Dashboard/ReviewPhoto';  // In use
-import RewardProgram from './app/screens/Dashboard/RewardProgram';
-import CashbackReward from './app/screens/Dashboard/CashbackReward';
-import MilesPoint from './app/screens/Dashboard/MilesPoint';
+import RewardProgram from './app/screens/Settings/RewardProgram'; // In use
+import CashbackReward from './app/screens/Settings/CashbackReward'; // In use
+import MilesPoint from './app/screens/Settings/MilesPoint'; // In use
 import InviteReferral from './app/screens/Settings/InviteReferral';  // In use
 import HelpAndSupport from './app/screens/Settings/HelpAndSupport';   // In use
 import BotLoading from './app/screens/Settings/BotLoading';  // In use
-import ChatBot from './app/screens/Settings/ChatBot';
+import ChatBot from './app/screens/Settings/ChatBot'; // In use
 import CustomerServiceCenter from './app/screens/Settings/CustomerServiceCenter';   // In use
-import LiveChat from './app/screens/Settings/LiveChat';
+import LiveChat from './app/screens/Settings/LiveChat'; // In use
 import TrackReferral from './app/screens/Dashboard/TrackReferral';  // In use
+import FacialIdToggle from './app/screens/Settings/FacialIdToggle';
 
 import NavButtons from './app/components/NavButtons';  // In use
 
@@ -75,14 +76,15 @@ export default function App() {
       <Stack.Screen name='ThankYou' component={ThankYou} options={{ headerShown: false }}/>
       <Stack.Screen name='Photo' component={Photo} options={{ headerShown: false }}/>
       <Stack.Screen name='ReviewPhoto' component={ReviewPhoto} options={{ headerShown: false }}/>
-      <Stack.Screen name='RewardProgram' component={RewardProgram} options={{ headerShown: false }}/>
-      <Stack.Screen name='CashbackReward' component={CashbackReward} options={{ headerShown: false }}/>
+      <Stack.Screen name='RewardProgram' component={RewardProgram} options={{ headerShown: false }}/>   
+      <Stack.Screen name='CashbackReward' component={CashbackReward} options={{ headerShown: false }}/>  
       <Stack.Screen name='MilesPoint' component={MilesPoint} options={{ headerShown: false }}/>
       <Stack.Screen name='InviteReferral' component={InviteReferral} options={{ headerShown: false }}/>
       <Stack.Screen name='TrackReferral' component={TrackReferral} options={{ headerShown: false }}/>
       <Stack.Screen name='BotLoading' component={BotLoading} options={{headerShown: false}} />
       <Stack.Screen name='ChatBot' component={ChatBot} options={{headerShown: false}}/>
       <Stack.Screen name='LiveChat' component={LiveChat} options={{headerShown: false}}/>
+      <Stack.Screen name='FacialIdToggle' component={FacialIdToggle} options={{headerShown: false}}/>
       <Stack.Screen name='CustomerServiceCenter' component={CustomerServiceCenter} options={{ headerShown: false }}/>
       <Stack.Screen name='HelpAndSupport' component={HelpAndSupport} options={{ headerShown: false }}/>
     </Stack.Navigator>

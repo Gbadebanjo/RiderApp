@@ -30,7 +30,7 @@ export default function SettingHome({ navigation }) {
         if (!showLogOut) {
             Animated.timing(slideAnim, {
                 toValue: 0,
-                duration: 300,
+                duration: 10,
                 easing: Easing.out(Easing.ease),
                 useNativeDriver: true,
             }).start();
@@ -85,7 +85,7 @@ export default function SettingHome({ navigation }) {
                         style={styles.eachItem}
                     >
                         <Text style={styles.eachItemText}>Rewards Program</Text>
-                        <Ionicons name="chevron-down" size={20} color="#000" style={styles.forwardIcon} />
+                        <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => navigation.navigate('InviteReferral')}

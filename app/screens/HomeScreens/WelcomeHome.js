@@ -25,9 +25,9 @@ const WelcomeHome = () => {
               source={require('../../assets/Userpic.png')}
               style={styles.image}
             />
-            <TouchableOpacity style={styles.cameraIcon}>
+            {/* <TouchableOpacity style={styles.cameraIcon}>
               <Ionicons name="camera-outline" size={22} color="#fff" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <View style={styles.nameBox}>
             <Text style={{ color: '#fff', fontSize: 20 }}>Welcome</Text>

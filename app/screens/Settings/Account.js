@@ -9,6 +9,7 @@ import {
   Modal,
   Animated,
   Easing,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { FontAwesome, Entypo, Ionicons, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -154,6 +155,7 @@ const Account = ({ navigation, route }) => {
         transparent={true}
         onRequestClose={toggleModal}
       >
+        <TouchableWithoutFeedback onPress={toggleModal}>
         <View style={styles.modalBackground}>
           <Animated.View
             style={[
@@ -187,6 +189,7 @@ const Account = ({ navigation, route }) => {
             </TouchableOpacity>
           </Animated.View>
         </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </SafeAreaView>
   );
