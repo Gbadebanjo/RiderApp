@@ -5,8 +5,10 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackButton from '../../../components/BackButton';
 import StyledButton from '../../../components/StyledButton';
+import Toast from 'react-native-toast-message';
 import SecurityModal from '../../../components/SecurityModal';
 import CreatePinModal from '../../../components/CreatePinModal';
+import ConfirmPinModal from '../../../components/ConfirmPinModal';
 import CreatePassphraseModal from '../../../components/CreatePassphraseModal';
 
 export default function SetupAdditionalSecurity ({navigation}) {
@@ -16,7 +18,22 @@ export default function SetupAdditionalSecurity ({navigation}) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [passphrase, setPassphrase] = useState('');
     const [isPinModalVisible, setIsPinModalVisible] = useState(false);
+    const [isConfirmPinModalVisible, setIsConfrimPinModalVisible] = useState(false);
     const [isPassphraseModalVisible, setIsPassphraseModalVisible] = useState(false);
+
+    useEffect(() => {
+      const fetchUserDetails = async () => {
+        try {
+          const userDetailsString = await AsyncStorage.getItem('userDetails');
+          const userDetails = JSON.parse(userDetailsString);
+  
+        } catch (error) {
+          console.error('Error fetching user details:', error);
+        }
+      };
+  
+      fetchUserDetails();
+    }, []);
 
     const togglePin = (value) => {
         setIsCreatePin(value);
@@ -34,11 +51,44 @@ export default function SetupAdditionalSecurity ({navigation}) {
         setIsAnyAuthEnabled(false);
     };
 
-    const handlePinSubmit = () => {
-        alert('Pin has been created sucessfully');
+    const handlePinSubmit = async (pinCode) => {
+      const userDetailsString = await AsyncStorage.getItem('userDetails');
+      const userDetails = JSON.parse(userDetailsString);
+      userDetails.pin = pinCode;
+
+      await AsyncStorage.setItem('userDetails', JSON.stringify(userDetails));
+
         setIsPinModalVisible(false)
         setIsCreatePin(true);
+        setIsConfrimPinModalVisible(true);
+    }
+
+    const handleConfirmPin = async (confirmCode) => {
+      const userDetailsString = await AsyncStorage.getItem('userDetails');
+      const userDetails = JSON.parse(userDetailsString);
+
+      console.log(userDetails.pinCode, confirmCode);
+    
+      if (userDetails.pin === confirmCode) {
+        userDetails.confirmPin = confirmCode;
+        await AsyncStorage.setItem('userDetails', JSON.stringify(userDetails));
+    
+        setIsConfrimPinModalVisible(false);
         setIsAnyAuthEnabled(true);
+    
+        return Toast.show({
+          type: 'success',
+          text1: 'Pin code created successfully',
+        });
+      } else {
+        setIsConfrimPinModalVisible(false);
+        setIsCreatePin(false);
+        setIsAnyAuthEnabled(false);
+        return Toast.show({
+          type: 'error',
+          text1: 'Pin codes do not match',
+        });
+      }
     }
 
     const togglePasspharse = (value) => {
@@ -48,7 +98,6 @@ export default function SetupAdditionalSecurity ({navigation}) {
         } else {
             setIsPassphraseModalVisible(false);
         }
-
         setIsAnyAuthEnabled(value || isCreatePin);
     };
 
@@ -148,6 +197,12 @@ export default function SetupAdditionalSecurity ({navigation}) {
         visible={isPinModalVisible} 
         onClose={handleCloseCreatePin}
         onSubmit={handlePinSubmit}
+    />
+
+    <ConfirmPinModal 
+        visible={isConfirmPinModalVisible} 
+        onClose={handleCloseCreatePin}
+        onSubmit={handleConfirmPin}
     />
 
     <CreatePassphraseModal

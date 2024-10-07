@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../../components/StyledButton';
 import InputField from '../../../components/InputField';
 import Centerlogo from '../../../components/centerlogo';
+import Toast from 'react-native-toast-message';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import * as WebBrowser from 'expo-web-browser';
@@ -19,7 +20,8 @@ const validationSchema = yup.object().shape({
     .required('Enter your Email Address'),
     password: yup
     .string()
-    .required('Enter your Password')
+    .required('Enter your Password'),
+    confirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
 
 WebBrowser.maybeCompleteAuthSession();
@@ -84,18 +86,28 @@ export default function CreateAccount({ navigation }) {
     // }, [response]);
 
 
-    const handleSubmit = async (values) => {
-
-      // setLoading(true);
-      // const res = await otpApi.post('/signup/email', { email: values.email });
+    const handleSubmit = async (values, { resetForm }) => {
+      const { email, password, confirm } = values;
+      setLoading(true);
+      const res = await otpApi.requestOtp(email, password, confirm);
   
-      // setLoading(false);
-      // if (res.ok) {
-      //   alert('Account created successfully!');
+      setLoading(false);
+      if (res.ok) {
+        console.log(res.data)
+        Toast.show({
+          type: 'success',
+          text1: 'Account Created Successfully',
+          text2: res.data.message,
+        });
         navigation.navigate('ConfirmSignup', { email: values.email });
-      // } else {
-      //   alert('Failed to create account.');
-      // }
+          resetForm();
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Account Creation Failed',
+          text2: res.data.message,
+        });
+      }
     };
 
     const handlePasswordChange = (password) => {
@@ -111,7 +123,7 @@ export default function CreateAccount({ navigation }) {
       <Text style={styles.subtitle}>Create an Account</Text>
 
       <Formik
-        initialValues={{ email: '', password: ''  }}
+        initialValues={{ email: '', password: '', confirm: ''  }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
@@ -161,17 +173,17 @@ export default function CreateAccount({ navigation }) {
 
             <InputField
               label="Confirm Password"
-              placeholder="user@rydepro.com"
-              keyboardType="email-address"
+              placeholder=""
+              keyboardType="password"
               autoCapitalize="none"
               textContentType="password"
               returnKeyType="next"
               width="100%"
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              value={values.email}
-              error={touched.email && errors.email}
-              errorMessage={errors.email}
+              onChangeText={handleChange('confirm')}
+              onBlur={handleBlur('confirm')}
+              value={values.confirm}
+              error={touched.confirm && errors.confirm}
+              errorMessage={errors.confirm}
               showPasswordToggle={true}
             />
             <StyledButton

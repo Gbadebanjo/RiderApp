@@ -1,5 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from './toastConfig';
 
 import Splash from './app/screens/Welcome/Splash';
 import Onboarding from './app/screens/Welcome/Onboarding';
@@ -34,13 +36,15 @@ import ReviewPhoto from './app/screens/Dashboard/ReviewPhoto';  // In use
 import RewardProgram from './app/screens/Dashboard/RewardProgram';
 import CashbackReward from './app/screens/Dashboard/CashbackReward';
 import MilesPoint from './app/screens/Dashboard/MilesPoint';
+import InviteReferral from './app/screens/Dashboard/InviteReferral';
+import TrackReferral from './app/screens/Dashboard/TrackReferral';
+import RecoveryEmail from './app/screens/Recovery/EnterEmail';
 import InviteReferral from './app/screens/Settings/InviteReferral';  // In use
 import HelpAndSupport from './app/screens/Settings/HelpAndSupport';   // In use
 import BotLoading from './app/screens/Settings/BotLoading';  // In use
 import ChatBot from './app/screens/Settings/ChatBot';
 import CustomerServiceCenter from './app/screens/Settings/CustomerServiceCenter';   // In use
 import LiveChat from './app/screens/Settings/LiveChat';
-import TrackReferral from './app/screens/Dashboard/TrackReferral';  // In use
 
 import NavButtons from './app/components/NavButtons';  // In use
 
@@ -86,12 +90,14 @@ export default function App() {
       <Stack.Screen name='MilesPoint' component={MilesPoint} options={{ headerShown: false }}/>
       <Stack.Screen name='InviteReferral' component={InviteReferral} options={{ headerShown: false }}/>
       <Stack.Screen name='TrackReferral' component={TrackReferral} options={{ headerShown: false }}/>
+      <Stack.Screen name='EnterEmail' component={RecoveryEmail} options={{ headerShown: false }}/>
       <Stack.Screen name='BotLoading' component={BotLoading} options={{headerShown: false}} />
       <Stack.Screen name='ChatBot' component={ChatBot} options={{headerShown: false}}/>
       <Stack.Screen name='LiveChat' component={LiveChat} options={{headerShown: false}}/>
       <Stack.Screen name='CustomerServiceCenter' component={CustomerServiceCenter} options={{ headerShown: false }}/>
       <Stack.Screen name='HelpAndSupport' component={HelpAndSupport} options={{ headerShown: false }}/>
     </Stack.Navigator>
+    <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
    </NavigationContainer>
   );
 }

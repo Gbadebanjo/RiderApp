@@ -4,8 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as LocalAuthentication from 'expo-local-authentication';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackButton from '../../../components/BackButton';
+import Toast from 'react-native-toast-message';
 import StyledButton from '../../../components/StyledButton';
 import SecurityModal from '../../../components/SecurityModal';
+import Biometric from '../../Security/Biometric';
 
 const face = require('../../../assets/Face.png');
 
@@ -17,6 +19,27 @@ export default function SetupSecurity({navigation}) {
     const [isFacialIDEnabled, setIsFacialIDEnabled] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const slideAnim = useRef(new Animated.Value(Dimensions.get('window').height)).current;
+
+    useEffect(() => {
+      const fetchAndUpdateUserDetails = async () => {
+        try {
+          const userDetailsString = await AsyncStorage.getItem('userDetails');
+          const userDetails = JSON.parse(userDetailsString);
+  
+          const updatedUserDetails = {
+            ...userDetails,
+            fingerprint: isFingerprintEnabled,
+            facialId: isFacialIDEnabled,
+          };
+  
+          await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
+        } catch (error) {
+          console.error('Error updating user details:', error);
+        }
+      };
+  
+      fetchAndUpdateUserDetails();
+    }, [isFingerprintEnabled, isFacialIDEnabled]);
 
     useEffect(() => {
       if (isFacialIDEnabled) {
@@ -40,11 +63,9 @@ export default function SetupSecurity({navigation}) {
     };
 
     const handleSwitchChange = async (value) => {
-      setIsFingerprintEnabled(value);
       if (value) {
         await handleFingerprintAuth();
       }
-      setIsAnyAuthEnabled(value);
     };
 
     useEffect(() => {
@@ -57,62 +78,60 @@ export default function SetupSecurity({navigation}) {
       const handleFingerprintAuth = async () => {
         const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
         if (!savedBiometrics) {
-          return Alert.alert(
-            'Biometric record not found',
-            'Please ensure you have set up biometrics in your device settings.',
-            [{ text: 'OK' }]
-          );
+          Toast.show({
+            type: 'error',
+            text1: 'Biometric record not found',
+            text2: 'Please ensure you have set up biometrics in your device settings',
+          });
         }
     
         const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
         if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
-          return Alert.alert(
-            'Fingerprint not supported',
-            'Please ensure your device supports fingerprint authentication.',
-            [{ text: 'OK' }]
-          );
+          return Toast.show({
+            type: 'error',
+            text1: 'Fingerprint not supported',
+            text2: 'Please ensure your device supports fingerprint authentication.',
+          });
         }
     
         const { success, error } = await LocalAuthentication.authenticateAsync({
           promptMessage: 'Create Fingerprint',
           fallbackLabel: 'Enter Password',
         });
+
+        const userDetailsString = await AsyncStorage.getItem('userDetails');
+        const userDetails = JSON.parse(userDetailsString);
     
         if (success) {
-          // retrieve token from asyncStorage and setAuth token
-        //   const token = await AsyncStorage.getItem('token');
-        //   console.log('token:', token);
-        //   if (!token) {
-        //     Alert.alert('Error', 'Authorization token not found.');
-        //     return;
-        //   }
-        //   setAuthToken(token);
-    
-          // send request to enable biometric authentication
-        //   const response = await authClient.put('/enable-biometric', { authToEnable: 'biometric' });
-        //   console.log(response.data);
-        //   if (!response.ok) {
-        //     const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
-        //     return Alert.alert('Error', errorMessage, [
-        //       {
-        //         text: 'OK',
-        //         onPress: () => navigation.navigate('Feedback'),
-        //       },
-        //     ]);
-        //   }
-        //   // console.log(response.data);
-        //   // save the biometricToken token received in asyncStorage
-        //   await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
-    
-        //   return Alert.alert('Success', response.data.data.message, [
-          return Alert.alert('Success', 'fingerprint registered successfully', [
-            {
-              text: 'OK',
-              // onPress: () => alert('ThankYou'),
-            },
-          ]);
+          setIsFingerprintEnabled(true);
+          setIsAnyAuthEnabled(true)
+          const updatedUserDetails = {
+            ...userDetails,
+            fingerprint: true,
+          };
+
+          await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
+
+          return Toast.show({
+            type: 'success',
+            text1: 'Fingerprint registered successfully',
+          });
         } else {
-          Alert.alert('Authentication Failed', error, [{ text: 'OK' }]);
+          setIsFingerprintEnabled(false);
+          if (isFacialIDEnabled === false){
+            setIsAnyAuthEnabled(false)
+          }
+          const updatedUserDetails = {
+            ...userDetails,
+            fingerprint: false,
+          };
+
+          await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
+
+          return Toast.show({
+            type: 'error',
+            text1: 'Fingerprint cannot be registered',
+          });
         }
       };
 
@@ -124,22 +143,25 @@ export default function SetupSecurity({navigation}) {
       }, []);
 
       const handleFacialIDAuth = async () => {
+        const userDetailsString = await AsyncStorage.getItem('userDetails');
+        const userDetails = JSON.parse(userDetailsString);
+
         const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
         if (!savedBiometrics) {
-          return Alert.alert(
-            'Biometric record not found',
-            'Please ensure you have set up biometrics in your device settings.',
-            [{ text: 'OK' }]
-          );
+          return Toast.show({
+            type: 'error',
+            text1: 'Biometric record not found',
+            text2: 'Please ensure you have set up biometrics in your device settings',
+          });
         }
       
         const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
         if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
-          return Alert.alert(
-            'Facial recognition not supported',
-            'Please ensure your device supports Facial recognition authentication.',
-            [{ text: 'OK' }]
-          );
+          return Toast.show({
+            type: 'error',
+            text1: 'Facial recognition not supported',
+            text2: 'Please ensure your device supports Facial recognition authentication.',
+          });
         }
       
         const { success, error } = await LocalAuthentication.authenticateAsync({
@@ -147,45 +169,30 @@ export default function SetupSecurity({navigation}) {
           fallbackLabel: 'Enter Password',
         });
       
-        if (success) {      
-        //   // retrieve token from asyncStorage and setAuth token
-        //   const token = await AsyncStorage.getItem('token');
-        //   if (!token) {
-        //     Alert.alert('Error', 'Authorization token not found.');
-        //     return;
-        //   }
-        //   setAuthToken(token);
-      
-        //   // send request to enable biometric authentication
-        //   const response = await authClient.put('/enable-biometric', { authToEnable: 'facial' });
-          
-        //   if (!response.ok) {
-        //     const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
-        //     return Alert.alert('Error', errorMessage, [
-        //         {
-        //           text: 'OK',
-        //            onPress: () => navigation.navigate('Feedback'), 
-        //         },
-        //     ]);
-        //   }
-      
-        //   // save the biometricToken token received in asyncStorage
-        //   await AsyncStorage.setItem('facialToken', response.data.data.facialToken);
-      
-          // return Alert.alert('Success', response.data.data.message, [
-          return Alert.alert('Success', "Facial ID has been added succesfully", [
-            {
-              text: 'OK',
-              onPress: () => navigation.navigate('Feedback'), 
-            },
-          ]);
+        if (success) {     
+          const updatedUserDetails = {
+            ...userDetails,
+            facialId: true,
+          };
+
+          await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));    
+  
+          Toast.show({
+            type: 'success',
+            text1: 'Facial ID has been added succesfully',
+          });
+          return 
         } else {
-          Alert.alert('Authentication Failed', error, [
-            { 
-            text: 'OK',
-            onPress: () => navigation.navigate('Feedback'),  
-          }
-        ]);
+          const updatedUserDetails = {
+            ...userDetails,
+            facialId: false,
+          };
+
+          await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
+          return Toast.show({
+            type: 'error',
+            text1: 'FacialID cannot be registered',
+          });
         }
       };
 
@@ -239,7 +246,7 @@ export default function SetupSecurity({navigation}) {
               <View style={styles.buttonContainer}>
                 <StyledButton
                     title="Cancel"
-                    // onPress={handleSubmit}
+                    onPress={() => setIsAnyAuthEnabled(false)}
                     width="30%"
                     paddingVertical={10}
                     marginTop={0}
@@ -277,7 +284,6 @@ export default function SetupSecurity({navigation}) {
                       <Text style={styles.modalTitle}>Verify It's You</Text>
                       <Text style={styles.modalText}>You can use face authentication to secure your accounts</Text>
                       <Image source={face} style={styles.logo}/>
-                      {/* <FontAwesome6 name="face-kiss-beam" size={100} color="grey" style={styles.logo} /> */}
                       <Text style={styles.modalCenterText}>Tap Confirm to complete</Text>
                     </View>
 

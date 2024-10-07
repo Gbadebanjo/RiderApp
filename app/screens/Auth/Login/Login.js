@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../../api/auth';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as LocalAuthentication from 'expo-local-authentication';
 import Centerlogo from '../../../components/centerlogo';
@@ -11,7 +11,12 @@ import { Entypo, AntDesign, Ionicons } from '@expo/vector-icons';
 const appleLogo = require('./../../../assets/AppleLogo.png');
 
 export default function Login({navigation}) {
-  const [isBiometricSupported, setIsBiometricSupported] = useState(false);  
+  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
   
   useEffect(() => {
     (async () => {
@@ -148,9 +153,30 @@ export default function Login({navigation}) {
        <View style={styles.mainContent}>
           <View style={styles.topContent}>
             <Centerlogo logoWidth='100%' logoHeight= '40%'/>
-            <TouchableOpacity style={styles.dotsContainer}>
+            <TouchableOpacity onPress={toggleModal} style={styles.dotsButton}>
               <Entypo name="dots-three-horizontal" size={24} color="black" />
-            </TouchableOpacity>
+            </TouchableOpacity>      
+
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={toggleModal}
+                animationType="fade"
+              >
+                <TouchableOpacity style={styles.modalOverlay} onPress={toggleModal}>
+                  <View style={styles.modalContent}>
+                    <TouchableOpacity onPress={()=> alert('Contact us')}>
+                      <Text style={styles.modalItem}>Contact Us</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=> alert('Contact us')}>
+                      <Text style={styles.modalItem}>Faq</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=> navigation.navigate('EnterEmail')}>
+                      <Text style={styles.modalItem}>Account Recovery</Text>
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              </Modal>
           </View>
 
           <View style={styles.centerContent}>
@@ -253,5 +279,30 @@ const styles = StyleSheet.create({
   },
   flexSpacer: {
     flex: 1,
+  },
+  dotsButton: {
+    position: 'absolute',
+    right: 20,
+  },
+  dotsText: {
+    fontSize: 14,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'black',
+    padding: 20,
+    borderRadius: 10,
+    marginTop: 60,
+    marginRight: 20,
+  },
+  modalItem: {
+    color: 'white',
+    fontSize: 14,
+    marginVertical: 10,
+    textAlign: 'center',
   },
 });
