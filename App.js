@@ -1,5 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from './toastConfig';
 
 import Splash from './app/screens/Welcome/Splash';
 import Onboarding from './app/screens/Welcome/Onboarding';
@@ -36,6 +38,7 @@ import CashbackReward from './app/screens/Dashboard/CashbackReward';
 import MilesPoint from './app/screens/Dashboard/MilesPoint';
 import InviteReferral from './app/screens/Dashboard/InviteReferral';
 import TrackReferral from './app/screens/Dashboard/TrackReferral';
+import RecoveryEmail from './app/screens/Recovery/EnterEmail';
 
 import NavButtons from './app/components/NavButtons';
 
@@ -81,7 +84,9 @@ export default function App() {
       <Stack.Screen name='MilesPoint' component={MilesPoint} options={{ headerShown: false }}/>
       <Stack.Screen name='InviteReferral' component={InviteReferral} options={{ headerShown: false }}/>
       <Stack.Screen name='TrackReferral' component={TrackReferral} options={{ headerShown: false }}/>
+      <Stack.Screen name='EnterEmail' component={RecoveryEmail} options={{ headerShown: false }}/>
     </Stack.Navigator>
+    <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
    </NavigationContainer>
   );
 }

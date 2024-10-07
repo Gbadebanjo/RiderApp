@@ -5,7 +5,8 @@ const authClient = create({
     headers: {
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache',
-        'Expires': '0'
+        'Expires': '0',
+        'Content-Type': 'application/json'
     }
 });
 const dashboardClient = create({
@@ -13,7 +14,8 @@ const dashboardClient = create({
     headers: {
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache',
-        'Expires': '0'
+        'Expires': '0',
+        'Content-Type': 'application/json' 
     }
 });
 

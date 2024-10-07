@@ -1,6 +1,6 @@
 import { dashboardClient, authClient, setAuthToken } from './client';
 
-const getOtp = (email) => authClient.get(`send-otp/${email}`);
+const requestOtp = (email, password, confirm) => authClient.post('request-otp', { email, password, confirm });
 const verifyOtp = (email, otp) => authClient.post('verify-otp', { email, otp });
 const setPassword = (email, password) => authClient.post('signup', { email, password });
 const loginWithPassword = (email, password, loginMethod) => authClient.post('login', { email, password, loginMethod });
@@ -15,7 +15,7 @@ const biometricsLogin = (biometricToken, loginMethod) => authClient.post('biomet
 const fetchUserDetails = () => dashboardClient.get('dashboard/rider/details');
 
 export default {
-    getOtp,
+    requestOtp,
     verifyOtp,
     setPassword,
     loginWithPassword,

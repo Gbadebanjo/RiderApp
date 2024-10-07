@@ -233,43 +233,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: 0,
   },
-  socialsLogo: {
-    flexDirection: 'row',
-    gap: 0,
-    marginTop: 30,
-  },
-  errorText: {
-    fontSize: 14,
-    color: 'red',
-    marginTop: 0,
-    alignSelf: 'flex-start',
-  },
-  loginText: {
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: 30,
-    color: '#212121',
-    textDecorationLine: 'underline',
-  },
-  proceedText: {
-    fontSize: 12,
-    fontWeight: '500',
-    textAlign: 'center',
-    color: '#212121',
-    width: '100%',
-    marginBottom: 20,
-  },
-  boldText: {
-    fontWeight: 'bold',
-  },
-  flexSpacer: {
-    flex: 1,
-  },
-  linkText: {
-    textDecorationLine: 'underline',
-    color: '#0000EE',
-  },
   lastText: {
     fontSize: 12,
     fontWeight: '500',

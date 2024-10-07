@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import Modal from 'react-native-modal';
 
 const validationSchema = yup.object().shape({
-  code: yup
+  confirmCode: yup
     .string()
     .length(4, 'Code must be exactly 4 digits')
     .required('Enter the 4-digit code'),
@@ -15,7 +15,7 @@ const validationSchema = yup.object().shape({
 
 const CELL_COUNT = 4;
 
-export default function Pin({ visible, onClose, onSubmit }) {
+export default function ConfirmPin({ visible, onClose, onSubmit }) {
   const [value, setValue] = useState('');
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -37,13 +37,13 @@ export default function Pin({ visible, onClose, onSubmit }) {
     >
       <View style={styles.modalContent}>
         <SafeAreaView style={styles.container}>
-          <Text style={styles.title}>Create PIN</Text>
-          <Text style={styles.subtitle}>Create a pincode to access your account</Text>
+          <Text style={styles.title}>Confirm PIN</Text>
+          <Text style={styles.subtitle}>Confirm your pincode to completely setup your account</Text>
           <Formik
-            initialValues={{ code: '' }}
+            initialValues={{ confirmCode: '' }}
             validationSchema={validationSchema}
             onSubmit={(values) => {
-              onSubmit(values.code);
+              onSubmit(values.confirmCode);
             }}
             // onSubmit={onSubmit}
           >
@@ -52,8 +52,8 @@ export default function Pin({ visible, onClose, onSubmit }) {
                 <CodeField
                   ref={ref}
                   {...props}
-                  value={values.code}
-                  onChangeText={handleChange('code')}
+                  value={values.confirmCode}
+                  onChangeText={handleChange('confirmCode')}
                   onSubmitEditing={() => {
                     handleSubmit();
                   }}
@@ -82,7 +82,7 @@ export default function Pin({ visible, onClose, onSubmit }) {
                     </Text>
                   )}
                 />
-                {errors.code && touched.code && <Text style={styles.errorText}>{errors.code}</Text>}
+                {errors.confirmCode && touched.confirmCode && <Text style={styles.errorText}>{errors.confirmCode}</Text>}
               </View>
             )}
           </Formik>
