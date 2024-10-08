@@ -35,7 +35,7 @@ export default function ThankYou({navigation}) {
 
                 <StyledButton
                     title="Return to Menu Tabs"
-                    onPress={() => navigation.navigate('MenuLanding')}
+                    onPress={() => navigation.navigate('WelcomeHome')}
                     width="100%"
                     height={53}
                     paddingVertical={10}
