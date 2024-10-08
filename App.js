@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './toastConfig';
+import { UserProvider } from './app/context/UserContext';
 
 import Splash from './app/screens/Welcome/Splash';
 import Onboarding from './app/screens/Welcome/Onboarding';
@@ -52,53 +53,55 @@ const Stack = createStackNavigator();
 
 export default function App() {
   return (
-   <NavigationContainer>
-    <Stack.Navigator initialRouteName='Splash'>
-      <Stack.Screen name='Splash' component={Splash} options={{ headerShown: false }}/>
-      <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }}/>
-      <Stack.Screen name='FirstScreen' component={FirstScreen} options={{ headerShown: false }}/>
-      <Stack.Screen name='WelcomeGuest' component={WelcomeGuest} options={{ headerShown: false }}/>
-      <Stack.Screen name='WelcomeHome' component={NavButtons} options={{ headerShown: false }}/>
-      <Stack.Screen name='CreateAccount' component={CreateAccount} options={{ headerShown: false }}/>
-      <Stack.Screen name='Login' component={Login} options={{ headerShown: false }}/>
-      <Stack.Screen name='UseFingerprint' component={UseFingerprint} options={{ headerShown: false }}/>
-      <Stack.Screen name='UseFaceid' component={UseFaceid} options={{ headerShown: false }}/>
-      <Stack.Screen name='LoginOptions' component={LoginOptions} options={{ headerShown: false }}/>
-      <Stack.Screen name='UsePassword' component={UsePassword} options={{ headerShown: false }}/>
-      <Stack.Screen name='UsePassphrase' component={UsePassphrase} options={{ headerShown: false }}/>
-      <Stack.Screen name='UsePincode' component={UsePincode} options={{ headerShown: false }}/>
-      <Stack.Screen name='ConfirmSignup' component={ConfirmSignup} options={{ headerShown: false }}/>
-      <Stack.Screen name='SetPassword' component={SetPassword} options={{ headerShown: false }}/>
-      <Stack.Screen name='MenuLanding' component={NavButtons} options={{ headerShown: false }}/>
-      <Stack.Screen name='UserDetails' component={UserDetails} options={{ headerShown: false }}/>
-      <Stack.Screen name='SecurityIntro' component={SecurityIntro} options={{ headerShown: false }}/>
-      <Stack.Screen name='SetupSecurity' component={SetupSecurity} options={{ headerShown: false }}/>
-      <Stack.Screen name='SetupAdditionalSecurity' component={SetupAdditionalSecurity} options={{ headerShown: false }}/>
-      <Stack.Screen name='Security' component={Security} options={{ headerShown: false }}/>
-      <Stack.Screen name='SettingToggle' component={SettingToggle} options={{ headerShown: false }}/>
-      <Stack.Screen name='Biometric' component={Biometric} options={{ headerShown: false }}/>
-      <Stack.Screen name='FacialID' component={FacialID} options={{ headerShown: false }}/>
-      <Stack.Screen name='Passphrase' component={Passphrase} options={{ headerShown: false }}/>
-      <Stack.Screen name='CreatePassphrase' component={CreatePassphrase} options={{ headerShown: false }}/>
-      <Stack.Screen name='GeneratePassphrase' component={GeneratePassphrase} options={{ headerShown: false }}/>
-      <Stack.Screen name='Pin' component={Pin} options={{ headerShown: false }}/>
-      <Stack.Screen name='Feedback' component={Feedback} options={{ headerShown: false }}/>
-      <Stack.Screen name='ThankYou' component={ThankYou} options={{ headerShown: false }}/>
-      <Stack.Screen name='Photo' component={Photo} options={{ headerShown: false }}/>
-      <Stack.Screen name='ReviewPhoto' component={ReviewPhoto} options={{ headerShown: false }}/>
-      <Stack.Screen name='RewardProgram' component={RewardProgram} options={{ headerShown: false }}/>
-      <Stack.Screen name='CashbackReward' component={CashbackReward} options={{ headerShown: false }}/>
-      <Stack.Screen name='MilesPoint' component={MilesPoint} options={{ headerShown: false }}/>
-      <Stack.Screen name='InviteReferral' component={InviteReferral} options={{ headerShown: false }}/>
-      <Stack.Screen name='TrackReferral' component={TrackReferral} options={{ headerShown: false }}/>
-      <Stack.Screen name='EnterEmail' component={RecoveryEmail} options={{ headerShown: false }}/>
-      <Stack.Screen name='BotLoading' component={BotLoading} options={{headerShown: false}} />
-      <Stack.Screen name='ChatBot' component={ChatBot} options={{headerShown: false}}/>
-      <Stack.Screen name='LiveChat' component={LiveChat} options={{headerShown: false}}/>
-      <Stack.Screen name='CustomerServiceCenter' component={CustomerServiceCenter} options={{ headerShown: false }}/>
-      <Stack.Screen name='HelpAndSupport' component={HelpAndSupport} options={{ headerShown: false }}/>
-    </Stack.Navigator>
-    <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
-   </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName='Splash'>
+          <Stack.Screen name='Splash' component={Splash} options={{ headerShown: false }}/>
+          <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }}/>
+          <Stack.Screen name='FirstScreen' component={FirstScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name='WelcomeGuest' component={WelcomeGuest} options={{ headerShown: false }}/>
+          <Stack.Screen name='WelcomeHome' component={NavButtons} options={{ headerShown: false }}/>
+          <Stack.Screen name='CreateAccount' component={CreateAccount} options={{ headerShown: false }}/>
+          <Stack.Screen name='Login' component={Login} options={{ headerShown: false }}/>
+          <Stack.Screen name='UseFingerprint' component={UseFingerprint} options={{ headerShown: false }}/>
+          <Stack.Screen name='UseFaceid' component={UseFaceid} options={{ headerShown: false }}/>
+          <Stack.Screen name='LoginOptions' component={LoginOptions} options={{ headerShown: false }}/>
+          <Stack.Screen name='UsePassword' component={UsePassword} options={{ headerShown: false }}/>
+          <Stack.Screen name='UsePassphrase' component={UsePassphrase} options={{ headerShown: false }}/>
+          <Stack.Screen name='UsePincode' component={UsePincode} options={{ headerShown: false }}/>
+          <Stack.Screen name='ConfirmSignup' component={ConfirmSignup} options={{ headerShown: false }}/>
+          <Stack.Screen name='SetPassword' component={SetPassword} options={{ headerShown: false }}/>
+          <Stack.Screen name='MenuLanding' component={NavButtons} options={{ headerShown: false }}/>
+          <Stack.Screen name='UserDetails' component={UserDetails} options={{ headerShown: false }}/>
+          <Stack.Screen name='SecurityIntro' component={SecurityIntro} options={{ headerShown: false }}/>
+          <Stack.Screen name='SetupSecurity' component={SetupSecurity} options={{ headerShown: false }}/>
+          <Stack.Screen name='SetupAdditionalSecurity' component={SetupAdditionalSecurity} options={{ headerShown: false }}/>
+          <Stack.Screen name='Security' component={Security} options={{ headerShown: false }}/>
+          <Stack.Screen name='SettingToggle' component={SettingToggle} options={{ headerShown: false }}/>
+          <Stack.Screen name='Biometric' component={Biometric} options={{ headerShown: false }}/>
+          <Stack.Screen name='FacialID' component={FacialID} options={{ headerShown: false }}/>
+          <Stack.Screen name='Passphrase' component={Passphrase} options={{ headerShown: false }}/>
+          <Stack.Screen name='CreatePassphrase' component={CreatePassphrase} options={{ headerShown: false }}/>
+          <Stack.Screen name='GeneratePassphrase' component={GeneratePassphrase} options={{ headerShown: false }}/>
+          <Stack.Screen name='Pin' component={Pin} options={{ headerShown: false }}/>
+          <Stack.Screen name='Feedback' component={Feedback} options={{ headerShown: false }}/>
+          <Stack.Screen name='ThankYou' component={ThankYou} options={{ headerShown: false }}/>
+          <Stack.Screen name='Photo' component={Photo} options={{ headerShown: false }}/>
+          <Stack.Screen name='ReviewPhoto' component={ReviewPhoto} options={{ headerShown: false }}/>
+          <Stack.Screen name='RewardProgram' component={RewardProgram} options={{ headerShown: false }}/>
+          <Stack.Screen name='CashbackReward' component={CashbackReward} options={{ headerShown: false }}/>
+          <Stack.Screen name='MilesPoint' component={MilesPoint} options={{ headerShown: false }}/>
+          <Stack.Screen name='InviteReferral' component={InviteReferral} options={{ headerShown: false }}/>
+          <Stack.Screen name='TrackReferral' component={TrackReferral} options={{ headerShown: false }}/>
+          <Stack.Screen name='EnterEmail' component={RecoveryEmail} options={{ headerShown: false }}/>
+          <Stack.Screen name='BotLoading' component={BotLoading} options={{headerShown: false}} />
+          <Stack.Screen name='ChatBot' component={ChatBot} options={{headerShown: false}}/>
+          <Stack.Screen name='LiveChat' component={LiveChat} options={{headerShown: false}}/>
+          <Stack.Screen name='CustomerServiceCenter' component={CustomerServiceCenter} options={{ headerShown: false }}/>
+          <Stack.Screen name='HelpAndSupport' component={HelpAndSupport} options={{ headerShown: false }}/>
+        </Stack.Navigator>
+        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
+      </NavigationContainer>
+   </UserProvider>
   );
 }
