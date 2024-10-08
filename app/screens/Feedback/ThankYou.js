@@ -1,12 +1,26 @@
-// import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, {useEffect} from 'react';
 import { StyleSheet, StatusBar, Text, View, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import StyledButton from '../../components/StyledButton';
 import Centerlogo from '../../components/centerlogo';
 const image = require('./../../assets/hello.png');
 
 export default function ThankYou({navigation}) {
+  // useEffect(() => {
+  //   const fetchAndUpdateUserDetails = async () => {
+  //     try {
+  //       const userToken = await AsyncStorage.getItem('userToken');
+  //       token = JSON.parse(userToken);
+  //       console.log(token);
+
+  //     } catch (error) {
+  //       console.error('Error updating user details:', error);
+  //     }
+  //   };
+
+  //   fetchAndUpdateUserDetails();
+  // });
 
   return (
     <SafeAreaView style={styles.container}>

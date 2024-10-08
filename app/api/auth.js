@@ -2,7 +2,10 @@ import { dashboardClient, authClient, setAuthToken } from './client';
 
 const requestOtp = (email, password, confirm) => authClient.post('request-otp', { email, password, confirm });
 const verifyOtp = (email, otp) => authClient.post('verify-otp', { email, otp });
-const setPassword = (email, password) => authClient.post('signup', { email, password });
+const signUp = (email, firstName, lastName, phone, pin, passphrase, confirmPin, displayName, fingerprint, facialId, deviceInfo) => 
+    authClient.post('register?type=Individual', { email, firstName, lastName, phone, pin, passphrase, confirmPin, displayName, fingerprint, facialId, deviceInfo });
+
+// const setPassword = (email, password) => authClient.post('signup', { email, password });
 const loginWithPassword = (email, password, loginMethod) => authClient.post('login', { email, password, loginMethod });
 const loginWithPassPhrase = (email, passPhrase, loginMethod) => authClient.post('login', { email, passPhrase, loginMethod });
 const loginWithPincode = (email, pinCode, loginMethod) => authClient.post('login', { email, pinCode, loginMethod });
@@ -17,7 +20,7 @@ const fetchUserDetails = () => dashboardClient.get('dashboard/rider/details');
 export default {
     requestOtp,
     verifyOtp,
-    setPassword,
+    signUp,
     loginWithPassword,
     loginWithPassPhrase,
     loginWithPincode,

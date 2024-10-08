@@ -4,6 +4,7 @@ import BackButton from './BackButton';
 import * as Clipboard from 'expo-clipboard';
 import StyledButton from './StyledButton';
 import Modal from 'react-native-modal';
+import Toast from 'react-native-toast-message';
 
 const generatePhrase = () => {
     const subjects = ["The cat", "A dog", "The bird", "A person", "The car"];
@@ -19,12 +20,15 @@ const generatePhrase = () => {
 
 export default function Passphrase ({ isVisible, navigation, onClose, onPassphraseGenerated }){
     const [isGenerateInputVisible, setGenerateIsInputVisible] = useState(false);
+    const [generatedPassphrase, setGeneratedPassphrase] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [isCreated, setIsCreated] = useState(false);
 
+
     const handleGeneratePress = () => {
-        const generatedPassphrase = generatePhrase();
-        setInputValue(generatedPassphrase);
+        const newPassphrase = generatePhrase();
+        setGeneratedPassphrase(newPassphrase);
+        setInputValue(newPassphrase);
         setGenerateIsInputVisible(true);
     };
 
@@ -34,16 +38,21 @@ export default function Passphrase ({ isVisible, navigation, onClose, onPassphra
 
     const handelCreateNConfirm = () => {
         onPassphraseGenerated(inputValue);
-        Clipboard.setStringAsync(inputValue);
-        Alert.alert('Copied to clipboard!');
+        Toast.show({
+            type: 'success', 
+            text1: 'Copied to clipboard!',
+          });
         setIsCreated(false);
         setInputValue('');
     }
 
-    const handleSaveNCopy = (generatedPassphrase) => {
+    const handleSaveNCopy = () => {
         onPassphraseGenerated(generatedPassphrase); 
-        Clipboard.setStringAsync(inputValue);
-        Alert.alert('Copied to clipboard!');
+        Clipboard.setStringAsync(generatedPassphrase);
+        Toast.show({
+            type: 'success', 
+            text1: 'Copied to clipboard!',
+          });
         setGenerateIsInputVisible(false);
         setInputValue('');
     };
