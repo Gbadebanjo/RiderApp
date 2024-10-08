@@ -21,7 +21,7 @@ import UserDetails from './app/screens/Auth/Signup/UserDetails';
 import SecurityIntro from './app/screens/Auth/Signup/SecurityIntro';
 import SetupSecurity from './app/screens/Auth/Signup/SetupSecurity';
 import SetupAdditionalSecurity from './app/screens/Auth/Signup/SetupAdditionalSecurity';
-import Security from './app/screens/Security/Security'
+import Security from './app/screens/Settings/Security';    // In use
 import Biometric from './app/screens/Security/Biometric';
 import FacialID from './app/screens/Security/FacialID';
 import Passphrase from './app/screens/Security/Passphrase';
@@ -31,16 +31,22 @@ import Pin from './app/screens/Security/Pin';
 import SettingToggle from './app/screens/Security/SettingToggle';
 import Feedback from './app/screens/Feedback/Feedback';
 import ThankYou from './app/screens/Feedback/ThankYou';
-import Photo from './app/screens/Dashboard/Photo';
-import ReviewPhoto from './app/screens/Dashboard/ReviewPhoto';
+import Photo from './app/screens/Dashboard/Photo';  // In use
+import ReviewPhoto from './app/screens/Dashboard/ReviewPhoto';  // In use
 import RewardProgram from './app/screens/Dashboard/RewardProgram';
 import CashbackReward from './app/screens/Dashboard/CashbackReward';
 import MilesPoint from './app/screens/Dashboard/MilesPoint';
 import InviteReferral from './app/screens/Dashboard/InviteReferral';
 import TrackReferral from './app/screens/Dashboard/TrackReferral';
 import RecoveryEmail from './app/screens/Recovery/EnterEmail';
+import InviteReferral from './app/screens/Settings/InviteReferral';  // In use
+import HelpAndSupport from './app/screens/Settings/HelpAndSupport';   // In use
+import BotLoading from './app/screens/Settings/BotLoading';  // In use
+import ChatBot from './app/screens/Settings/ChatBot';
+import CustomerServiceCenter from './app/screens/Settings/CustomerServiceCenter';   // In use
+import LiveChat from './app/screens/Settings/LiveChat';
 
-import NavButtons from './app/components/NavButtons';
+import NavButtons from './app/components/NavButtons';  // In use
 
 const Stack = createStackNavigator();
 
@@ -85,6 +91,11 @@ export default function App() {
       <Stack.Screen name='InviteReferral' component={InviteReferral} options={{ headerShown: false }}/>
       <Stack.Screen name='TrackReferral' component={TrackReferral} options={{ headerShown: false }}/>
       <Stack.Screen name='EnterEmail' component={RecoveryEmail} options={{ headerShown: false }}/>
+      <Stack.Screen name='BotLoading' component={BotLoading} options={{headerShown: false}} />
+      <Stack.Screen name='ChatBot' component={ChatBot} options={{headerShown: false}}/>
+      <Stack.Screen name='LiveChat' component={LiveChat} options={{headerShown: false}}/>
+      <Stack.Screen name='CustomerServiceCenter' component={CustomerServiceCenter} options={{ headerShown: false }}/>
+      <Stack.Screen name='HelpAndSupport' component={HelpAndSupport} options={{ headerShown: false }}/>
     </Stack.Navigator>
     <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
    </NavigationContainer>
