@@ -20,6 +20,9 @@ const validationSchema = yup.object().shape({
 export default function UsePassphrase({navigation, route}) {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [passPhraseCount, setPassPhraseCount] = useState(0);
+    const [buttonColor, setButtonColor] = useState('#21212133');
+    const [buttonDisabled, setButtonDisabled] = useState(true); 
 
     const handleContinue = async (values, { resetForm }) => {
         setLoading(true);
@@ -55,9 +58,9 @@ export default function UsePassphrase({navigation, route}) {
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
             <View style={styles.titleContainer}> 
                 <BackButton style={styles.Icon} />
-                <Text style={styles.title}>Login With Passphrase</Text>
+                <Text style={styles.title}>Sign In using passphrase</Text>
             </View>  
-            <Text style={styles.subTitle}>Provide your passphrase to acess your account</Text>  
+            <Text style={styles.subTitle}>Kindly provide phrase accordingly to login</Text>  
             <View style={styles.mainContent}>
 
              {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
@@ -70,7 +73,7 @@ export default function UsePassphrase({navigation, route}) {
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                         <>
-                            <InputField
+                            {/* <InputField
                                 label="Email"
                                 placeholder="user@rydepro.com"
                                 keyboardType="email-address"
@@ -88,30 +91,45 @@ export default function UsePassphrase({navigation, route}) {
                                 paddingVertical={10}
                                 error={touched.email && errors.email}
                                 errorMessage={errors.email}
-                            />
+                            /> */}
 
-                            <Text style={styles.passPhrase}>Passphrase</Text>  
-                            <TextInput
-                                style={styles.textInput}
-                                multiline={true}
-                                textAlignVertical="center"
-                                onChangeText={handleChange('passPhrase')}
-                                placeholder='Provide your passphrase here'
-                                value={values.passPhrase}
-                            />
+                            <View>
+                                <TextInput
+                                    style={styles.textInput}
+                                    multiline={true}
+                                    textAlignVertical="center"
+                                    onChangeText={(text) => {
+                                        handleChange('passPhrase')(text);
+                                        setPassPhraseCount(text.length);
+                                        if (text.length > 0) {
+                                            setButtonColor('#212121'); // Change to black
+                                            setButtonDisabled(false); // Enable button
+                                          } else {
+                                            setButtonColor('#808080'); // Keep grey
+                                            setButtonDisabled(true); // Disable button
+                                          }
+                                      }}
+                                    placeholder='Provide your passphrase here'
+                                    onBlur={handleBlur('passPhrase')}
+                                    value={values.passPhrase}
+                                />
+                                <Text style={styles.characterCount}>{passPhraseCount} of 1000 characters</Text>
+                                                            
+                            </View>
 
                             <StyledButton
-                                title="Save"
+                                title="Login"
                                 onPress={handleSubmit}
                                 width="100%"
                                 height={53}
                                 loading={loading}
                                 paddingVertical={10}
                                 marginTop={50}
-                                backgroundColor="#212121"
-                                borderWidth={2}
+                                backgroundColor={buttonColor}
+                                borderWidth={0}
                                 TextColor="#fff"
-                                iconName="angle-right" 
+                                borderRadius={20}
+                                disabled={buttonDisabled}
                             />  
                         </>
                         )}
@@ -140,11 +158,11 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 23,
         fontWeight: '700',
-        marginLeft: '10%'
+        marginLeft: '5%'
     },
     subTitle: {
         fontSize: 16,
-        fontWeight: '500',
+        fontWeight: '400',
         width: '100%',
         textAlign: 'center',
     },
@@ -162,7 +180,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     generateContainer: {
-        marginTop: 0,
+        flex: 1,
+        marginTop: '15%',
+        justifyContent: 'space-between',
+        marginBottom: '10%'
     },
     generateText:{
         fontSize: 16,
@@ -177,10 +198,15 @@ const styles = StyleSheet.create({
     },
     textInput: {
         marginTop: 2,
-        borderColor: '#AAB1BC',
+        borderColor: '#3C3C3C',
         borderWidth: 1,
         width: '100%',
         borderRadius: 8,
-        padding: 10,
-      }
+        padding: 20,
+    },
+    characterCount:{
+        textAlign: 'right',
+        color: '#909090',
+        fontSize: 12,
+    }
 });

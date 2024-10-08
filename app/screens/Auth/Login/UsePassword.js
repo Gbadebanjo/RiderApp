@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
-import passwordApi from '../../../api/auth'
-import { StyleSheet, Text, View, StatusBar, Keyboard } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import otpApi from './../../../api/auth'
+import { StyleSheet, Text, View, StatusBar, ActivityIndicator, Keyboard, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import BackButton from '../../../components/BackButton';
-import InputField from '../../../components/InputField';
 import StyledButton from '../../../components/StyledButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import InputField from '../../../components/InputField';
+import Centerlogo from '../../../components/centerlogo';
+import BackButton from '../../../components/BackButton';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import * as AuthSession from 'expo-auth-session';
+import zxcvbn from 'zxcvbn';
 
 const validationSchema = yup.object().shape({
   password: yup.string()
@@ -36,7 +40,8 @@ const validationSchema = yup.object().shape({
 
 export default function UsePassword({ navigation, route }) {
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(null);
 
   const handleContinue = async (values, { resetForm }) => {
     setLoading(true);
@@ -73,28 +78,33 @@ export default function UsePassword({ navigation, route }) {
       resetForm();
      return navigation.navigate('MenuLanding');
   }
+  const handlePasswordChange = (password) => {
+    const result = zxcvbn(password);
+    setPasswordStrength(result);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <View style={styles.titleContainer}>
-        <BackButton style={styles.Icon} />
-        <Text style={styles.title}>Login with Password</Text>
-      </View>
-      <Text style={styles.subtitle}>Provide your password to acess your account</Text>
+      <View style={styles.maincontent}>
+        <View style={styles.topcontent}>
+          <BackButton style={styles.Icon} />
+          <Centerlogo style={styles.logo}/>
+        </View>
 
-      {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
+      <Text style={styles.title}>Welcome!</Text>
+      <Text style={styles.subtitle}>Sign In</Text>
 
       <Formik
-        initialValues={{ email: '', password: '', }}
+        initialValues={{ email: '', password: ''  }}
         validationSchema={validationSchema}
         onSubmit={handleContinue}
       >
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+        {({ handleChange, handleBlur, handleContinue, values, errors, touched }) => (
           <>
             <InputField
               label="Email"
-              placeholder="user@rydepro.com"
+              placeholder=""
               keyboardType="email-address"
               autoCapitalize="none"
               textContentType="email"
@@ -110,22 +120,57 @@ export default function UsePassword({ navigation, route }) {
             <InputField
               label="Password"
               placeholder=""
+              keyboardType="password"
               autoCapitalize="none"
               textContentType="password"
               returnKeyType="next"
               width="100%"
-              onChangeText={handleChange('password')}
+              onChangeText={(text) => {
+                handleChange('password')(text);
+                handlePasswordChange(text);
+              }}
               onBlur={handleBlur('password')}
               value={values.password}
+              secureTextEntry
               error={touched.password && errors.password}
               errorMessage={errors.password}
               showPasswordToggle={true}
             />
+            {/* {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>} */}
 
+            {passwordStrength && (
+            <Text style={styles.passwordStrength}>
+              Password Strength: {passwordStrength.score}/4 - {passwordStrength.feedback.suggestions.join(' ')}
+            </Text>
+          )}
+
+            <InputField
+              label="Confirm Password"
+              placeholder="user@rydepro.com"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              textContentType="password"
+              returnKeyType="next"
+              width="100%"
+              onChangeText={handleChange('email')}
+              onBlur={handleBlur('email')}
+              value={values.email}
+              error={touched.email && errors.email}
+              errorMessage={errors.email}
+              showPasswordToggle={true}
+            />
             <StyledButton
-              title='Continue'
-              loading={loading}
-              onPress={handleSubmit}
+              title={
+                loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  'Sign in'
+                )
+              }
+              onPress={() => {
+                Keyboard.dismiss();
+                handleContinue();
+              }}
               width="100%"
               height={53}
               paddingVertical={10}
@@ -133,11 +178,24 @@ export default function UsePassword({ navigation, route }) {
               backgroundColor="#212121"
               borderWidth={2}
               TextColor="#fff"
-              iconName="angle-right"
+              borderRadius={20}
             />
           </>
         )}
       </Formik>
+
+      </View>
+
+      <Text style={styles.lastText}>
+        By proceeding, you agree to RYDEPRO’s 
+          <Text style={{textDecorationLine: 'underline'}}> Terms, </Text>
+          <Text style={{textDecorationLine: 'underline'}}> Privacy</Text>  Notice and can unsubscribe by emailing 
+          <TouchableOpacity>
+            <Text style={{fontWeight: '900'}}>
+            "Unsubscribe"
+            </Text>
+          </TouchableOpacity>
+        </Text>
     </SafeAreaView>
   );
 }
@@ -145,34 +203,42 @@ export default function UsePassword({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    width: '100%',
-  },
-  titleContainer: {
-    marginTop: 20,
-    width: '100%',
-    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    width: '100%',
+    paddingTop: 30,
+    paddingHorizontal: 30,
+    justifyContent: 'space-between'
+  },
+  maincontent: {
+    width: '100%', 
+},
+  topcontent: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  logo: {
+    width: '20%',
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
+    marginTop: 20,
     fontWeight: '700',
-    marginLeft: '20%',
+    alignSelf: 'flex-start',
+    marginBottom: 40,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#464646',
-    marginTop: 10,
-    marginBottom: 15,
+    fontSize: 24,
+    fontWeight: '500',
+    alignSelf: 'flex-start',
+    marginBottom: 0,
+  },
+  lastText: {
+    fontSize: 12,
+    fontWeight: '500',
     textAlign: 'center',
-  },
-  bigerrorText: {
-    fontSize: 18,
-    color: 'red',
-    marginTop: 10,
-    alignSelf: 'flex-center',
-  },
+    color: '#212121',
+    width: '100%',
+    marginBottom: 10,
+  }
 });

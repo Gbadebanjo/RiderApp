@@ -2,14 +2,13 @@ import React, {useRef, useState} from 'react';
 import api from '../../../api/auth'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import BackButton from '../../../components/BackButton';
 import InputField from '../../../components/InputField';
 import StyledButton from '../../../components/StyledButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Entypo } from '@expo/vector-icons';
+import { Fontisto, MaterialIcons } from '@expo/vector-icons';
 
 const validationSchema = yup.object().shape({
     pinCode: yup
@@ -67,29 +66,22 @@ export default function UsePincode({navigation}) {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-            <View style={styles.titleContainer}> 
-                <BackButton style={styles.Icon} />
-                <Text style={styles.title}>Pin</Text>
-                <TouchableOpacity
-                    style={styles.Icon}
-                    onPress={() => navigation.navigate('SettingToggle')}>
-                    <Entypo name="dots-three-vertical" size={18} />
-                </TouchableOpacity>
-            </View>  
-            <Text style={styles.subTitle}>Login with your 4 Digit pin</Text>  
-
-            {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
 
             <View style={styles.mainContent}>
+                <View style={styles.pinContainer}> 
+                    <Fontisto name="locked" size={70} color="black" />
+                    <Text style={styles.subTitle}>Enter Pin</Text>    
+                </View>                  
                 <View>
                     <Formik
-                        initialValues={{ email: '', pinCode: '', }}
+                        // initialValues={{ email: '', pinCode: '', }}
+                        initialValues={{ pinCode: '', }}
                         validationSchema={validationSchema}
                         onSubmit={handleContinue}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                         <>
-                            <InputField
+                            {/* <InputField
                                 label="Email"
                                 placeholder="user@rydepro.com"
                                 keyboardType="email-address"
@@ -105,9 +97,8 @@ export default function UsePincode({navigation}) {
                                 paddingVertical={5}
                                 error={touched.email && errors.email}
                                 errorMessage={errors.email}
-                            />
+                            /> */}
 
-                            <Text style={styles.Pincode}>Pincode</Text>  
                             <CodeField
                                 ref={ref}
                                 {...props}
@@ -115,7 +106,7 @@ export default function UsePincode({navigation}) {
                                 onChangeText={handleChange('pinCode')}
                                 cellCount={CELL_COUNT}
                                 rootStyle={styles.codeFieldRoot}
-                                // keyboardType="number-pad"
+                                keyboardType="number-pad"
                                 textContentType="oneTimeCode"
                                 // onSubmitEditing={handleSubmit} 
                                 renderCell={({ index, symbol, isFocused }) => (
@@ -134,26 +125,24 @@ export default function UsePincode({navigation}) {
                                 />
                             {touched.code && errors.code && <Text style={styles.errorText}>{errors.code}</Text>}
 
-                            <StyledButton
-                                title="Save"
-                                loading={loading}
-                                onPress={handleSubmit}
-                                width="100%"
-                                height={53}
-                                paddingVertical={10}
-                                marginTop={70}
-                                backgroundColor="#212121"
-                                borderWidth={2}
-                                TextColor="#fff"
-                                iconName="angle-right" 
-                            />
                         </>
                         )}
 
-
                     </Formik>
+
+                    {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
                 </View>
-            </View>        
+            </View> 
+
+            <View style={styles.bottomContent}>
+                <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={()=> navigation.goBack()}>
+                    <MaterialIcons name="keyboard-backspace" size={24} color={'black'}/>
+                    <Text> Back</Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <Text>Next</Text>
+                </TouchableOpacity>
+            </View>       
     </SafeAreaView>
     );
 }
@@ -165,26 +154,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingHorizontal: 20,
         width: '100%',
+        justifyContent: 'space-between',
     },
-    titleContainer: {
+    pinContainer: {
         marginTop: 30,
         width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 30,
     },
-    title: {
-        fontSize: 28,
-        fontWeight: '700',
-    },
     subTitle: {
-        fontSize: 16,
-        fontWeight: '500',
-    },
-    Pincode: {
-        marginTop: 20,
-        fontSize: 16,
+        marginTop: 30,
+        fontSize: 20,
         fontWeight: '400',
     },
     bigerrorText: {
@@ -194,17 +174,11 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     mainContent: {
-        marginTop: 50,
+        marginTop: '30%',
         width: '100%',
     },
-    logoText:{
-        fontSize: 18,
-        fontWeight: '500',
-        marginTop: 10,
-        alignSelf: 'center',
-    },
     codeFieldRoot: {
-        // marginTop: 10,
+        marginTop: '15%',
         width: '80%',
         alignSelf: 'center',
       },
@@ -226,8 +200,14 @@ const styles = StyleSheet.create({
       inputText: {
         color: 'black', 
         fontSize: 18,
-      },
+    },
       errorText: {
         color: 'red',
-      }
+    },
+    bottomContent: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        marginBottom: "10%"
+    }
 });

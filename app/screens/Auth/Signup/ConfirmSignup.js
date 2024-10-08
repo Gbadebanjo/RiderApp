@@ -1,18 +1,13 @@
-// import { StatusBar } from 'expo-status-bar';
 import React, {useRef, useState} from 'react';
 import otpApi from '../../../api/auth'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import StyledButton from '../../../components/StyledButton';
 import Centerlogo from '../../../components/centerlogo';
-import SocialLogo from '../../../components/SocialLogo';
 import { Formik } from 'formik';
-import OrSeparator from '../../../components/OrSeparator';
+import Toast from 'react-native-toast-message';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import * as yup from 'yup';
 import BackButton from '../../../components/BackButton';
-const googleLogo = require('./../../../assets/GoogleIcon.png');
-const appleLogo = require('./../../../assets/AppleLogo.png');
 
 const validationSchema = yup.object().shape({
   code: yup
@@ -36,15 +31,21 @@ export default function ConfirmSignup({navigation, route}) {
 
     const handleVerify = async (values, {resetForm}) => {
       setLoading(true);
-      // const response = await otpApi.verifyOtp(email, values.code);
-      // // console.log(response.data.message);
-      // Keyboard.dismiss();
-      // if (!response.ok) {
-      //   setLoading(false);
-      //   return setErrorMessage(response.data.message);
-      // }
-      // resetForm();
-      // alert(response.data.message);
+      const response = await otpApi.verifyOtp(email, values.code);
+      Keyboard.dismiss();
+      if (!response.ok) {
+        setLoading(false);
+        Toast.show({
+          type: 'error', 
+          text1: response.data.message,
+        });
+      return setErrorMessage(response.data.message);
+      }
+      Toast.show({
+        type: 'success',
+        text1: response.data.message,
+      });
+      resetForm();
       navigation.navigate('UserDetails', { 
         email: email,
       });

@@ -1,4 +1,3 @@
-// import { StatusBar } from 'expo-status-bar';
 import React, {useRef, useState} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,7 +6,6 @@ import StyledButton from '../../../components/StyledButton';
 import Centerlogo from '../../../components/centerlogo';
 import { Formik } from 'formik';
 import InputField from '../../../components/InputField';
-// import SelectInput from '../../../components/SelectInput';
 import PhoneInput from 'react-native-phone-number-input';
 import * as yup from 'yup';
 import BackButton from '../../../components/BackButton';
@@ -36,6 +34,7 @@ export default function UserDetails({navigation, route}) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <BackButton style={styles.Icon} />
         <View style={styles.logo} >
@@ -57,7 +56,7 @@ export default function UserDetails({navigation, route}) {
         onSubmit={async (values) => {
           try {
             await AsyncStorage.setItem('userDetails', JSON.stringify(values));
-            navigation.navigate('SecurityIntro');
+            navigation.navigate('SecurityIntro', {values});
           } catch (error) {
             Alert.alert('Error', 'Failed to save user details.');
           }
@@ -221,6 +220,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     paddingBottom: 30,
+    paddingTop: 10,
   },
   Icon: {
     alignSelf: 'flex-start',

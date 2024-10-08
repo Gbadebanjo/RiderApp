@@ -26,7 +26,7 @@ export default function Security({navigation}) {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('Biometric')}
+                    onPress={() => navigation.navigate('BiometricToggle')}
                     >
                     <View style={styles.eachFeature}>
                         <Text style={styles.text}>Biometrics</Text>
@@ -49,14 +49,6 @@ export default function Security({navigation}) {
                         <Entypo name="chevron-small-right" size={20} color='#fff' />
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('Passphrase', { email })}
-                    >
-                    <View style={styles.eachFeature}>
-                        <Text style={styles.text}>Two Factor Authentication</Text>
-                        <Entypo name="chevron-small-right" size={20} color='#fff' />
-                    </View>
-                </TouchableOpacity> 
             </View>  
             <View style={styles.devices}>
             <Entypo name="mobile" size={20} color='#767676' />
