@@ -35,18 +35,17 @@ export default function ConfirmSignup({navigation, route}) {
       Keyboard.dismiss();
       if (!response.ok) {
         setLoading(false);
-        Toast.show({
+        return Toast.show({
           type: 'error', 
           text1: response.data.message,
         });
-      return setErrorMessage(response.data.message);
       }
       Toast.show({
         type: 'success',
         text1: response.data.message,
       });
       resetForm();
-      navigation.navigate('UserDetails', { 
+      return navigation.navigate('UserDetails', { 
         email: email,
       });
     }
@@ -90,7 +89,7 @@ export default function ConfirmSignup({navigation, route}) {
                 onChangeText={handleChange('code')}
                 cellCount={CELL_COUNT}
                 rootStyle={styles.codeFieldRoot}
-                keyboardType=""
+                keyboardType='phone-pad'
                 textContentType="oneTimeCode"
                 onSubmitEditing={handleSubmit} 
                 renderCell={({ index, symbol, isFocused }) => (

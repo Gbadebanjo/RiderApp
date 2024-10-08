@@ -40,7 +40,7 @@ export default function FirstScreen({ navigation }) {
         <View style={styles.buttonContainer}>
           <StyledButton
             title="Create an account"
-            onPress={() => navigation.navigate('MenuLanding')}
+            onPress={() => navigation.navigate('CreateAccount')}
             appleLogo={true}
             width="88%"
             height={53}

@@ -10,7 +10,7 @@ export const toastConfig = {
       style={{ borderLeftColor: 'green', borderLeftWidth: 0, alignItems: 'center', paddingLeft: 20 }}
       contentContainerStyle={{ paddingHorizontal: 25 }}
       text1Style={{
-        fontSize: 15,
+        fontSize: 12,
         fontWeight: 'bold',
         flexWrap: 'wrap',
       }}
@@ -30,7 +30,7 @@ export const toastConfig = {
       style={{ borderRightColor: 'red', borderLeftWidth: 0, alignItems: 'center', paddingLeft: 20 }}
       contentContainerStyle={{ paddingHorizontal: 25, width: '100%' }}
       text1Style={{
-        fontSize: 15,
+        fontSize: 12,
         fontWeight: 'bold'
       }}
       text2Style={{

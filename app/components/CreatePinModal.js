@@ -9,11 +9,11 @@ import Modal from 'react-native-modal';
 const validationSchema = yup.object().shape({
   code: yup
     .string()
-    .length(4, 'Code must be exactly 4 digits')
-    .required('Enter the 4-digit code'),
+    .length(6, 'Code must be exactly 6 digits')
+    .required('Enter the 6-digit code'),
 });
 
-const CELL_COUNT = 4;
+const CELL_COUNT = 6;
 
 export default function Pin({ visible, onClose, onSubmit }) {
   const [value, setValue] = useState('');
@@ -22,8 +22,6 @@ export default function Pin({ visible, onClose, onSubmit }) {
     value,
     setValue,
   });
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
 
   return (
     <Modal
@@ -45,7 +43,6 @@ export default function Pin({ visible, onClose, onSubmit }) {
             onSubmit={(values) => {
               onSubmit(values.code);
             }}
-            // onSubmit={onSubmit}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
               <View>

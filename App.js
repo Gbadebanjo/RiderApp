@@ -31,12 +31,12 @@ import Pin from './app/screens/Security/Pin';
 import SettingToggle from './app/screens/Security/SettingToggle';
 import Feedback from './app/screens/Feedback/Feedback';
 import ThankYou from './app/screens/Feedback/ThankYou';
+import WelcomeHome from './app/screens/HomeScreens/WelcomeHome';
 import Photo from './app/screens/Dashboard/Photo';  // In use
 import ReviewPhoto from './app/screens/Dashboard/ReviewPhoto';  // In use
 import RewardProgram from './app/screens/Dashboard/RewardProgram';
 import CashbackReward from './app/screens/Dashboard/CashbackReward';
 import MilesPoint from './app/screens/Dashboard/MilesPoint';
-import InviteReferral from './app/screens/Dashboard/InviteReferral';
 import TrackReferral from './app/screens/Dashboard/TrackReferral';
 import RecoveryEmail from './app/screens/Recovery/EnterEmail';
 import InviteReferral from './app/screens/Settings/InviteReferral';  // In use
@@ -58,6 +58,7 @@ export default function App() {
       <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }}/>
       <Stack.Screen name='FirstScreen' component={FirstScreen} options={{ headerShown: false }}/>
       <Stack.Screen name='WelcomeGuest' component={WelcomeGuest} options={{ headerShown: false }}/>
+      <Stack.Screen name='WelcomeHome' component={NavButtons} options={{ headerShown: false }}/>
       <Stack.Screen name='CreateAccount' component={CreateAccount} options={{ headerShown: false }}/>
       <Stack.Screen name='Login' component={Login} options={{ headerShown: false }}/>
       <Stack.Screen name='UseFingerprint' component={UseFingerprint} options={{ headerShown: false }}/>
