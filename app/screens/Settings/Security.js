@@ -6,21 +6,6 @@ import { Entypo } from '@expo/vector-icons';
 import { MaterialCommunityIcons, AntDesign, Ionicons, FontAwesome } from '@expo/vector-icons';
 
 export default function Security({navigation}) {
-    // const [email, setEmail] = useState('');
-
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //       try {
-    //         const email = await AsyncStorage.getItem('email');
-    //         setEmail(email);
-    //       } catch (error) {
-    //         console.error('Error retrieving data from AsyncStorage:', error);
-    //       }
-    //     };
-    
-    //     fetchData();
-    //   }, []);
-
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#212121" />
@@ -33,7 +18,7 @@ export default function Security({navigation}) {
             <Text style={styles.subTitle}>Add Two Additional Security</Text>    
             <View style={styles.securityContainer}>
                 <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('FacialID')}
+                    onPress={() => navigation.navigate('FacialIdToggle')}
                     >
                     <View style={styles.eachFeature}>
                         <Text style={styles.text}>Facial Identification</Text>
@@ -41,7 +26,7 @@ export default function Security({navigation}) {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('Biometric')}
+                    onPress={() => navigation.navigate('BiometricToggle')}
                     >
                     <View style={styles.eachFeature}>
                         <Text style={styles.text}>Biometrics</Text>
@@ -64,14 +49,6 @@ export default function Security({navigation}) {
                         <Entypo name="chevron-small-right" size={20} color='#fff' />
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('Passphrase', { email })}
-                    >
-                    <View style={styles.eachFeature}>
-                        <Text style={styles.text}>Two Factor Authentication</Text>
-                        <Entypo name="chevron-small-right" size={20} color='#fff' />
-                    </View>
-                </TouchableOpacity> 
             </View>  
             <View style={styles.devices}>
             <Entypo name="mobile" size={20} color='#767676' />

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,19 +9,19 @@ import {
   Modal,
   Animated,
   Easing,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { FontAwesome, Entypo, Ionicons, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppContext } from '../../context/AppContext';
 
 const Account = ({ navigation, route }) => {
+  const { userDetails } = useContext(AppContext);
   const [showName, setShowName] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [isProfilePicHidden, setIsProfilePicHidden] = useState(false); // State to manage profile picture visibility
   const slideAnim = useRef(new Animated.Value(300)).current; // Initial value for sliding animation
-  // const { userDetails } = route.params;
-  // const userDetails = JSON.parse( AsyncStorage.getItem('userDetails'));
-  // console.log('userDetails:', userDetails);
+
 
   const toggleNameDetails = () => {
     setShowName(!showName);
@@ -47,21 +47,19 @@ const Account = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <TouchableOpacity
-          style={styles.headcontainer}
-          onPress={() => navigation.goBack()}
-        >
-          <FontAwesome name="angle-left" size={24} color="black" />
+        <View style={styles.headcontainer}>
+          <TouchableOpacity onPress={() => navigation.goBack()} >
+            <FontAwesome name="angle-left" size={24} color="black" />
+          </TouchableOpacity>
           <Text style={styles.head}>Account</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Edit')}>
+            <Text style={styles.edit}>Edit</Text>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity style={styles.nameContainer}>
           <View style={styles.Img}>
-            {/* <Image source={isProfilePicHidden || !userDetails?.profilePic ? require('../../assets/Userpic.png') : { uri: userDetails.profilePic }} */}
-            {/* style={{ width: 80, height: 80, borderRadius: 50 }} */}
-            {/* /> */}
-            <Image source={require('../../assets/ProfileTemplate.png')}
-              style={{ width: 80, height: 80, borderRadius: 50 }}
-            />
+            <Image source={isProfilePicHidden || !userDetails?.profileImg ? require('../../assets/ProfileTemplate.png') : { uri: userDetails.profileImg }}
+              style={{ width: 80, height: 80, borderRadius: 50 }} />
             <TouchableOpacity
               style={styles.cam}
               onPress={toggleModal} // Open the modal
@@ -70,15 +68,10 @@ const Account = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.namContainer}>
-            <Text style={styles.name}>Daniel James</Text>
-            <Text style={styles.account}>Individual</Text>
-            <Text style={styles.id}>User ID: 13456754567</Text>
+            <Text style={styles.name}>{userDetails.firstName} {userDetails.lastName}</Text>
+            <Text style={styles.account}>{userDetails.accountType}</Text>
+            <Text style={styles.id}>User ID: {userDetails.accountId}</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('Edit')}>
-            {/* <TouchableOpacity onPress={() => navigation.navigate('Edit', { userDetails })}> */}
-            <Text style={styles.edit}>Edit</Text>
-          </TouchableOpacity>
-          {/* <Linking>Edit</Linking> */}
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.detailscontainer}
@@ -86,7 +79,7 @@ const Account = ({ navigation, route }) => {
         >
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Name</Text>
-            <Text style={styles.nametext}>John Doe</Text>
+            <Text style={styles.nametext}>{userDetails.firstName} {userDetails.lastName}</Text>
           </View>
           <Ionicons
             name={showName ? 'chevron-up' : 'chevron-down'}
@@ -99,14 +92,13 @@ const Account = ({ navigation, route }) => {
             <View style={styles.detailscontainer}>
               <View style={styles.namedetails}>
                 <Text style={styles.namehead}>First Name</Text>
-                <Text style={styles.nametext}>John</Text>
+                <Text style={styles.nametext}>{userDetails.firstName}</Text>
               </View>
             </View>
             <View style={styles.detailscontainer}>
               <View style={styles.namedetails}>
                 <Text style={styles.namehead}>Last Name</Text>
-                {/* <Text style={styles.nametext}>{userDetails?.lastName}</Text> */}
-                <Text style={styles.nametext}>Doe</Text>
+                <Text style={styles.nametext}>{userDetails?.lastName}</Text>
               </View>
             </View>
           </>
@@ -114,36 +106,31 @@ const Account = ({ navigation, route }) => {
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Display Name(Alias)</Text>
-            {/* <Text style={styles.nametext}>{userDetails?.displayName}</Text> */}
-            <Text style={styles.nametext}>James</Text>
+            <Text style={styles.nametext}>{userDetails?.displayName}</Text>
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Phone Number</Text>
-            <Text style={styles.nametext}>098765456789</Text>
-            {/* <Text style={styles.nametext}>{userDetails?.phoneNumber}</Text> */}
+            <Text style={styles.nametext}>{userDetails?.phone}</Text>
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Email Address</Text>
-            <Text style={styles.nametext}>oluwagbogo@gmail</Text>
-            {/* <Text style={styles.nametext}>{userDetails?.email}</Text> */}
+            <Text style={styles.nametext}>{userDetails?.email}</Text>
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Emergency Contact</Text>
-            <Text style={styles.nametext}>0987654567898</Text>
-            {/* <Text style={styles.nametext}>{userDetails?.emergencyContact ? userDetails.emergencyContact : "Nil"}</Text> */}
+            <Text style={styles.nametext}>{userDetails?.emergencyContact ? userDetails.emergencyContact : "Nil"}</Text>
           </View>
         </View>
         <View style={styles.detailscontainer}>
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Emergency Number</Text>
-            <Text style={styles.nametext}>0987678987</Text>
-            {/* <Text style={styles.nametext}>{userDetails?.emergencyPhoneNumber ? userDetails.emergencyPhoneNumber : "Nil"}</Text> */}
+            <Text style={styles.nametext}>{userDetails?.emergencyPhoneNumber ? userDetails.emergencyPhoneNumber : "Nil"}</Text>
           </View>
         </View>
       </ScrollView>
@@ -154,39 +141,41 @@ const Account = ({ navigation, route }) => {
         transparent={true}
         onRequestClose={toggleModal}
       >
-        <View style={styles.modalBackground}>
-          <Animated.View
-            style={[
-              styles.modal,
-              {
-                transform: [{ translateY: slideAnim }],
-              },
-            ]}
-          ><View style={styles.modalLineContainer}>
-              <Text style={styles.modalTitle}>Edit Account Photo</Text>
-            </View>
-            <TouchableOpacity
-              style={styles.modalLineContainer}
-              onPress={hideProfilePicture}
-            >
-              <Text style={styles.modalText}>Hide Profile Picture</Text>
-              <FontAwesome name="user-o" size={16} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.modalLineContainer}
-              onPress={() => {
-                toggleModal()
-                navigation.navigate('Photo')
-              }}
-            >
-              <Text style={styles.modalText}>Take photo</Text>
-              <Feather name="camera" size={16} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={toggleModal}>
-              <Text style={styles.modalText}>Cancel</Text>
-            </TouchableOpacity>
-          </Animated.View>
-        </View>
+        <TouchableWithoutFeedback onPress={toggleModal}>
+          <View style={styles.modalBackground}>
+            <Animated.View
+              style={[
+                styles.modal,
+                {
+                  transform: [{ translateY: slideAnim }],
+                },
+              ]}
+            ><View style={styles.modalLineContainer}>
+                <Text style={styles.modalTitle}>Edit Account Photo</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.modalLineContainer}
+                onPress={hideProfilePicture}
+              >
+                <Text style={styles.modalText}>Hide Profile Picture</Text>
+                <FontAwesome name="user-o" size={16} color="black" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalLineContainer}
+                onPress={() => {
+                  toggleModal()
+                  navigation.navigate('Photo')
+                }}
+              >
+                <Text style={styles.modalText}>Take photo</Text>
+                <Feather name="camera" size={16} color="black" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={toggleModal}>
+                <Text style={styles.modalText}>Cancel</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </SafeAreaView>
   );
@@ -204,13 +193,20 @@ const styles = StyleSheet.create({
   headcontainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
   },
   head: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#161718',
     textAlign: 'center',
-    flex: 1,
+  },
+  edit: {
+    color: '#1B6ADF',
+    fontSize: 16,
+    textDecorationLine: 'underline',
+
   },
   nameContainer: {
     flexDirection: 'row',
@@ -239,13 +235,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   namContainer: {
-    marginLeft: 20,
+    marginLeft: 16,
     flex: 1,
     gap: 7,
     color: '#212121',
   },
   name: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '600',
   },
   account: {
@@ -316,12 +312,5 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 16,
     marginVertical: 10,
-  },
-  edit: {
-    color: '#1B6ADF',
-    fontSize: 16,
-    height: '100%',
-    textDecorationLine: 'underline',
-
   },
 });

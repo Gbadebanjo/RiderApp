@@ -3,21 +3,21 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign, Feather, Entypo, FontAwesome6, FontAwesome5, MaterialCommunityIcons, Octicons, Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { dashboardClient, setAuthToken } from '../../api/client';
+import { AppContext } from '../../context/AppContext';
 
 export default function SettingHome({ navigation }) {
-    // const [showReferral, setShowReferral] = useState(false);
+    const { userDetails, setUserDetails } = useContext(AppContext);
     const [showLogOut, setShowLogOut] = useState(false);
     const slideAnim = useRef(new Animated.Value(300)).current;
 
 
     const logOut = async () => {
         try {
-            await AsyncStorage.removeItem('token');
-            setAuthToken(null);
+            await AsyncStorage.removeItem('userToken');
+            setUserDetails(null);
             navigation.navigate('FirstScreen');
             toggleModal();
         } catch (error) {
@@ -30,7 +30,7 @@ export default function SettingHome({ navigation }) {
         if (!showLogOut) {
             Animated.timing(slideAnim, {
                 toValue: 0,
-                duration: 300,
+                duration: 10,
                 easing: Easing.out(Easing.ease),
                 useNativeDriver: true,
             }).start();
@@ -55,12 +55,12 @@ export default function SettingHome({ navigation }) {
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity style={styles.image}>
-                        <Image source={require('../../assets/ProfileTemplate.png')} style={styles.img} />
-                        <Ionicons name="camera-outline" size={26} color="#fff" style={styles.icon} />
+                        <Image source={userDetails?.profileImg ? { uri: userDetails?.profileImg } : require('../../assets/ProfileTemplate.png')} style={styles.img} />
+                        {/* <Ionicons name="camera-outline" size={26} color="#fff" style={styles.icon} /> */}
                     </TouchableOpacity>
-                    <Text style={{ color: '#fff', fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 20 }}>Raymond Badmus</Text>
-                    <Text style={{ color: '#fff', fontSize: 14, textAlign: 'center', marginTop: 2 }}>Individual</Text>
-                    <Text style={{ color: '#464646', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>User ID: 12345686783</Text>
+                    <Text style={{ color: '#fff', fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 20 }}>{userDetails?.firstName} {userDetails?.lastName}</Text>
+                    <Text style={{ color: '#fff', fontSize: 14, textAlign: 'center', marginTop: 2 }}>{userDetails?.accountType}</Text>
+                    <Text style={{ color: '#464646', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>User ID: {userDetails?.accountId}</Text>
                 </View>
                 <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView} >
                     <Text style={styles.textHead}>Accounts</Text>
@@ -85,7 +85,7 @@ export default function SettingHome({ navigation }) {
                         style={styles.eachItem}
                     >
                         <Text style={styles.eachItemText}>Rewards Program</Text>
-                        <Ionicons name="chevron-down" size={20} color="#000" style={styles.forwardIcon} />
+                        <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => navigation.navigate('InviteReferral')}

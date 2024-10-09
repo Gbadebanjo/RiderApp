@@ -1,15 +1,16 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import { StyleSheet, Text, View, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import Toast from 'react-native-toast-message';
 import PhoneInput from 'react-native-phone-number-input';
 import StyledButton from '../../components/StyledButton';
 import Centerlogo from '../../components/centerlogo';
 import BackButton from '../../components/BackButton';
 import InputField from '../../components/InputField';
 import axios from 'axios'; 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppContext } from '../../context/AppContext';
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
@@ -24,18 +25,19 @@ export default function Edit({ navigation, route }) {
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const phoneInputRef = useRef(null);
-  const { userDetails } = route.params;
+  const { userDetails } = useContext(AppContext);
 
   const handleUpdate = async (values) => {
     setLoading(true);
     console.log('values:', values);
     const token = await AsyncStorage.getItem('userToken');
     try {
-      const response = await axios.put('https://api-auth.katabenterprises.com/api/dashboard/rider/update', values, {
+      const response = await axios.put('https://api-auth.katabenterprises.com/api/rider/update', values, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      
       console.log('response:', response);
       if (response.status === 200) {
         Alert.alert('Success', 'Details updated successfully');
@@ -60,9 +62,9 @@ export default function Edit({ navigation, route }) {
             firstName: userDetails.firstName || '',
             lastName: userDetails.lastName || '',
             displayName: userDetails.displayName || '',
-            phoneNumber: userDetails.phoneNumber || '',
-            emergencyContact: userDetails.emergencyContact || '', 
-            emergencyPhoneNumber: userDetails.emergencyPhoneNumber || '', 
+            phoneNumber: userDetails.phone || '',
+            emergencyContact: userDetails.emergency[1].name || '', 
+            emergencyPhoneNumber: userDetails.emergency[0].phone || '', 
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => handleUpdate(values)}
@@ -134,7 +136,7 @@ export default function Edit({ navigation, route }) {
               </View>
 
               <InputField
-                label="Emergency Contact"
+                label="Emergency Contact(Name)"
                 placeholder="Jane Doe"
                 autoCapitalize="none"
                 returnKeyType="next"
@@ -180,7 +182,6 @@ export default function Edit({ navigation, route }) {
                 backgroundColor="#212121"
                 borderWidth={2}
                 TextColor="#fff"
-                iconName="angle-right"
               />
             </>
           )}
@@ -202,7 +203,7 @@ const styles = StyleSheet.create({
   },
   Icon: {
     alignSelf: 'flex-start',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   label: {
     fontSize: 16,

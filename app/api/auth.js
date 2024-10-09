@@ -15,7 +15,7 @@ const createPincode = (email, pinCode) => authClient.post('create/pincode', {ema
 const enableBiometrics = () => authClient.put('enable-biometric');
 const biometricsLogin = (biometricToken, loginMethod) => authClient.post('biometric-login', { biometricToken, loginMethod });
 
-const fetchUserDetails = () => dashboardClient.get('dashboard/rider/details');
+const fetchUserDetails = () => dashboardClient.get('');
 
 export default {
     requestOtp,

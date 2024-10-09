@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import passwordApi from './../../../api/auth'
-import { UserContext } from '../../../context/UserContext';
 import { StyleSheet, Text, View, StatusBar, ActivityIndicator, Keyboard, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../../components/StyledButton';
@@ -43,7 +42,6 @@ export default function UsePassword({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(null);
-  const { userDetails, updateUserDetails } = useContext(UserContext);
 
   const handleSubmit = async (values, { resetForm }) => {
     setLoading(true);
@@ -68,10 +66,8 @@ export default function UsePassword({ navigation, route }) {
       type: 'success',
       text1: response.data.message,
     });
-    await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token));
-    console.log(response.data.rider);
-    updateUserDetails(response.data.rider);
 
+    await AsyncStorage.setItem('userToken', response.data.token);
       setLoading(false);
       resetForm();
      return navigation.navigate('WelcomeHome');

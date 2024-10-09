@@ -2,7 +2,6 @@ import React, {useRef, useState, useContext} from 'react';
 import api from '../../../api/auth'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { UserContext } from '../../../context/UserContext';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
@@ -28,7 +27,6 @@ export default function UsePincode({navigation}) {
     });
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const { userDetails, updateUserDetails } = useContext(UserContext);
 
 
     const handleContinue = async (values, { resetForm }) => {
@@ -65,7 +63,6 @@ export default function UsePincode({navigation}) {
             text1: response.data.message,
         });
         await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token));
-        updateUserDetails(response.data.rider);
     
           setLoading(false);
           resetForm();

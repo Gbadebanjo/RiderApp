@@ -1,17 +1,52 @@
-import { StyleSheet, Text, View, StatusBar, Platform, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, Platform, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import InputField from '../../components/InputField';
 import StyledButton from '../../components/StyledButton';
-import React from 'react';
-import { AutoFocus } from 'expo-camera/build/legacy/Camera.types';
+import React, { useEffect, useContext } from 'react';
+import { dashboardClient, setAuthToken } from '../../api/client';
+import { AppContext } from '../../context/AppContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+// import { AutoFocus } from 'expo-camera/build/legacy/Camera.types';
 
 const WelcomeHome = () => {
+  const { userDetails, setUserDetails } = useContext(AppContext);
+  const [loading, setLoading] = React.useState(false);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      setLoading(true);
+      const token = await AsyncStorage.getItem('userToken');
+      setAuthToken(token);
+      try {
+        const response = await dashboardClient.get('');
+        if (response.ok) {
+          setUserDetails(response.data.info);
+        } else {
+          console.error('An error occurred while fetching user details:', response.data.message);
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching user details:', error);
+      }
+      setLoading(false);
+    };
+    fetchUserDetails();
+  }
+    , []);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
+
   return (
     <LinearGradient
-      colors={['#212121', '#212121', '#ffffff', '#ffffff']} // Black to White
+      colors={['#212121', '#212121', '#ffffff', '#ffffff']}
       locations={[0, 0.55, 0.55, 1]} // Define the color stops
       start={{ x: 0, y: 0 }} // Gradient from top to bottom
       end={{ x: 0, y: 1 }}
@@ -21,17 +56,14 @@ const WelcomeHome = () => {
         <StatusBar barStyle="light-content" backgroundColor='#212121' translucent={false} />
         <View style={styles.accountHeader}>
           <View style={styles.imageBox}>
-            <Image
-              source={require('../../assets/Userpic.png')}
-              style={styles.image}
-            />
-            <TouchableOpacity style={styles.cameraIcon}>
+            <Image source={userDetails?.profileImg ? { uri: userDetails?.profileImg } : require('../../assets/Userpic.png')} style={styles.image} />
+            {/* <TouchableOpacity style={styles.cameraIcon}>
               <Ionicons name="camera-outline" size={22} color="#fff" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <View style={styles.nameBox}>
             <Text style={{ color: '#fff', fontSize: 20 }}>Welcome</Text>
-            <Text style={{ color: '#fff', fontSize: 17 }}>Raymond Badmus</Text>
+            <Text style={{ color: '#fff', fontSize: 18 }}>{userDetails?.firstName} {userDetails?.lastName}  </Text>
           </View>
           <TouchableOpacity style={styles.notification}>
             <Ionicons name="notifications-outline" size={20} color="#fff" />
@@ -50,8 +82,8 @@ const WelcomeHome = () => {
             placeholder="Choose Pickup location"
             textContentType="location"
             returnKeyType="next"
-            width="90%"
-            marginLeft={30}
+            width="92%"
+            marginLeft={20}
             marginTop={0}
           />
           <InputField
@@ -59,18 +91,18 @@ const WelcomeHome = () => {
             placeholder="Choose Destination"
             textContentType="location"
             returnKeyType="next"
-            width="90%"
-            marginLeft={30}
+            width="92%"
+            marginLeft={20}
             marginTop={0}
           />
-          <View style={{ flexDirection: 'row', marginHorizontal: 40 }}>
+          <View style={{ flexDirection: 'row', marginHorizontal: 20 }}>
             <InputField
               label="Date and Time"
               placeholder="Date and Time"
               textContentType="location"
               returnKeyType="next"
-              width="70%"
-              marginLeft={-10}
+              width="65%"
+              marginLeft={0}
               marginTop={0}
             />
             <InputField
@@ -79,18 +111,18 @@ const WelcomeHome = () => {
               textContentType="location"
               returnKeyType="next"
               width="70%"
-              marginLeft={-60}
+              marginLeft={-50}
               marginTop={0}
             />
           </View>
-          <View style={{ flexDirection: 'row', marginHorizontal: 40 }}>
+          <View style={{ flexDirection: 'row', marginHorizontal: 20 }}>
             <InputField
               label="Stops (Optional)"
               placeholder="Address, Airport, Hotel"
               textContentType="location"
               returnKeyType="next"
-              width="70%"
-              marginLeft={-10}
+              width="65%"
+              marginLeft={0}
               marginTop={0}
             />
             <InputField
@@ -99,7 +131,7 @@ const WelcomeHome = () => {
               textContentType="location"
               returnKeyType="next"
               width="70%"
-              marginLeft={-60}
+              marginLeft={-50}
               marginTop={0}
             />
           </View>
@@ -168,7 +200,7 @@ const styles = StyleSheet.create({
   },
   nameBox: {
     flex: 1,
-    marginLeft: 20,
+    marginLeft: 16,
     gap: 7,
   },
   notification: {
@@ -179,9 +211,10 @@ const styles = StyleSheet.create({
   },
   box: {
     width: '86%',
-    height: '70%',
+    height: 'auto',
     backgroundColor: '#f9f9f9',
-    marginTop: 38,
+    marginTop: 30,
+    paddingBottom: 30,
     borderRadius: 15,
     shadowColor: '#000',
     shadowOffset: {
@@ -191,9 +224,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    // flex: 1,
   },
+
   firstHead: {
-    padding: 30,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -210,7 +247,7 @@ const styles = StyleSheet.create({
   },
   comingSoon: {
     width: '80%',
-    height: '12%',
+    height: '10%',
     backgroundColor: '#212121',
     marginTop: 15,
     borderTopLeftRadius: 15,
@@ -224,5 +261,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     justifyContent: 'center',
+    position: 'absolute',
+    bottom: 0,
   },
 });

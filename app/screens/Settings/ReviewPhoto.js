@@ -1,45 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, Image, SafeAreaView, Alert } from 'react-native';
 import Centerlogo from '../../components/centerlogo';
 import StyledButton from '../../components/StyledButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import { dashboardClient, setAuthToken } from '../../api/client';
+import { AppContext } from '../../context/AppContext';
+import Toast from 'react-native-toast-message';
 
 export default function ReviewPhoto({ navigation, route }) {
   const { photo, facing } = route.params;
+  const { userDetails, setUserDetails } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhiZjg3YzM1LTU0OTEtNDdhNC05ZGNjLWIxY2IyNDU5NDI5MSIsInJvbGUiOiJyaWRlciIsImlhdCI6MTcyODQxMDY4NiwiZXhwIjoxNzI4NDI4Njg2fQ.oW9rGOegew0EJumPPjvNHbw31H8B6Pk6pHnsNhBUos4'
 
   const handleSubmit = async () => {
     setLoading(true);
-    const token = await AsyncStorage.getItem('userToken');
+    setAuthToken(token);
     const formData = new FormData();
     formData.append('image', {
       uri: photo.uri,
       name: 'profile.jpg',
       type: 'image/jpeg',
     });
-
     try {
-      const response = await axios.put('https://api-auth.katabenterprises.com/api/dashboard/rider/upload-profile-image', formData, {
+      const response = await dashboardClient.post('/update-profile-pic', formData, {
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
-      if (response.data) {
-        Alert.alert('Success', response.data.data.message);
-        navigation.navigate('MenuLanding');
-      } else {
-        Alert.alert('Error', 'Failed to upload photo');
-        navigation.goBack();
+      if (!response.ok) {
+        setLoading(false);
+        return Toast.show({
+          type: 'error',
+          text1: response.data.message,
+        });
       }
-    }
-    catch (error) {
-      console.error('Error uploading photo:', error);
-      Alert.alert('Error', 'An error occurred while uploading photo.');
-    }
-    finally {
+      Toast.show({
+        type: 'success',
+        text1: response.data.message,
+      });
+      setUserDetails({ ...userDetails, profileImg: response.data.image });
+      navigation.navigate('Account');
+    } catch (error) {
       setLoading(false);
+      Toast.show({
+        type: 'error',
+        text1: 'An error occurred. Please try again.',
+      });
     }
   };
 
