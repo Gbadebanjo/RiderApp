@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import otpApi from './../../../api/auth'
+import React, { useState, useContext } from 'react';
+import passwordApi from './../../../api/auth'
+import { UserContext } from '../../../context/UserContext';
 import { StyleSheet, Text, View, StatusBar, ActivityIndicator, Keyboard, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StyledButton from '../../../components/StyledButton';
 import InputField from '../../../components/InputField';
 import Centerlogo from '../../../components/centerlogo';
 import BackButton from '../../../components/BackButton';
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
-import * as AuthSession from 'expo-auth-session';
 import zxcvbn from 'zxcvbn';
 
 const validationSchema = yup.object().shape({
@@ -36,48 +36,48 @@ const validationSchema = yup.object().shape({
     .string()
     .email('Please enter a valid email')
     .required('Enter your Email Address'),
+    confirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
 
 export default function UsePassword({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(null);
+  const { userDetails, updateUserDetails } = useContext(UserContext);
 
-  const handleContinue = async (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     setLoading(true);
     const { email, password } = values;
-    const loginMethod = "Password";
 
-    const response = await passwordApi.loginWithPassword(email, password, loginMethod);
-    Keyboard.dismiss();
+    const deviceInfo = {
+      deviceId: "12345",
+      deviceName: "Tecno",
+      deviceType: "Android"
+  }
+
+    const response = await passwordApi.loginWithPassword(email, password, deviceInfo);
     if (!response.ok) {
       setLoading(false);
       const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
-      return setErrorMessage(errorMessage);
+      return Toast.show({
+        type: 'error', 
+        text1: errorMessage,
+      });
     }
-    
-    await AsyncStorage.setItem('token', response.data.data.token);
-
-    if (response.data.data.facialToken){
-      await AsyncStorage.setItem('facialToken', response.data.data.facialToken );
-    }
-    if (response.data.data.bioToken){
-      await AsyncStorage.setItem('biometricToken', response.data.data.bioToken );
-    }
-    await AsyncStorage.setItem('email', email);
-
-    if (response.data.data.isComplete === false) {
-      return navigation.navigate('UserDetails', { email })
-    }
-
-    if (Array.isArray(response.data.data.isSecured) && response.data.data.isSecured.length < 2) {
-      return navigation.navigate('Security', { email });
-    }
+    Toast.show({
+      type: 'success',
+      text1: response.data.message,
+    });
+    await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token));
+    console.log(response.data.rider);
+    updateUserDetails(response.data.rider);
 
       setLoading(false);
       resetForm();
-     return navigation.navigate('MenuLanding');
+     return navigation.navigate('WelcomeHome');
   }
+
+
   const handlePasswordChange = (password) => {
     const result = zxcvbn(password);
     setPasswordStrength(result);
@@ -98,9 +98,9 @@ export default function UsePassword({ navigation, route }) {
       <Formik
         initialValues={{ email: '', password: ''  }}
         validationSchema={validationSchema}
-        onSubmit={handleContinue}
+        onSubmit={handleSubmit}
       >
-        {({ handleChange, handleBlur, handleContinue, values, errors, touched }) => (
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
           <>
             <InputField
               label="Email"
@@ -116,6 +116,7 @@ export default function UsePassword({ navigation, route }) {
               error={touched.email && errors.email}
               errorMessage={errors.email}
             />
+            {touched.email && errors.email && <Text style={styles.error}>{errors.email}</Text>}
 
             <InputField
               label="Password"
@@ -136,29 +137,31 @@ export default function UsePassword({ navigation, route }) {
               errorMessage={errors.password}
               showPasswordToggle={true}
             />
-            {/* {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>} */}
+            {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>}
 
-            {passwordStrength && (
+            {/* {passwordStrength && (
             <Text style={styles.passwordStrength}>
               Password Strength: {passwordStrength.score}/4 - {passwordStrength.feedback.suggestions.join(' ')}
             </Text>
-          )}
+          )} */}
 
             <InputField
               label="Confirm Password"
-              placeholder="user@rydepro.com"
-              keyboardType="email-address"
+              placeholder=""
+              keyboardType="password"
               autoCapitalize="none"
               textContentType="password"
               returnKeyType="next"
               width="100%"
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              value={values.email}
-              error={touched.email && errors.email}
-              errorMessage={errors.email}
+              onChangeText={handleChange('confirmPassword')}
+              onBlur={handleBlur('confirmPassword')}
+              value={values.confirmPassword}
+              error={touched.confirmPassword && errors.confirmPassword}
+              errorMessage={errors.confirmPassword}
               showPasswordToggle={true}
             />
+            {touched.confirmPassword && errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword}</Text>}
+
             <StyledButton
               title={
                 loading ? (
@@ -169,7 +172,7 @@ export default function UsePassword({ navigation, route }) {
               }
               onPress={() => {
                 Keyboard.dismiss();
-                handleContinue();
+                handleSubmit();
               }}
               width="100%"
               height={53}

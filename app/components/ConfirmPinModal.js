@@ -75,7 +75,7 @@ export default function ConfirmPin({ visible, onClose, onSubmit }) {
                         onLayout={getCellOnLayoutHandler(index)}
                     >
                     
-                      {symbol || (isFocused ? <Cursor /> : null)}
+                      {symbol ? '*' : (isFocused ? <Cursor /> : null)}
                     </Text>
                   )}
                 />

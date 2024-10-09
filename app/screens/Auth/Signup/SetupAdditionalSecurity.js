@@ -10,7 +10,6 @@ import CreatePinModal from '../../../components/CreatePinModal';
 import ConfirmPinModal from '../../../components/ConfirmPinModal';
 import CreatePassphraseModal from '../../../components/CreatePassphraseModal';
 
-
 export default function SetupAdditionalSecurity ({navigation}) {
     const [isCreatePin, setIsCreatePin] = useState(false);
     const [isCreatePassphrase, setIsCreatePassphrase] = useState(false);
@@ -127,8 +126,7 @@ export default function SetupAdditionalSecurity ({navigation}) {
   };
   
   const handleProceed = async () => {
-      const { email, firstName, lastName, phoneNumber, facialId, fingerprint, displayName,
-        pin, passphrase, confirmPin } = userDetails;
+      const { email, firstName, lastName, phoneNumber, facialId, fingerprint, displayName, pin, passphrase, confirmPin } = userDetails;
 
         const deviceInfo ={
           deviceId: "12345",
@@ -243,7 +241,6 @@ export default function SetupAdditionalSecurity ({navigation}) {
         navigation={navigation}
         onPassphraseGenerated={handlePassphraseGenerated}
     />
-     
 </SafeAreaView>
   )
 }
