@@ -16,6 +16,7 @@ const enableBiometrics = () => authClient.put('enable-biometric');
 const biometricsLogin = (biometricToken, loginMethod) => authClient.post('biometric-login', { biometricToken, loginMethod });
 
 const fetchUserDetails = () => dashboardClient.get('');
+const updateUser = (values) => dashboardClient.put('update', values);
 
 export default {
     requestOtp,
@@ -30,5 +31,6 @@ export default {
     fetchUserDetails,
     setAuthToken,
     enableBiometrics,
-    biometricsLogin
+    biometricsLogin,
+    updateUser
 }

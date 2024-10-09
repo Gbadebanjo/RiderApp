@@ -62,7 +62,7 @@ export default function UsePincode({navigation}) {
             type: 'success',
             text1: response.data.message,
         });
-        await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token));
+        await AsyncStorage.setItem('userToken', (response.data.token));
     
           setLoading(false);
           resetForm();
