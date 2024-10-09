@@ -88,7 +88,7 @@ useEffect(() => {
         <View style={styles.buttonContainer}>
             <StyledButton
                 title="Cancel"
-                // onPress={handleSubmit}
+                onPress={()=> navigation.goBack()}
                 width="30%"
                 paddingVertical={8}
                 marginTop={0}

@@ -10,12 +10,12 @@ const authClient = create({
     }
 });
 const dashboardClient = create({
-    baseURL: 'https://api-auth.katabenterprises.com/api/dashboard/rider',
+    baseURL: 'https://api-auth.katabenterprises.com/api/rider',
     headers: {
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache',
         'Expires': '0',
-        'Content-Type': 'application/json' 
+        'Content-Type': 'application/json'
     }
 });
 
