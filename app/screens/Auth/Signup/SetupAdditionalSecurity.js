@@ -149,7 +149,9 @@ export default function SetupAdditionalSecurity ({navigation}) {
         text1: response.data.message,
       });
       const token = response.data.rider.token
-      await AsyncStorage.setItem('userToken', JSON.stringify(token));
+      const bioToken = response.data.rider.bioToken
+      await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem('bioToken', bioToken);
       setLoading(false);
       navigation.navigate('ThankYou');
   };

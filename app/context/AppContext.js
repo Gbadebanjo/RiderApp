@@ -8,7 +8,7 @@ export const AppProvider = ({ children }) => {
     useEffect(() => {
         if (userDetails) {
             // Perform your update logic here, e.g., save userDetails to local storage or make API calls
-            // console.log("User details updated:", userDetails);
+            console.log("User details updated:", userDetails);
         }
     }, [userDetails]); 
 

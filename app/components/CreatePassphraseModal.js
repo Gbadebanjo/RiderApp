@@ -228,6 +228,6 @@ const styles = StyleSheet.create({
         width: '100%',
         borderRadius: 8,
         padding: 15,
-        color: '#8A8A8A',
+        color: '#000',
     },
 });

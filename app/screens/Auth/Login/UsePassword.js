@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import passwordApi from './../../../api/auth'
 import { StyleSheet, Text, View, StatusBar, ActivityIndicator, Keyboard, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AppContext } from '../../../context/AppContext';
 import StyledButton from '../../../components/StyledButton';
 import InputField from '../../../components/InputField';
 import Centerlogo from '../../../components/centerlogo';
@@ -42,6 +43,7 @@ export default function UsePassword({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(null);
+  const { userDetails, updateUserDetails } = useContext(AppContext);
 
   const handleSubmit = async (values, { resetForm }) => {
     setLoading(true);
@@ -68,6 +70,7 @@ export default function UsePassword({ navigation, route }) {
     });
 
     await AsyncStorage.setItem('userToken', response.data.token);
+    updateUserDetails(response.data.rider);
       setLoading(false);
       resetForm();
      return navigation.navigate('WelcomeHome');

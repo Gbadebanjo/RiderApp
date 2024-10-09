@@ -1,9 +1,6 @@
-import React, {useRef, useState, useContext} from 'react';
-import api from '../../../api/auth'
+import React, {useRef, useState} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -25,49 +22,13 @@ export default function UsePincode({navigation}) {
       value,
       setValue,
     });
-    const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const formRef = useRef();
 
-
-    const handleContinue = async (values, { resetForm }) => {
-        setLoading(true);
-        const userDetailsString = await AsyncStorage.getItem('userDetails');
-        if (!userDetailsString){
-            return Toast.show({
-                type: 'error', 
-                text1: 'Please kindly sign in with password first',
-            });
-        }
-        details = JSON.parse(userDetailsString);
+    const handleContinue = (values) => {
         const { pinCode } = values;
-        const email = details.email;
-
-        const deviceInfo = {
-            deviceId: "12345",
-            deviceName: "Tecno",
-            deviceType: "Android"
-        }
-
-        const response = await api.loginWithPincode(email, pinCode, deviceInfo);
-        Keyboard.dismiss();
-        if (!response.ok) {
-          setLoading(false);
-          const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
-          return Toast.show({
-            type: 'error', 
-            text1: errorMessage,
-          });
-        }
-        Toast.show({
-            type: 'success',
-            text1: response.data.message,
-        });
-        await AsyncStorage.setItem('userToken', (response.data.token));
-    
-          setLoading(false);
-          resetForm();
-         return navigation.navigate('WelcomeHome');
-      }
+        navigation.navigate('ConfirmPincode', { pinCode });
+      };
 
     return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -81,6 +42,7 @@ export default function UsePincode({navigation}) {
                 </View>                  
                 <View>
                     <Formik
+                        innerRef={formRef}
                         initialValues={{ pinCode: '', }}
                         validationSchema={validationSchema}
                         onSubmit={handleContinue}
@@ -97,7 +59,7 @@ export default function UsePincode({navigation}) {
                                 rootStyle={styles.codeFieldRoot}
                                 keyboardType="name-phone-pad"
                                 textContentType="oneTimeCode"
-                                onSubmitEditing={handleSubmit} 
+                                // onSubmitEditing={} 
                                 renderCell={({ index, symbol, isFocused }) => (
                                 <Text
                                     key={index}
@@ -112,7 +74,7 @@ export default function UsePincode({navigation}) {
                                 </Text>
                                 )}
                                 />
-                            {touched.code && errors.code && <Text style={styles.errorText}>{errors.code}</Text>}
+                            {touched.pinCode && errors.pinCode && <Text style={styles.errorText}>{errors.pinCode}</Text>}
 
                         </>
                         )}
@@ -128,7 +90,7 @@ export default function UsePincode({navigation}) {
                     <MaterialIcons name="keyboard-backspace" size={24} color={'black'}/>
                     <Text> Back</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => formRef.current.handleSubmit()}>
                     <Text>Next</Text>
                 </TouchableOpacity>
             </View>       
