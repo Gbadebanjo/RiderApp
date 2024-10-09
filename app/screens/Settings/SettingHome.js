@@ -9,16 +9,15 @@ import { useFocusEffect } from '@react-navigation/native';
 import { AppContext } from '../../context/AppContext';
 
 export default function SettingHome({ navigation }) {
-    // const [showReferral, setShowReferral] = useState(false);
-    const { userDetails } = useContext(AppContext);
+    const { userDetails, setUserDetails } = useContext(AppContext);
     const [showLogOut, setShowLogOut] = useState(false);
     const slideAnim = useRef(new Animated.Value(300)).current;
 
 
     const logOut = async () => {
         try {
-            await AsyncStorage.removeItem('token');
-            setAuthToken(null);
+            await AsyncStorage.removeItem('userToken');
+            setUserDetails(null);
             navigation.navigate('FirstScreen');
             toggleModal();
         } catch (error) {
@@ -59,9 +58,9 @@ export default function SettingHome({ navigation }) {
                         <Image source={userDetails?.profileImg ? { uri: userDetails?.profileImg } : require('../../assets/ProfileTemplate.png')} style={styles.img} />
                         {/* <Ionicons name="camera-outline" size={26} color="#fff" style={styles.icon} /> */}
                     </TouchableOpacity>
-                    <Text style={{ color: '#fff', fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 20 }}>{userDetails.firstName} {userDetails.lastName}</Text>
-                    <Text style={{ color: '#fff', fontSize: 14, textAlign: 'center', marginTop: 2 }}>{userDetails.accountType}</Text>
-                    <Text style={{ color: '#464646', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>User ID: {userDetails.accountId}</Text>
+                    <Text style={{ color: '#fff', fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 20 }}>{userDetails?.firstName} {userDetails?.lastName}</Text>
+                    <Text style={{ color: '#fff', fontSize: 14, textAlign: 'center', marginTop: 2 }}>{userDetails?.accountType}</Text>
+                    <Text style={{ color: '#464646', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>User ID: {userDetails?.accountId}</Text>
                 </View>
                 <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView} >
                     <Text style={styles.textHead}>Accounts</Text>

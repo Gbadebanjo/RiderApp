@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import otpApi from '../../../api/auth'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Centerlogo from '../../../components/centerlogo';
 import { Formik } from 'formik';
@@ -65,6 +65,7 @@ export default function ConfirmSignup({navigation, route}) {
 
 
   return (
+  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <BackButton style={styles.Icon} />
@@ -89,7 +90,7 @@ export default function ConfirmSignup({navigation, route}) {
                 onChangeText={handleChange('code')}
                 cellCount={CELL_COUNT}
                 rootStyle={styles.codeFieldRoot}
-                keyboardType='phone-pad'
+                keyboardType='name-phone-pad'
                 textContentType="oneTimeCode"
                 onSubmitEditing={handleSubmit} 
                 renderCell={({ index, symbol, isFocused }) => (
@@ -125,6 +126,7 @@ export default function ConfirmSignup({navigation, route}) {
         </View>
       </ScrollView>
     </SafeAreaView>
+  </TouchableWithoutFeedback>
   );
 }
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, StatusBar, Platform, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, Platform, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -8,30 +8,41 @@ import StyledButton from '../../components/StyledButton';
 import React, { useEffect, useContext } from 'react';
 import { dashboardClient, setAuthToken } from '../../api/client';
 import { AppContext } from '../../context/AppContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { AutoFocus } from 'expo-camera/build/legacy/Camera.types';
 
 const WelcomeHome = () => {
   const { userDetails, setUserDetails } = useContext(AppContext);
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhiZjg3YzM1LTU0OTEtNDdhNC05ZGNjLWIxY2IyNDU5NDI5MSIsInJvbGUiOiJyaWRlciIsImlhdCI6MTcyODQxMDgwNiwiZXhwIjoxNzI4NDI4ODA2fQ.yJG8RbThHlN5STQOPZY61IQ7qsyWdILRpgftfNIVT24'
+  const [loading, setLoading] = React.useState(false);
 
   useEffect(() => {
-    setAuthToken(token);
     const fetchUserDetails = async () => {
+      setLoading(true);
+      const token = await AsyncStorage.getItem('userToken');
+      setAuthToken(token);
       try {
-        const response = await dashboardClient.get('?id1=5');
+        const response = await dashboardClient.get('');
         if (response.ok) {
           setUserDetails(response.data.info);
-          // console.log('User Details:', response.data.info);
         } else {
-          console.log('Failed to fetch user details');
+          console.error('An error occurred while fetching user details:', response.data.message);
         }
       } catch (error) {
         console.error('An error occurred while fetching user details:', error);
       }
+      setLoading(false);
     };
     fetchUserDetails();
   }
     , []);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
 
   return (
     <LinearGradient
@@ -215,7 +226,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     // flex: 1,
   },
-  
+
   firstHead: {
     paddingHorizontal: 20,
     paddingTop: 20,

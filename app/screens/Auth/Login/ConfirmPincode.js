@@ -1,7 +1,8 @@
 import React, {useRef, useState, useContext} from 'react';
 import api from '../../../api/auth'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { UserContext } from '../../../context/UserContext';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
@@ -18,7 +19,7 @@ const validationSchema = yup.object().shape({
   
 const CELL_COUNT = 6;
 
-export default function UsePincode({navigation}) {
+export default function ConfirmPinCode({navigation}) {
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -27,17 +28,12 @@ export default function UsePincode({navigation}) {
     });
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const { userDetails, updateUserDetails } = useContext(UserContext);
 
 
     const handleContinue = async (values, { resetForm }) => {
         setLoading(true);
         const userDetailsString = await AsyncStorage.getItem('userDetails');
-        if (!userDetailsString){
-            return Toast.show({
-                type: 'error', 
-                text1: 'Please kindly sign in with password first',
-            });
-        }
         details = JSON.parse(userDetailsString);
         const { pinCode } = values;
         const email = details.email;
@@ -63,6 +59,7 @@ export default function UsePincode({navigation}) {
             text1: response.data.message,
         });
         await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token));
+        updateUserDetails(response.data.rider);
     
           setLoading(false);
           resetForm();
@@ -70,7 +67,6 @@ export default function UsePincode({navigation}) {
       }
 
     return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
@@ -95,7 +91,7 @@ export default function UsePincode({navigation}) {
                                 onChangeText={handleChange('pinCode')}
                                 cellCount={CELL_COUNT}
                                 rootStyle={styles.codeFieldRoot}
-                                keyboardType="name-phone-pad"
+                                keyboardType="number-pad"
                                 textContentType="oneTimeCode"
                                 onSubmitEditing={handleSubmit} 
                                 renderCell={({ index, symbol, isFocused }) => (
@@ -133,7 +129,6 @@ export default function UsePincode({navigation}) {
                 </TouchableOpacity>
             </View>       
     </SafeAreaView>
-    </TouchableWithoutFeedback>
     );
 }
 
@@ -180,15 +175,6 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
         borderColor: '#CCCCCC',
         textAlign: 'center',
-        ...Platform.select({
-            ios: {
-                borderRadius: 8,
-                borderColor: 'red',
-            },
-            android: {
-                borderRadius: 4,
-            },
-        }),
       },
       focusCell: {
         borderColor: '#000000',
