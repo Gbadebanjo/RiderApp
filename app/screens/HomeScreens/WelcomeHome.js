@@ -6,7 +6,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import InputField from '../../components/InputField';
 import StyledButton from '../../components/StyledButton';
 import React, { useEffect, useContext } from 'react';
-import { dashboardClient, setAuthToken } from '../../api/client';
+import {  setAuthToken } from '../../api/client';
+import dashboardApi from '../../api/auth';
 import { AppContext } from '../../context/AppContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { AutoFocus } from 'expo-camera/build/legacy/Camera.types';
@@ -21,7 +22,7 @@ const WelcomeHome = () => {
       const token = await AsyncStorage.getItem('userToken');
       setAuthToken(token);
       try {
-        const response = await dashboardClient.get('');
+        const response = await dashboardApi.fetchUserDetails();
         if (response.ok) {
           setUserDetails(response.data.info);
         } else {

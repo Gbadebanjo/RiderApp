@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState} from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 export const AppContext = createContext();
 
@@ -6,10 +6,12 @@ export const AppProvider = ({ children }) => {
     const [userDetails, setUserDetails] = useState(null);
 
     useEffect(() => {
-        console.log('userDetails:', userDetails);
-    }, [userDetails]);
+        if (userDetails) {
+            // Perform your update logic here, e.g., save userDetails to local storage or make API calls
+            console.log("User details updated:", userDetails);
+        }
+    }, [userDetails]); 
 
-    
     return (
         <AppContext.Provider value={{ userDetails, setUserDetails }}>
             {children}

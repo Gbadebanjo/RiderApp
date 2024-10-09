@@ -7,17 +7,17 @@ const signUp = (email, firstName, lastName, phone, pin, passphrase, confirmPin, 
 const loginWithPassword = (email, password, deviceInfo) => authClient.post('login?loginType=password', { email, password, deviceInfo });
 const loginWithPassPhrase = (email, passphrase, deviceInfo) => authClient.post('login?loginType=passphrase', { email, passphrase, deviceInfo });
 const loginWithPincode = (email, pin, deviceInfo) => authClient.post('login?loginType=pin', { email, pin, deviceInfo });
-const fingerprintLogin = (email, bioToken, deviceInfo) => authClient.post('login?loginType=', { email, bioToken, deviceInfo });
-const faceIDLogin = (email, bioToken, deviceInfo) => authClient.post('login?loginType=', { email, bioToken, deviceInfo });
+const fingerprintLogin = (email, bioToken, deviceInfo) => authClient.post('login?loginType=fingerprint', { email, bioToken, deviceInfo });
+const faceIDLogin = (email, bioToken, deviceInfo) => authClient.post('login?loginType=faceid', { email, bioToken, deviceInfo });
 
 
 const additionalInfo = (accountDetails) => authClient.put('additional-info', accountDetails);
 const createPassphrase = (email, passPhrase) => authClient.post('create/passphrase', {email, passPhrase});
 const createPincode = (email, pinCode) => authClient.post('create/pincode', {email, pinCode});
 const enableBiometrics = () => authClient.put('enable-biometric');
-// const biometricsLogin = (biometricToken, loginMethod) => authClient.post('biometric-login', { biometricToken, loginMethod });
 
 const fetchUserDetails = () => dashboardClient.get('');
+const updateUser = (values) => dashboardClient.put('update', values);
 
 export default {
     requestOtp,
@@ -34,4 +34,5 @@ export default {
     enableBiometrics,
     fingerprintLogin,
     faceIDLogin,
+    updateUser
 }

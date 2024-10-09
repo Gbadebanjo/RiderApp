@@ -49,8 +49,7 @@ export default function UseFaceid({navigation}) {
   
     if (success) {   
       const faceiDToken = await AsyncStorage.getItem('bioToken');
-      const userDetailsString = await AsyncStorage.getItem('userDetails');
-      details = JSON.parse(userDetailsString);
+      const details = await AsyncStorage.getItem('userDetails');
       const email = details.email;
       console.log(faceiDToken);
       console.log(email)
@@ -68,7 +67,7 @@ export default function UseFaceid({navigation}) {
           deviceType: "Android"
       }
 
-      const response = await facialIDApi.loginWithPincode(email, faceiDToken, deviceInfo);
+      const response = await facialIDApi.loginWithPincode(email, faceidToken, deviceInfo);
       if (!response.ok) {
         setLoading(false);
         const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';

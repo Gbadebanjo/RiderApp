@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, StatusBar, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react';
-import fingerprintApi from '../../../api/auth'
+import fingerprintApi from '../../../api/auth';
+// import DeviceInfo from 'react-native-device-info';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppContext } from '../../../context/AppContext';
@@ -48,11 +49,9 @@ export default function UseFingerprint({navigation}) {
     
       if (success) {      
         const fingerprintToken = await AsyncStorage.getItem('bioToken');
-        const userDetailsString = await AsyncStorage.getItem('userDetails');
-        details = JSON.parse(userDetailsString);
+        const details = await AsyncStorage.getItem('userDetails');
         const email = details.email;
         console.log("fingerprintToken", fingerprintToken);
-        console.log(email)
 
         if (!fingerprintToken) {
           return Toast.show({
@@ -67,7 +66,7 @@ export default function UseFingerprint({navigation}) {
             deviceType: "Android"
         }
 
-        const response = await fingerprintApi.loginWithPincode(email, fingerprintToken, deviceInfo);
+        const response = await fingerprintApi.fingerprintLogin(email, fingerprintToken, deviceInfo);
         if (!response.ok) {
           setLoading(false);
           const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
