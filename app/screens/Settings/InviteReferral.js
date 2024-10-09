@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Modal, Animated, Easing, Alert, Linking, TouchableWithoutFeedback } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { FontAwesome, Ionicons, Fontisto } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
-
+import { AppContext } from '../../context/AppContext';
 const InviteReferral = ({ navigation, route }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const slideAnim = useRef(new Animated.Value(300)).current;
+    const { userDetails } = useContext(AppContext);
     // const { userDetails } = route.params;
 
     const toggleModal = () => {
@@ -56,8 +57,7 @@ const InviteReferral = ({ navigation, route }) => {
                     <Text style={styles.text}>-Refer a friend and get 15% off your next 20 rides once they book! The more you refer, the more you save!</Text>
                     <Text style={styles.text}>-Discounts are non-transferable and expire, so start referring now! Terms and conditions apply</Text>
                     <View style={styles.referrallinkcontainer}>
-                        {/* <Text style={styles.referrallink}>Referral code<Text style={styles.code}> {userDetails.referralId.individualReferralCode}</Text></Text> */}
-                        <Text style={styles.referrallink}>Referral code<Text style={styles.code}> 456789876545</Text></Text>
+                        <Text style={styles.referrallink}>Referral code:<Text style={styles.code}>   {userDetails.referralCode}</Text></Text>
                         <TouchableOpacity
                             onPress={toggleModal}
                             style={styles.copy}
@@ -71,8 +71,7 @@ const InviteReferral = ({ navigation, route }) => {
                     <Text style={styles.text}>-Know a Company or Organization (including government and consulates)? Refer them and earn a commission of up to $10,000 when they contract with us! </Text>
                     <Text style={styles.text}>-Fill out the form and start earning your commission plus discounts today! Terms and conditions apply</Text>
                     <View style={styles.referrallinkcontainer}>
-                        {/* <Text style={styles.referrallink}>Referral code<Text style={styles.code}> {userDetails.referralId.orgReferralCode}</Text></Text> */}
-                        <Text style={styles.referrallink}>Referral code<Text style={styles.code}> 09876545678</Text></Text>
+                        <Text style={styles.referrallink}>Referral code:<Text style={styles.code}>  {userDetails.referralCode}</Text></Text>
                         <TouchableOpacity
                             onPress={toggleModal}
                             style={styles.copy}
@@ -223,6 +222,7 @@ const styles = StyleSheet.create({
     },
     code: {
         fontWeight: 'bold',
+        // color: '#161718',
     },
     copy: {
         backgroundColor: '#E0E0E0',

@@ -9,8 +9,10 @@ import StyledButton from '../../components/StyledButton';
 import Centerlogo from '../../components/centerlogo';
 import BackButton from '../../components/BackButton';
 import InputField from '../../components/InputField';
-import axios from 'axios'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppContext } from '../../context/AppContext';
+import updateOtp from '../../api/auth';
+import { setAuthToken } from '../../api/client';
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
@@ -21,35 +23,61 @@ const validationSchema = yup.object().shape({
   emergencyPhoneNumber: yup.string().required('Emergency Phone Number is required'),
 });
 
-export default function Edit({ navigation, route }) {
+export default function Edit({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const phoneInputRef = useRef(null);
-  const { userDetails } = useContext(AppContext);
+  const { userDetails, setUserDetails } = useContext(AppContext);
+
+  const emergency = JSON.parse(userDetails.emergency || '{}');
 
   const handleUpdate = async (values) => {
     setLoading(true);
-    console.log('values:', values);
+    console.log('Form values:', values);
+
+    const payload = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      displayName: values.displayName,
+      phone: values.phoneNumber, 
+      emergency: {
+        name: values.emergencyContact, 
+        phone: values.emergencyPhoneNumber,
+      },
+    };
+    console.log('Payload:', payload);
+
     const token = await AsyncStorage.getItem('userToken');
+    setAuthToken(token);
+
     try {
-      const response = await axios.put('https://api-auth.katabenterprises.com/api/rider/update', values, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      
-      console.log('response:', response);
-      if (response.status === 200) {
-        Alert.alert('Success', 'Details updated successfully');
-        navigation.navigate('MenuLanding');
-      } else {
-        Alert.alert('Error', 'Failed to update details');
+      const response = await updateOtp.updateUser(payload);
+      if (!response.ok) {
+        setLoading(false);
+        // console.error('An error occurred:', response.data.message);
+        return Toast.show({
+          type: 'error',
+          text1: response.data.message,
+        });
       }
-    } catch (error) {
-      console.error('Error updating details:', error);
-      Alert.alert('Error', 'An error occurred while updating details');
+      setLoading(false);
+      Toast.show({
+        type: 'success',
+        text1: 'Profile updated successfully',
+      });
+      // console.log('User details updated:', response.data.info);
+      // setUserDetails(response.data.info);
+      navigation.goBack();
     }
-  };
+    catch (error) {
+      setLoading(false);
+      console.error('An error occurred:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'An error occurred. Please try again',
+      });
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -63,8 +91,8 @@ export default function Edit({ navigation, route }) {
             lastName: userDetails.lastName || '',
             displayName: userDetails.displayName || '',
             phoneNumber: userDetails.phone || '',
-            emergencyContact: userDetails.emergency[1].name || '', 
-            emergencyPhoneNumber: userDetails.emergency[0].phone || '', 
+            emergencyContact: emergency.name || '', 
+            emergencyPhoneNumber: emergency.phone || '', 
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => handleUpdate(values)}
@@ -199,7 +227,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 30,
     paddingTop: 30,
-    paddingBottom: 30,
   },
   Icon: {
     alignSelf: 'flex-start',
