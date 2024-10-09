@@ -1,21 +1,13 @@
-import React, {useState} from 'react';
-import passwordApi from '../../../api/auth'
+import React, {useState, useContext} from 'react';
+import passphraseApi from '../../../api/auth'
 import { StyleSheet, Text, View, StatusBar, TextInput, Keyboard} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+import { AppContext } from '../../../context/AppContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import InputField from '../../../components/InputField';
 import BackButton from '../../../components/BackButton';
 import StyledButton from '../../../components/StyledButton';
 import { Formik } from 'formik';
-import * as yup from 'yup';
-
-
-const validationSchema = yup.object().shape({
-    email: yup
-      .string()
-      .email('Please enter a valid email')
-      .required('Enter your Email Address'),
-  });
 
 export default function UsePassphrase({navigation, route}) {
     const [loading, setLoading] = useState(false);
@@ -23,34 +15,42 @@ export default function UsePassphrase({navigation, route}) {
     const [passPhraseCount, setPassPhraseCount] = useState(0);
     const [buttonColor, setButtonColor] = useState('#21212133');
     const [buttonDisabled, setButtonDisabled] = useState(true); 
+    const { userDetails, setUserDetails } = useContext(AppContext);
 
-    const handleContinue = async (values, { resetForm }) => {
+      const handleContinue = async (values, { resetForm }) => {
         setLoading(true);
-        const { email, passPhrase } = values;
-        const loginMethod = "passPhrase";
-    
-        const response = await passwordApi.loginWithPassPhrase(email, passPhrase, loginMethod);
+
+        const userDetailsString = await AsyncStorage.getItem('userDetails');
+        details = JSON.parse(userDetailsString);
+        const { passPhrase } = values;
+        const email = details.email;
+
+        const deviceInfo = {
+            deviceId: "12345",
+            deviceName: "Tecno",
+            deviceType: "Android"
+        }
+
+        const response = await passphraseApi.loginWithPassPhrase(email, passPhrase, deviceInfo);
         Keyboard.dismiss();
         if (!response.ok) {
           setLoading(false);
           const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
-          return setErrorMessage(errorMessage);
+          return Toast.show({
+            type: 'error', 
+            text1: errorMessage,
+          });
         }
-
-        await AsyncStorage.setItem('userToken', response.data.data.token);
-        await AsyncStorage.setItem('email', email);
+        Toast.show({
+            type: 'success',
+            text1: response.data.message,
+        });
+        await AsyncStorage.setItem('userToken', response.data.token);
+        setUserDetails(response.data.rider);
     
-        if (response.data.data.isComplete === false) {
-          return navigation.navigate('UserDetails', { email })
-        }
-    
-        if (Array.isArray(response.data.data.isSecured) && response.data.data.isSecured.length < 2) {
-          return navigation.navigate('Security', { email });
-        }
-    
-        setLoading(false);
+          setLoading(false);
           resetForm();
-         return navigation.navigate('MenuLanding');
+         return navigation.navigate('WelcomeHome');
       }
 
     return (
@@ -67,31 +67,12 @@ export default function UsePassphrase({navigation, route}) {
 
                 <View style={styles.generateContainer}>
                     <Formik
-                        initialValues={{ email: '', passPhrase: '', }}
-                        validationSchema={validationSchema}
+                        initialValues={{passPhrase: '', }}
+                        // validationSchema={validationSchema}
                         onSubmit={handleContinue}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                         <>
-                            {/* <InputField
-                                label="Email"
-                                placeholder="user@rydepro.com"
-                                keyboardType="email-address"
-                                autoCapitalize="none"
-                                textContentType="email"
-                                returnKeyType="next"
-                                width="100%"
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                                fullBorder='true'
-                                borderRadius={8}
-                                paddingLeft={10}
-                                marginTop={0}
-                                paddingVertical={10}
-                                error={touched.email && errors.email}
-                                errorMessage={errors.email}
-                            /> */}
 
                             <View>
                                 <TextInput

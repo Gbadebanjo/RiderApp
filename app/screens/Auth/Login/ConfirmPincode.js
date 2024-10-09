@@ -1,8 +1,9 @@
 import React, {useRef, useState, useContext} from 'react';
 import api from '../../../api/auth'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { UserContext } from '../../../context/UserContext';
+import { useRoute } from '@react-navigation/native';
+import { AppContext } from '../../../context/AppContext';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
@@ -11,7 +12,7 @@ import * as yup from 'yup';
 import { Fontisto, MaterialIcons } from '@expo/vector-icons';
 
 const validationSchema = yup.object().shape({
-    pinCode: yup
+    confirmCode: yup
       .string()
       .length(6, 'Code must be exactly 6 digits')
       .required('Enter the 6-digit code'),
@@ -20,6 +21,10 @@ const validationSchema = yup.object().shape({
 const CELL_COUNT = 6;
 
 export default function ConfirmPinCode({navigation}) {
+    const formRef = useRef();
+    const route = useRoute();
+    const { pinCode } = route.params;
+    console.log('Received PinCode:', pinCode);
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -28,14 +33,23 @@ export default function ConfirmPinCode({navigation}) {
     });
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const { userDetails, updateUserDetails } = useContext(UserContext);
+    const { userDetails, setUserDetails } = useContext(AppContext);
 
 
-    const handleContinue = async (values, { resetForm }) => {
+    const handleContinue = async (values) => {
         setLoading(true);
+
+        if (values.confirmCode !== pinCode) {
+            setLoading(false);
+            return Toast.show({
+                type: 'error', 
+                text1: 'Pincode and Confirm Pincode do not match',
+            });
+        }
+
         const userDetailsString = await AsyncStorage.getItem('userDetails');
         details = JSON.parse(userDetailsString);
-        const { pinCode } = values;
+        const { confirmCode } = values;
         const email = details.email;
 
         const deviceInfo = {
@@ -44,7 +58,7 @@ export default function ConfirmPinCode({navigation}) {
             deviceType: "Android"
         }
 
-        const response = await api.loginWithPincode(email, pinCode, deviceInfo);
+        const response = await api.loginWithPincode(email, confirmCode, deviceInfo);
         Keyboard.dismiss();
         if (!response.ok) {
           setLoading(false);
@@ -58,11 +72,10 @@ export default function ConfirmPinCode({navigation}) {
             type: 'success',
             text1: response.data.message,
         });
-        await AsyncStorage.setItem('userToken', JSON.stringify(response.data.token));
-        updateUserDetails(response.data.rider);
+        await AsyncStorage.setItem('userToken', response.data.token);
+        setUserDetails(response.data.rider);
     
           setLoading(false);
-          resetForm();
          return navigation.navigate('WelcomeHome');
       }
 
@@ -73,11 +86,12 @@ export default function ConfirmPinCode({navigation}) {
             <View style={styles.mainContent}>
                 <View style={styles.pinContainer}> 
                     <Fontisto name="locked" size={70} color="black" />
-                    <Text style={styles.subTitle}>Enter Pin</Text>    
+                    <Text style={styles.subTitle}>Confirm Pin</Text>    
                 </View>                  
                 <View>
                     <Formik
-                        initialValues={{ pinCode: '', }}
+                        innerRef={formRef}
+                        initialValues={{ confirmCode: '', }}
                         validationSchema={validationSchema}
                         onSubmit={handleContinue}
                     >
@@ -87,13 +101,13 @@ export default function ConfirmPinCode({navigation}) {
                             <CodeField
                                 ref={ref}
                                 {...props}
-                                value={values.pinCode}
-                                onChangeText={handleChange('pinCode')}
+                                value={values.confirmCode}
+                                onChangeText={handleChange('confirmCode')}
                                 cellCount={CELL_COUNT}
                                 rootStyle={styles.codeFieldRoot}
                                 keyboardType="number-pad"
                                 textContentType="oneTimeCode"
-                                onSubmitEditing={handleSubmit} 
+                                // onSubmitEditing={handleSubmit} 
                                 renderCell={({ index, symbol, isFocused }) => (
                                 <Text
                                     key={index}
@@ -108,7 +122,7 @@ export default function ConfirmPinCode({navigation}) {
                                 </Text>
                                 )}
                                 />
-                            {touched.code && errors.code && <Text style={styles.errorText}>{errors.code}</Text>}
+                            {touched.confirmCode && errors.confirmCode && <Text style={styles.errorText}>{errors.confirmCode}</Text>}
 
                         </>
                         )}
@@ -124,7 +138,7 @@ export default function ConfirmPinCode({navigation}) {
                     <MaterialIcons name="keyboard-backspace" size={24} color={'black'}/>
                     <Text> Back</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => formRef.current.handleSubmit()}>
                     <Text>Next</Text>
                 </TouchableOpacity>
             </View>       

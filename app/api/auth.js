@@ -5,15 +5,17 @@ const verifyOtp = (email, otp) => authClient.post('verify-otp', { email, otp });
 const signUp = (email, firstName, lastName, phone, pin, passphrase, confirmPin, displayName, fingerprint, facialId, deviceInfo) => 
     authClient.post('register?type=Individual', { email, firstName, lastName, phone, pin, passphrase, confirmPin, displayName, fingerprint, facialId, deviceInfo });
 const loginWithPassword = (email, password, deviceInfo) => authClient.post('login?loginType=password', { email, password, deviceInfo });
-const loginWithPassPhrase = (email, passphrase, deviceId) => authClient.post('login?loginType=passphrase', { email, passphrase, deviceId });
+const loginWithPassPhrase = (email, passphrase, deviceInfo) => authClient.post('login?loginType=passphrase', { email, passphrase, deviceInfo });
 const loginWithPincode = (email, pin, deviceInfo) => authClient.post('login?loginType=pin', { email, pin, deviceInfo });
+const fingerprintLogin = (email, bioToken, deviceInfo) => authClient.post('login?loginType=', { email, bioToken, deviceInfo });
+const faceIDLogin = (email, bioToken, deviceInfo) => authClient.post('login?loginType=', { email, bioToken, deviceInfo });
 
 
 const additionalInfo = (accountDetails) => authClient.put('additional-info', accountDetails);
 const createPassphrase = (email, passPhrase) => authClient.post('create/passphrase', {email, passPhrase});
 const createPincode = (email, pinCode) => authClient.post('create/pincode', {email, pinCode});
 const enableBiometrics = () => authClient.put('enable-biometric');
-const biometricsLogin = (biometricToken, loginMethod) => authClient.post('biometric-login', { biometricToken, loginMethod });
+// const biometricsLogin = (biometricToken, loginMethod) => authClient.post('biometric-login', { biometricToken, loginMethod });
 
 const fetchUserDetails = () => dashboardClient.get('');
 
@@ -30,5 +32,6 @@ export default {
     fetchUserDetails,
     setAuthToken,
     enableBiometrics,
-    biometricsLogin
+    fingerprintLogin,
+    faceIDLogin,
 }
