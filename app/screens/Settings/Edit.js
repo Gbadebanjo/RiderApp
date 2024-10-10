@@ -29,7 +29,6 @@ export default function Edit({ navigation }) {
   const phoneInputRef = useRef(null);
   const { userDetails, setUserDetails } = useContext(AppContext);
 
-  const emergency = JSON.parse(userDetails.emergency || '{}');
 
   const handleUpdate = async (values) => {
     setLoading(true);
@@ -45,13 +44,13 @@ export default function Edit({ navigation }) {
         phone: values.emergencyPhoneNumber,
       },
     };
-    console.log('Payload:', payload);
 
     const token = await AsyncStorage.getItem('userToken');
     setAuthToken(token);
 
     try {
       const response = await updateOtp.updateUser(payload);
+      // console.log('Update response:', response);
       if (!response.ok) {
         setLoading(false);
         // console.error('An error occurred:', response.data.message);
@@ -65,8 +64,7 @@ export default function Edit({ navigation }) {
         type: 'success',
         text1: 'Profile updated successfully',
       });
-      // console.log('User details updated:', response.data.info);
-      // setUserDetails(response.data.info);
+      setUserDetails(response.data.rider);
       navigation.goBack();
     }
     catch (error) {
@@ -91,8 +89,8 @@ export default function Edit({ navigation }) {
             lastName: userDetails.lastName || '',
             displayName: userDetails.displayName || '',
             phoneNumber: userDetails.phone || '',
-            emergencyContact: emergency.name || '', 
-            emergencyPhoneNumber: emergency.phone || '', 
+            emergencyContact: userDetails.emergency.name || '', 
+            emergencyPhoneNumber: userDetails.emergency.phone || '', 
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => handleUpdate(values)}

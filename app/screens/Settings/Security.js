@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Entypo } from '@expo/vector-icons';
-import { MaterialCommunityIcons, AntDesign, Ionicons, FontAwesome } from '@expo/vector-icons';
+import { Entypo, Ionicons } from '@expo/vector-icons';
 
 export default function Security({navigation}) {
     return (
@@ -34,7 +33,7 @@ export default function Security({navigation}) {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('Pin' , { email })}
+                    onPress={() => navigation.navigate('PinSettings')}
                     >
                     <View style={styles.eachFeature}>
                         <Text style={styles.text}>Pin</Text>
@@ -42,7 +41,7 @@ export default function Security({navigation}) {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('Passphrase', { email })}
+                    onPress={() => navigation.navigate('PassphraseScreen')}
                     >
                     <View style={styles.eachFeature}>
                         <Text style={styles.text}>Passphrase</Text>

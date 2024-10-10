@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, Image } from 'react-native';
+import { TextInput, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import  passwordApi  from '../../api/auth';
+import passwordApi from '../../api/auth';
 import { setAuthToken } from '../../api/client';
+import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function SettingsPasswordScreen({ navigation, route }) {
+export default function PinPasswordScreen({ navigation, route }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  const originScreen = route.params?.originScreen;
 
   const handlePasswordSubmit = async () => {
     if (!password) {
@@ -24,7 +23,6 @@ export default function SettingsPasswordScreen({ navigation, route }) {
     setAuthToken(token);
 
     try {
-      console.log('Password:', password);
       const response = await passwordApi.confirmPassword(password);
       if (!response.ok) {
         return Toast.show({
@@ -32,7 +30,7 @@ export default function SettingsPasswordScreen({ navigation, route }) {
           text1: response.data.message,
         });
       }
-      navigation.navigate(originScreen, { success: true , action: route.params?.action });
+      navigation.navigate('CreatePinScreen');
     }
     catch (error) {
       console.error('An error occurred:', error);
@@ -56,6 +54,10 @@ export default function SettingsPasswordScreen({ navigation, route }) {
         returnKeyType='Submit' // Change the return key to 'Submit'
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backArrow}>
+        <Ionicons name="arrow-back" size={24} color='#8d8d8d' />
+        <Text style={{ color: '#8d8d8d' }}>Back</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -63,7 +65,7 @@ export default function SettingsPasswordScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 150,
+    paddingTop: 180,
     backgroundColor: '#212121',
   },
   image: {
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
   input: {
     borderBottomWidth: 1,
     borderBottomColor: '#8d8d8d',
-    marginVertical: 30,
+    marginVertical: 50,
     marginHorizontal: 80,
     marginBottom: 20,
     borderRadius: 5,
@@ -92,6 +94,15 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  backArrow: {
+    position: 'absolute',
+    bottom: 50,
+    left: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
   },
 });
 
