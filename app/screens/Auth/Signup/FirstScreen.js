@@ -40,7 +40,7 @@ export default function FirstScreen({ navigation }) {
         <View style={styles.buttonContainer}>
           <StyledButton
             title="Create an account"
-            onPress={() => navigation.navigate('WelcomeHome')}
+            // onPress={() => navigation.navigate('WelcomeHome')}
             appleLogo={true}
             width="88%"
             height={53}
@@ -55,7 +55,7 @@ export default function FirstScreen({ navigation }) {
 
           <StyledButton
             title="Create an account"
-            onPress={() => navigation.navigate('CreateAccount')}
+            // onPress={() => navigation.navigate('CreateAccount')}
             googleLogo={require('../../../assets/GoogleIcon.png')}
             width="88%"
             height={53}

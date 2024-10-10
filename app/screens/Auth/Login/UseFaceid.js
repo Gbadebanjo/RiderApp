@@ -1,7 +1,10 @@
 import { StyleSheet, Text, View, StatusBar, Alert } from 'react-native'
-import React , {useEffect, useState} from 'react'
+import React , { useEffect, useState, useContext} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
+import facialIDApi from '../../../api/auth'
 import * as LocalAuthentication from 'expo-local-authentication';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppContext } from '../../../context/AppContext';
 import SocialLogo from '../../../components/SocialLogo';
 import StyledButton from '../../../components/StyledButton';
 import { AntDesign } from '@expo/vector-icons';
@@ -10,6 +13,7 @@ import BackButton from '../../../components/BackButton';
 
 export default function UseFaceid({navigation}) {
   const [isFacialIDSupported, setIsFacialIdSupported] = useState(false);  
+  const { userDetails, setUserDetails } = useContext(AppContext);
   
   useEffect(() => {
     (async () => {
@@ -21,20 +25,20 @@ export default function UseFaceid({navigation}) {
   const handleFacialIDAuth = async () => {
     const savedFaceId = await LocalAuthentication.isEnrolledAsync();
     if (!savedFaceId) {
-      return Alert.alert(
-        'FaceId record not found',
-        'Please ensure you have set up FaceId  in your device settings.',
-        [{ text: 'OK' }]
-      );
+      Toast.show({
+        type: 'error',
+        text1: 'Biometric record not found',
+        text2: 'Please ensure you have set up biometrics in your device settings',
+      });
     }
   
     const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
     if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
-      return Alert.alert(
-        'Facial recognition not supported',
-        'Please ensure your device supports Facial recognition authentication.',
-        [{ text: 'OK' }]
-      );
+      return Toast.show({
+        type: 'error',
+        text1: 'Facial recognition not supported',
+        text2: 'Please ensure your device supports Facial recognition authentication.',
+      });
     }
   
     const { success, error } = await LocalAuthentication.authenticateAsync({
@@ -42,42 +46,50 @@ export default function UseFaceid({navigation}) {
       // fallbackLabel: 'Enter Password',
       // disableDeviceFallback: true,
     });
+  
+    if (success) {   
+      const faceiDToken = await AsyncStorage.getItem('bioToken');
+      const details = await AsyncStorage.getItem('userDetails');
+      const email = details.email;
+      console.log(faceiDToken);
+      console.log(email)
 
+      if (!faceiDToken) {
+        return Toast.show({
+          type: 'error', 
+          text1: 'You have not setup FaceID Authentication on your account'
+        });
+      } 
+      
+      const deviceInfo = {
+          deviceId: "12345",
+          deviceName: "Tecno",
+          deviceType: "Android"
+      }
 
+      const response = await facialIDApi.loginWithPincode(email, faceidToken, deviceInfo);
+      if (!response.ok) {
+        setLoading(false);
+        const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+        return Toast.show({
+          type: 'error', 
+          text1: errorMessage,
+        });
+      }
+      Toast.show({
+          type: 'success',
+          text1: response.data.message,
+      });
+      await AsyncStorage.setItem('userToken', response.data.token);
+      setUserDetails(response.data.rider);
   
-    if (success) {      
-      // retrieve biometricToken from asyncStorage
-      // const facialToken = await AsyncStorage.getItem('facialToken');
-      // if (!facialToken) {
-      //   Alert.alert('Error', 'You have not setup Face ID Authentication on your account. Access your account through other authentication methods', [{ text: 'OK' }])
-      //   return;
-      // }
-      // const loginMethod = "facial";
-  
-      // // send request to login with face ID authentication
-      // const response = await api.biometricsLogin(facialToken, loginMethod);
-      // if (!response.ok) {
-      //   const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
-      //   return Alert.alert('Error', errorMessage, [
-      //       {
-      //         text: 'OK',
-      //       },
-      //   ]);
-      // }
-  
-      // // save the biometricToken and token received in asyncStorage
-      // await AsyncStorage.setItem('facialToken', response.data.data.facialToken);
-      // await AsyncStorage.setItem('token', response.data.data.token);
-  
-      // return Alert.alert('Success', response.data.data.message, [
-      return Alert.alert('Success', 'Login Successful', [
-        {
-          text: 'OK',
-          // onPress: () => navigation.navigate('MenuLanding'), 
-        },
-      ]);
+      setLoading(false);
+      return navigation.navigate('WelcomeHome');
     } else {
-      Alert.alert('Authentication Failed', error, [{ text: 'OK' }]);
+      return Toast.show({
+        type: 'error', 
+        text1: "Authentication Failed",
+      });
     }
   };
 
@@ -90,7 +102,6 @@ export default function UseFaceid({navigation}) {
             <Text style={styles.title}>Face Recognition</Text>
             <Text style={styles.subtitle}>Scan Your Face to verify your account</Text>
         </View>
-
 
       <StyledButton
             title="Continue"

@@ -1,13 +1,20 @@
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, Alert } from 'react-native'
-import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react';
+import fingerprintApi from '../../../api/auth';
+// import DeviceInfo from 'react-native-device-info';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AppContext } from '../../../context/AppContext';
 import SocialLogo from '../../../components/SocialLogo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 
 
 export default function UseFingerprint({navigation}) {
+    const [loading, setLoading] = useState(false);
     const [isFingerprintSupported, setIsFingerprintSupported] = useState(false);  
+    const { userDetails, setUserDetails } = useContext(AppContext);
   
     useEffect(() => {
       (async () => {
@@ -19,20 +26,20 @@ export default function UseFingerprint({navigation}) {
     const handleFingerprintAuth = async () => {
       const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
       if (!savedBiometrics) {
-        return Alert.alert(
-          'Fingerprint record not found',
-          'Please ensure you have set up fingerprint in your device settings.',
-          [{ text: 'OK' }]
-        );
+        Toast.show({
+          type: 'error',
+          text1: 'Biometric record not found',
+          text2: 'Please ensure you have set up biometrics in your device settings',
+        });
       }
     
       const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
       if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
-        return Alert.alert(
-          'Fingerprint not supported',
-          'Please ensure your device supports fingerprint authentication.',
-          [{ text: 'OK' }]
-        );
+        return Toast.show({
+          type: 'error',
+          text1: 'Fingerprint not supported',
+          text2: 'Please ensure your device supports fingerprint authentication.',
+        });
       }
     
       const { success, error } = await LocalAuthentication.authenticateAsync({
@@ -41,39 +48,48 @@ export default function UseFingerprint({navigation}) {
       });
     
       if (success) {      
-        // retrieve biometricToken from asyncStorage
-        // const biometricToken = await AsyncStorage.getItem('biometricToken');
-        // console.log(biometricToken);
-        // if (!biometricToken) {
-        //   Alert.alert('Error', 'You have not setup Biometric Authentication on your account. Access your account through other authentication methods', [{ text: 'OK' }])
-        //   return;
-        // } 
-        // const loginMethod = "biometric";
+        const fingerprintToken = await AsyncStorage.getItem('bioToken');
+        const details = await AsyncStorage.getItem('userDetails');
+        const email = details.email;
+        console.log("fingerprintToken", fingerprintToken);
+
+        if (!fingerprintToken) {
+          return Toast.show({
+            type: 'error', 
+            text1: 'You have not setup Biometric Authentication on your account'
+          });
+        } 
+        
+        const deviceInfo = {
+            deviceId: "12345",
+            deviceName: "Tecno",
+            deviceType: "Android"
+        }
+
+        const response = await fingerprintApi.fingerprintLogin(email, fingerprintToken, deviceInfo);
+        if (!response.ok) {
+          setLoading(false);
+          const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+          return Toast.show({
+            type: 'error', 
+            text1: errorMessage,
+          });
+        }
+        Toast.show({
+            type: 'success',
+            text1: response.data.message,
+        });
+        await AsyncStorage.setItem('userToken', response.data.token);
+        setUserDetails(response.data.rider);
     
-        // // send request to login with biometric authentication
-        // const response = await api.biometricsLogin (biometricToken, loginMethod);
-        // console.log(response.data);
-        // if (!response.ok) {
-        //   const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
-        //   return Alert.alert('Error', errorMessage, [
-        //     {
-        //       text: 'OK',
-        //     },
-        //   ]);
-        // }
-        // // save the biometricToken and token received in asyncStorage
-        // await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
-        // await AsyncStorage.setItem('token', response.data.data.token);
-    
-        // return Alert.alert('Success', response.data.data.message, [
-        return Alert.alert('Success', 'Login successful', [
-          {
-            text: 'OK',
-            // onPress: () => navigation.navigate('MenuLanding'), 
-          },
-        ]);
+        setLoading(false);
+        return navigation.navigate('WelcomeHome');
+
       } else {
-        Alert.alert('Authentication Failed', error, [{ text: 'OK' }]);
+        return Toast.show({
+          type: 'error', 
+          text1: "Authentication Failed",
+        });
       }
     };
 

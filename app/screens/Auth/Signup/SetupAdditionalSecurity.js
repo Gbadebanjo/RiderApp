@@ -137,21 +137,23 @@ export default function SetupAdditionalSecurity({ navigation }) {
     const response = await signupApi.signUp(email, firstName, lastName, phoneNumber, pin, passphrase, confirmPin, displayName, fingerprint, facialId,
       deviceInfo);
 
-    if (!response.ok) {
-      setLoading(false);
-      return Toast.show({
-        type: 'error',
+      if (!response.ok) {
+        setLoading(false);
+        return Toast.show({
+          type: 'error', 
+          text1: response.data.message,
+        });
+      }
+      Toast.show({
+        type: 'success',
         text1: response.data.message,
       });
-    }
-    Toast.show({
-      type: 'success',
-      text1: response.data.message,
-    });
-    const token = response.data.rider.token
-    await AsyncStorage.setItem('userToken', JSON.stringify(token));
-    setLoading(false);
-    navigation.navigate('ThankYou');
+      const token = response.data.rider.token
+      const bioToken = response.data.rider.bioToken
+      await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem('bioToken', bioToken);
+      setLoading(false);
+      navigation.navigate('ThankYou');
   };
 
   const isAnyToggleEnabled = isCreatePin || isCreatePassphrase;

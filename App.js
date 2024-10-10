@@ -15,6 +15,7 @@ import LoginOptions from './app/screens/Auth/Login/LoginOptions';
 import UsePassword from './app/screens/Auth/Login/UsePassword';
 import UsePassphrase from './app/screens/Auth/Login/UsePassphrase';
 import UsePincode from './app/screens/Auth/Login/UsePincode';
+import ConfirmPincode from './app/screens/Auth/Login/ConfirmPincode';
 import WelcomeGuest from './app/screens/Auth/Signup/WelcomeGuest';
 import ConfirmSignup from './app/screens/Auth/Signup/ConfirmSignup';
 import SetPassword from './app/screens/Auth/Signup/SetPassword';
@@ -35,7 +36,6 @@ import ReviewPhoto from './app/screens/Settings/ReviewPhoto';  // In use
 import RewardProgram from './app/screens/Settings/RewardProgram'; // In use
 import CashbackReward from './app/screens/Settings/CashbackReward'; // In use
 import MilesPoint from './app/screens/Settings/MilesPoint'; // In use
-import WelcomeHome from './app/screens/HomeScreens/WelcomeHome';
 import RecoveryEmail from './app/screens/Recovery/EnterEmail';
 import InviteReferral from './app/screens/Settings/InviteReferral';  // In use
 import HelpAndSupport from './app/screens/Settings/HelpAndSupport';   // In use
@@ -76,6 +76,7 @@ export default function App() {
           <Stack.Screen name='UsePassword' component={UsePassword} options={{ headerShown: false }} />
           <Stack.Screen name='UsePassphrase' component={UsePassphrase} options={{ headerShown: false }} />
           <Stack.Screen name='UsePincode' component={UsePincode} options={{ headerShown: false }} />
+          <Stack.Screen name='ConfirmPincode' component={ConfirmPincode} options={{ headerShown: false }} />
           <Stack.Screen name='ConfirmSignup' component={ConfirmSignup} options={{ headerShown: false }} />
           <Stack.Screen name='SetPassword' component={SetPassword} options={{ headerShown: false }} />
           <Stack.Screen name='MenuLanding' component={NavButtons} options={{ headerShown: false }} />
