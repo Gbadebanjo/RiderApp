@@ -68,13 +68,13 @@ export default function SetupAdditionalSecurity ({navigation}) {
       if (loginDetails) {
         loginDetails.pin = pinCode;
         await AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
-      }
 
         setIsPinModalVisible(false)
         setIsCreatePin(true);
         setIsConfrimPinModalVisible(true);
         setLoading(false);
-    }
+      }
+    };
 
     const handleConfirmPin = async (confirmCode) => {
       setLoading(true);
@@ -101,22 +101,23 @@ export default function SetupAdditionalSecurity ({navigation}) {
       }
     }
 
-    const togglePasspharse = (value) => {
-        setIsCreatePassphrase(value);
-        if (value) {
-            setIsPassphraseModalVisible(true);
-        } else {
-            setIsPassphraseModalVisible(false);
-        }
-        setIsAnyAuthEnabled(value || isCreatePin);
-    };
 
-    const closePassphraseModal = () => {
-      setIsCreatePassphrase(false);
+  const togglePasspharse = (value) => {
+    setIsCreatePassphrase(value);
+    if (value) {
+      setIsPassphraseModalVisible(true);
+    } else {
       setIsPassphraseModalVisible(false);
-      setIsAnyAuthEnabled(isCreatePin);
-      setIsAnyAuthEnabled(false);
-    };
+    }
+    setIsAnyAuthEnabled(value || isCreatePin);
+  };
+
+  const closePassphraseModal = () => {
+    setIsCreatePassphrase(false);
+    setIsPassphraseModalVisible(false);
+    setIsAnyAuthEnabled(isCreatePin);
+    setIsAnyAuthEnabled(false);
+  };
 
   const handlePassphraseGenerated = async (generatedPassphrase) => {
     if (loginDetails) {
@@ -124,10 +125,10 @@ export default function SetupAdditionalSecurity ({navigation}) {
       await AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
     }
 
-      setPassphrase(generatedPassphrase);
-      setIsCreatePassphrase(true);
-      setIsAnyAuthEnabled(true);
-      setIsPassphraseModalVisible(false);
+    setPassphrase(generatedPassphrase);
+    setIsCreatePassphrase(true);
+    setIsAnyAuthEnabled(true);
+    setIsPassphraseModalVisible(false);
   };
   
   const handleProceed = async () => {
@@ -171,49 +172,49 @@ export default function SetupAdditionalSecurity ({navigation}) {
       setLoading(false);
       navigation.navigate('ThankYou');
   };
-  
+
   const isAnyToggleEnabled = isCreatePin || isCreatePassphrase;
 
   return (
     <SafeAreaView style={styles.container}>
-    <StatusBar barStyle="default" backgroundColor="#111111" />
-    <View style={styles.titleContainer}> 
+      <StatusBar barStyle="default" backgroundColor="#111111" />
+      <View style={styles.titleContainer}>
         <TouchableOpacity
-            style={styles.Icon}
-            onPress={() => navigation.goBack()}>
-            <BackButton style={styles.Icon} iconColor="#ffffff"/>
+          style={styles.Icon}
+          onPress={() => navigation.goBack()}>
+          <BackButton style={styles.Icon} iconColor="#ffffff" />
         </TouchableOpacity>
         <Text style={styles.title}>Additional Security</Text>
-    </View>    
-    <View  style={styles.securityOptions}>
+      </View>
+      <View style={styles.securityOptions}>
         <Text style={styles.subtitle}>Add Additional Security</Text>
 
         <View style={styles.eachSecurity}>
-            <Text style={styles.text}>Pin</Text>
-            <Switch
-                value={isCreatePin}
-                onValueChange={togglePin}
-                trackColor={{ false: '#ffffff', true: '#ffffff' }}
-                thumbColor={isCreatePin ? '#767577' : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-            />
+          <Text style={styles.text}>Pin</Text>
+          <Switch
+            value={isCreatePin}
+            onValueChange={togglePin}
+            trackColor={{ false: '#ffffff', true: '#ffffff' }}
+            thumbColor={isCreatePin ? '#767577' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+          />
         </View>
 
         <View style={styles.eachSecurity}>
-            <Text style={styles.text}>Passphrase</Text>
-            <Switch
-                value={isCreatePassphrase}
-                onValueChange={togglePasspharse}
-                trackColor={{ false: '#ffffff', true: '#ffffff' }}
-                thumbColor={isCreatePassphrase ? '#767577' : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-            />
+          <Text style={styles.text}>Passphrase</Text>
+          <Switch
+            value={isCreatePassphrase}
+            onValueChange={togglePasspharse}
+            trackColor={{ false: '#ffffff', true: '#ffffff' }}
+            thumbColor={isCreatePassphrase ? '#767577' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+          />
         </View>
-    </View>
+      </View>
 
-    {isAnyToggleEnabled && (
-      <View style={styles.buttonContainer}>
-        <StyledButton
+      {isAnyToggleEnabled && (
+        <View style={styles.buttonContainer}>
+          <StyledButton
             title="Cancel"
             // onPress={handleSubmit}
             width="30%"
@@ -224,9 +225,9 @@ export default function SetupAdditionalSecurity ({navigation}) {
             TextColor="#FFFFFF"
             borderRadius={10}
             fontSize={15}
-        />
+          />
 
-        <StyledButton
+          <StyledButton
             title="Proceed"
             onPress={handleProceed}
             width="30%"
@@ -235,159 +236,159 @@ export default function SetupAdditionalSecurity ({navigation}) {
             backgroundColor="#FFFFFF"
             borderWidth={2}
             TextColor="#000000"
-            borderRadius={15} 
+            borderRadius={15}
             fontSize={15}
-        />
-      </View>   
-    )}
+          />
+        </View>
+      )}
 
-    <CreatePinModal 
-        visible={isPinModalVisible} 
+      <CreatePinModal
+        visible={isPinModalVisible}
         onClose={handleCloseCreatePin}
         onSubmit={handlePinSubmit}
-    />
+      />
 
-    <ConfirmPinModal 
-        visible={isConfirmPinModalVisible} 
+      <ConfirmPinModal
+        visible={isConfirmPinModalVisible}
         onClose={handleCloseCreatePin}
         onSubmit={handleConfirmPin}
-    />
+      />
 
-    <CreatePassphraseModal
+      <CreatePassphraseModal
         isVisible={isPassphraseModalVisible}
         onClose={closePassphraseModal}
         navigation={navigation}
         onPassphraseGenerated={handlePassphraseGenerated}
-    />
-</SafeAreaView>
+      />
+    </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        backgroundColor: '#111111',
-        paddingHorizontal: 20,
-        width: '100%',
-    },
-    titleContainer: {
-        marginTop: 30,
-        width: '100%',
-        flexDirection: 'row',
-        gap: 30,
-        alignItems: 'center',
-        marginBottom: 30,
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: '400',
-        color: '#FFFFFF'
-    },
-    securityOptions: {
-        flex: 1,
-    },
-    subtitle: {
-        fontSize: 14,
-        fontWeight: '400',
-        color: '#FFFFFF',
-        marginBottom: 10,
-    },
-    eachSecurity: {
-        flexDirection: 'row',
-        width: '100%',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 14,
-        fontWeight: '700',
-        color: '#FFFFFF'
-    },
-    fingerprint: {
-       borderWidth: 1.5,
-       borderRadius: 8,
-       padding: 2,
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        width: '100%',
-        justifyContent: 'space-between',
-    },
-    modal: {
-      flex: 1,
-      position: 'absolute',
-      bottom: 0,
-      width: '100%',
-      height: '100%',
-      backgroundColor: 'white',
-      alignItems: 'center',
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.8,
-      shadowRadius: 2,
-      elevation: 5,
-    },
-    modalContent: {
-      width: '90%',
-      // flexDirection: 'column',
-      marginTop: 70,
-      justifyContent: 'space-between',
-      gap: 70
-    },
-    modalTitle: {
-      fontSize: 20,
-      marginBottom: 20,
-      textAlign: 'center'
-    },
-    modalText: {
-      fontSize: 16,
-      textAlign: 'center',
-    },
-    modalCenterText: {
-      fontSize: 12,
-      textAlign: 'center',
-    },
-    topSection: {
-      // flex: 1,
-    },
-    logo: {
-      width: '30%',
-      aspectRatio: 1,
-      resizeMode: 'contain',
-      alignSelf: 'center',
-      marginTop: 50,
-      marginBottom: 20,
-    },
-    bottomSection: {
-      top: '25%',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      bottom: 0, 
-    },
-    cancelbutton: {
-      padding: 10,
-      width: '25%',
-      backgroundColor: '#fff',
-      borderRadius: 8,
-      justifyContent: 'center',
-    },
-    confirmbutton: {
-      padding: 10,
-      backgroundColor: '#000',
-      borderRadius: 8,
-      width: '25%',
-      justifyContent: 'center'
-    },
-    buttonText1: {
-      color: '#000',
-      fontSize: 14,
-      textAlign: 'start',
-    },
-    buttonText2: {
-      color: 'white',
-      fontSize: 14,
-      textAlign: 'center',
-    },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#111111',
+    paddingHorizontal: 20,
+    width: '100%',
+  },
+  titleContainer: {
+    marginTop: 30,
+    width: '100%',
+    flexDirection: 'row',
+    gap: 30,
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '400',
+    color: '#FFFFFF'
+  },
+  securityOptions: {
+    flex: 1,
+  },
+  subtitle: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#FFFFFF',
+    marginBottom: 10,
+  },
+  eachSecurity: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FFFFFF'
+  },
+  fingerprint: {
+    borderWidth: 1.5,
+    borderRadius: 8,
+    padding: 2,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+  },
+  modal: {
+    flex: 1,
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  modalContent: {
+    width: '90%',
+    // flexDirection: 'column',
+    marginTop: 70,
+    justifyContent: 'space-between',
+    gap: 70
+  },
+  modalTitle: {
+    fontSize: 20,
+    marginBottom: 20,
+    textAlign: 'center'
+  },
+  modalText: {
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  modalCenterText: {
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  topSection: {
+    // flex: 1,
+  },
+  logo: {
+    width: '30%',
+    aspectRatio: 1,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginTop: 50,
+    marginBottom: 20,
+  },
+  bottomSection: {
+    top: '25%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    bottom: 0,
+  },
+  cancelbutton: {
+    padding: 10,
+    width: '25%',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    justifyContent: 'center',
+  },
+  confirmbutton: {
+    padding: 10,
+    backgroundColor: '#000',
+    borderRadius: 8,
+    width: '25%',
+    justifyContent: 'center'
+  },
+  buttonText1: {
+    color: '#000',
+    fontSize: 14,
+    textAlign: 'start',
+  },
+  buttonText2: {
+    color: 'white',
+    fontSize: 14,
+    textAlign: 'center',
+  },
 });

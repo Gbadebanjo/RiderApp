@@ -2,88 +2,28 @@ import React, { useEffect, useState, useRef, useContext } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, Switch, Dimensions, Modal, Animated, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as LocalAuthentication from 'expo-local-authentication';
+import BackButton from '../../components/BackButton';
+import StyledButton from '../../components/StyledButton';
 import SecurityModal from '../../components/SecurityModal';
 import { AppContext } from '../../context/AppContext';
-import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import facialIdApi from '../../api/auth';
-import Toast from 'react-native-toast-message';
-import { setAuthToken } from '../../api/client';
+
 
 const face = require('../../assets/Face.png');
 
 export default function FacialIdToggle({ navigation, route }) {
   const { userDetails, setUserDetails } = useContext(AppContext);
+  const [isAnyAuthEnabled, setIsAnyAuthEnabled] = useState(false);
   const [isFaceIDSupported, setIsFaceIDSupported] = useState(false);
   const [isFacialIDEnabled, setIsFacialIDEnabled] = useState(false);
   const [modalActive, setModalActive] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const slideAnim = useRef(new Animated.Value(Dimensions.get('window').height)).current;
-
-  let newValue;
 
   useEffect(() => {
     if (userDetails.authsEnabled.includes('facialId')) {
       setIsFacialIDEnabled(true);
     }
   }, [userDetails.authsEnabled]);
-
-  const toggleFacialID = () => {
-    setIsFacialIDEnabled((prevState) => !prevState);
-    if (isFacialIDEnabled) {
-      // When the toggle is ON and switching it OFF, route to password screen to confirm
-      navigation.navigate('SettingsPasswordScreen', { originScreen: 'FacialIdToggle', action: 'disable' });
-    } else {
-      navigation.navigate('SettingsPasswordScreen', { originScreen: 'FacialIdToggle', action: 'enable' });
-    }
-  };
-
-  useEffect(() => {
-    if (route.params?.success) {
-      const action = route.params?.action;
-      // console.log('Action:', action);
-      if (action === 'enable') {
-        setModalActive(true);
-      } else {
-        SendDetails()
-      }
-    }
-  }, [route.params?.success]);
-
-  const SendDetails = async () => {
-    isFacialIDEnabled === false ? newValue = false : true;
-
-    const token = await AsyncStorage.getItem('userToken');
-    setAuthToken(token);
-
-    try {
-      const response = await facialIdApi.updateFacialId({ value: newValue })
-      if (!response.ok) {
-        return Toast.show({
-          type: 'error',
-          text1: 'Update Failed',
-          text2: response.data?.message || 'Something went wrong',
-        });
-      }
-      Toast.show({
-        type: 'success',
-        text1: 'FacialId Updated',
-      });
-      setUserDetails(response.data.rider)
-      navigation.navigate('Security');
-    }
-    catch (error) {
-      console.error('An error occurred:', error);
-      Toast.show({
-        type: 'error',
-        text1: 'An error occurred. Please try again.',
-      });
-    }
-  }
-
-  const handleModalClose = () => {
-    setModalActive(false);
-  };
-
 
   useEffect(() => {
     if (isFacialIDEnabled) {
@@ -101,6 +41,37 @@ export default function FacialIdToggle({ navigation, route }) {
     }
   }, [isFacialIDEnabled]);
 
+  const toggleFacialID = () => {
+    setIsFacialIDEnabled((prevState) => !prevState); 
+    if (isFacialIDEnabled) {
+      // When the toggle is ON and switching it OFF, route to password screen to confirm
+      navigation.navigate('SettingsPasswordScreen', { originScreen: 'FacialIdToggle', action: 'disable' });
+    } else {
+      navigation.navigate('SettingsPasswordScreen', { originScreen: 'FacialIdToggle', action: 'enable' });
+    }
+  };
+
+  // Check if password validation was successful when returning from PasswordScreen
+  useEffect(() => {
+    if (route.params?.success) {
+      const action = route.params?.action;
+      if (action === 'enable') {
+        setIsFacialIDEnabled(true);
+        setIsModalVisible(true);
+      } else {
+        setIsFacialIDEnabled(false);
+      }
+    }
+  }, [route.params?.success]);
+
+
+  const handleSwitchChange = async (value) => {
+    setIsFingerprintEnabled(value);
+    if (value) {
+      await handleFingerprintAuth();
+    }
+    setIsAnyAuthEnabled(value);
+  };
 
   useEffect(() => {
     (async () => {
@@ -110,13 +81,22 @@ export default function FacialIdToggle({ navigation, route }) {
   }, []);
 
   const handleFacialIDAuth = async () => {
+    const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+    if (!savedBiometrics) {
+      return Alert.alert(
+        'Biometric record not found',
+        'Please ensure you have set up biometrics in your device settings.',
+        [{ text: 'OK' }]
+      );
+    }
+
     const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
     if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
-      return Toast.show({
-        type: 'error',
-        text1: 'Facial recognition not supported',
-        text2: 'Please ensure your device supports Facial recognition authentication.',
-      });
+      return Alert.alert(
+        'Facial recognition not supported',
+        'Please ensure your device supports Facial recognition authentication.',
+        [{ text: 'OK' }]
+      );
     }
 
     const { success, error } = await LocalAuthentication.authenticateAsync({
@@ -125,26 +105,38 @@ export default function FacialIdToggle({ navigation, route }) {
     });
 
     if (success) {
-      SendDetails()
-      setModalActive(false);
+      return Alert.alert('Success', "Facial ID has been added succesfully", [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('Feedback'),
+        },
+      ]);
     } else {
-      return Toast.show({
-        type: 'error',
-        text1: 'FacialID cannot be registered',
-      });
+      Alert.alert('Authentication Failed', error, [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('Feedback'),
+        }
+      ]);
     }
   };
 
+  const handleSubmit = () => {
+    setIsModalVisible(true);
+  }
+
+  const handleModalProceed = () => {
+    setIsModalVisible(false);
+    navigation.navigate('SetupAdditionalSecurity');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="default" backgroundColor="#111111" />
-      <View style={styles.titleContainer} >
-        <Ionicons name="arrow-back" size={24} color='#fff'
-          onPress={() => navigation.goBack()}
-        />
+      <TouchableOpacity style={styles.titleContainer} onPress={() => navigation.goBack()}>
+        <BackButton style={styles.Icon} iconColor="#fff" />
         <Text style={styles.title}>Security</Text>
-      </View>
+      </TouchableOpacity>
       <View style={styles.securityOptions}>
         <Text style={styles.subtitle}>FaceID Management</Text>
 
@@ -160,12 +152,41 @@ export default function FacialIdToggle({ navigation, route }) {
         </View>
       </View>
 
+      {isAnyAuthEnabled && (
+        <View style={styles.buttonContainer}>
+          <StyledButton
+            title="Cancel"
+            // onPress={handleSubmit}
+            width="30%"
+            paddingVertical={10}
+            marginTop={0}
+            backgroundColor="#111"
+            borderWidth={0}
+            TextColor="#FFFFFF"
+            borderRadius={10}
+            fontSize={15}
+          />
+
+          <StyledButton
+            title="Proceed"
+            onPress={handleSubmit}
+            width="30%"
+            paddingVertical={10}
+            marginTop={0}
+            backgroundColor="#FFFFFF"
+            borderWidth={2}
+            TextColor="#000000"
+            borderRadius={15}
+            fontSize={15}
+          />
+        </View>
+      )}
 
       <Modal
         transparent={true}
-        visible={modalActive}
+        visible={isFacialIDEnabled}
         animationType="none"
-        onRequestClose={handleModalClose}
+        onRequestClose={toggleFacialID}
       >
         <Animated.View style={[styles.modal, { transform: [{ translateY: slideAnim }] }]}>
           <View style={styles.modalContent}>
@@ -173,6 +194,7 @@ export default function FacialIdToggle({ navigation, route }) {
               <Text style={styles.modalTitle}>Verify It's You</Text>
               <Text style={styles.modalText}>You can use face authentication to secure your accounts</Text>
               <Image source={face} style={styles.logo} />
+              {/* <FontAwesome6 name="face-kiss-beam" size={100} color="grey" style={styles.logo} /> */}
               <Text style={styles.modalCenterText}>Tap Confirm to complete</Text>
             </View>
 
@@ -189,6 +211,11 @@ export default function FacialIdToggle({ navigation, route }) {
         </Animated.View>
       </Modal>
 
+      <SecurityModal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        onProceed={handleModalProceed}
+      />
     </SafeAreaView>
   );
 }

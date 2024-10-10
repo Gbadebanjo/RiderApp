@@ -25,10 +25,8 @@ import SetupAdditionalSecurity from './app/screens/Auth/Signup/SetupAdditionalSe
 import Security from './app/screens/Settings/Security';    // In use
 import Biometric from './app/screens/Security/Biometric';
 import FacialID from './app/screens/Security/FacialID';
-import Passphrase from './app/screens/Security/Passphrase';
 import CreatePassphrase from './app/screens/Security/CreatePassphrase';
 import GeneratePassphrase from './app/screens/Security/GeneratePassphrase';
-import Pin from './app/screens/Security/Pin';
 import SettingToggle from './app/screens/Security/SettingToggle';
 import Feedback from './app/screens/Feedback/Feedback';
 import ThankYou from './app/screens/Feedback/ThankYou';
@@ -46,8 +44,14 @@ import CustomerServiceCenter from './app/screens/Settings/CustomerServiceCenter'
 import LiveChat from './app/screens/Settings/LiveChat'; // In use
 import TrackReferral from './app/screens/Dashboard/TrackReferral';  // In use
 import FacialIdToggle from './app/screens/Settings/FacialIdToggle'; // In use
+import PassphraseScreen from './app/screens/Settings/PassphraseScreen'; // In use
 import BiometricToggle from './app/screens/Settings/BiometricToggle';
 import SettingsPasswordScreen from './app/screens/Settings/SettingsPasswordScreen'; // In use
+import PinSettings from './app/screens/Settings/PinSettings'; // In use
+import PinPasswordScreen from './app/screens/Settings/PinPasswordScreen'; // In use
+import CreatePinScreen from './app/screens/Settings/CreatePinScreen'; // In use
+import ConfirmPinScreen from './app/screens/Settings/ConfirmPinScreen'; // In use
+
 
 import NavButtons from './app/components/NavButtons';  // In use
 
@@ -83,11 +87,10 @@ export default function App() {
           <Stack.Screen name='Biometric' component={Biometric} options={{ headerShown: false }} />
           <Stack.Screen name='FacialID' component={FacialID} options={{ headerShown: false }} />
           <Stack.Screen name='SettingsPasswordScreen' component={SettingsPasswordScreen} options={{ headerShown: false }} />
-          <Stack.Screen name='Passphrase' component={Passphrase} options={{ headerShown: false }} />
+          <Stack.Screen name='PassphraseScreen' component={PassphraseScreen} options={{ headerShown: false }} />
           <Stack.Screen name='CreatePassphrase' component={CreatePassphrase} options={{ headerShown: false }} />
           <Stack.Screen name='GeneratePassphrase' component={GeneratePassphrase} options={{ headerShown: false }} />
           <Stack.Screen name='RecoveryEmail' component={RecoveryEmail} options={{ headerShown: false }} />
-          <Stack.Screen name='Pin' component={Pin} options={{ headerShown: false }} />
           <Stack.Screen name='Feedback' component={Feedback} options={{ headerShown: false }} />
           <Stack.Screen name='ThankYou' component={ThankYou} options={{ headerShown: false }} />
           <Stack.Screen name='Photo' component={Photo} options={{ headerShown: false }} />
@@ -105,6 +108,10 @@ export default function App() {
           <Stack.Screen name='BiometricToggle' component={BiometricToggle} options={{ headerShown: false }} />
           <Stack.Screen name='CustomerServiceCenter' component={CustomerServiceCenter} options={{ headerShown: false }} />
           <Stack.Screen name='HelpAndSupport' component={HelpAndSupport} options={{ headerShown: false }} />
+          <Stack.Screen name='PinSettings' component={PinSettings} options={{ headerShown: false }} />
+          <Stack.Screen name='PinPasswordScreen' component={PinPasswordScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='CreatePinScreen' component={CreatePinScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='ConfirmPinScreen' component={ConfirmPinScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
         <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
       </NavigationContainer>

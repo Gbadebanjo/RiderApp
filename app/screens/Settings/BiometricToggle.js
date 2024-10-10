@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, Switch, Dimensions, Modal, Animated, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as LocalAuthentication from 'expo-local-authentication';
@@ -7,41 +7,88 @@ import Toast from 'react-native-toast-message';
 import BackButton from '../../components/BackButton';
 import StyledButton from '../../components/StyledButton';
 import SecurityModal from '../../components/SecurityModal';
+import { setAuthToken } from '../../api/client';
+import fingerPrintApi from '../../api/auth';
+import { AppContext } from '../../context/AppContext';
 
 const face = require('../../assets/Face.png');
 
-export default function BiometricToggle({ navigation }) {
+export default function BiometricToggle({ navigation, route }) {
+    const { userDetails, setUserDetails } = useContext(AppContext);
     const [isFingerprintEnabled, setIsFingerprintEnabled] = useState(false);
     const [isFingerprintSupported, setIsFingerprintSupported] = useState(false);
-    const [isAnyAuthEnabled, setIsAnyAuthEnabled] = useState(false);
-    const [isFaceIDSupported, setIsFaceIDSupported] = useState(false);
     const [isFacialIDEnabled, setIsFacialIDEnabled] = useState(false);
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [modalActive, setModalActive] = useState(false);
     const slideAnim = useRef(new Animated.Value(Dimensions.get('window').height)).current;
 
-    useEffect(() => {
-        const fetchAndUpdateUserDetails = async () => {
-            try {
-                const userDetailsString = await AsyncStorage.getItem('userDetails');
-                const userDetails = JSON.parse(userDetailsString);
-
-                const updatedUserDetails = {
-                    ...userDetails,
-                    fingerprint: isFingerprintEnabled,
-                    facialId: isFacialIDEnabled,
-                };
-
-                await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
-            } catch (error) {
-                console.error('Error updating user details:', error);
-            }
-        };
-
-        fetchAndUpdateUserDetails();
-    }, [isFingerprintEnabled, isFacialIDEnabled]);
+    let newValue;
 
     useEffect(() => {
-        if (isFacialIDEnabled) {
+        if (userDetails.authsEnabled.includes('fingerprint')) {
+          setIsFingerprintEnabled(true);
+        }
+      }, [userDetails.authsEnabled]);
+
+      const toggleFingerPrint = () => {
+        setIsFingerprintEnabled((prevState) => !prevState);
+        if (isFingerprintEnabled) {
+          // When the toggle is ON and switching it OFF, route to password screen to confirm
+          navigation.navigate('SettingsPasswordScreen', { originScreen: 'BiometricToggle', action: 'disable' });
+        } else {
+          navigation.navigate('SettingsPasswordScreen', { originScreen: 'BiometricToggle', action: 'enable' });
+        }
+      };
+
+      useEffect(() => {
+        if (route.params?.success) {
+          const action = route.params?.action;
+          // console.log('Action:', action);
+          if (action === 'enable') {
+            setModalActive(true);
+          } else {
+            SendDetails()
+          }
+        }
+      }, [route.params?.success]);
+
+
+      const SendDetails = async () => {
+        isFingerprintEnabled === false ? newValue = false : true;
+    
+        const token = await AsyncStorage.getItem('userToken');
+        setAuthToken(token);
+    
+        try {
+          const response = await fingerPrintApi.updateFingerPrint({ value: newValue })
+          if (!response.ok) {
+            return Toast.show({
+              type: 'error',
+              text1: 'Update Failed',
+              text2: response.data?.message || 'Something went wrong',
+            });
+          }
+          Toast.show({
+            type: 'success',
+            text1: 'Finger Print Updated',
+          });
+          setUserDetails(response.data.rider)
+          navigation.navigate('Security');
+        }
+        catch (error) {
+          console.error('An error occurred:', error);
+          Toast.show({
+            type: 'error',
+            text1: 'An error occurred. Please try again.',
+          });
+        }
+      }
+
+      const handleModalClose = () => {
+        setModalActive(false);
+      };
+
+    useEffect(() => {
+        if (isFingerprintEnabled) {
             Animated.timing(slideAnim, {
                 toValue: Dimensions.get('window').height * 0.3,
                 duration: 300,
@@ -54,18 +101,8 @@ export default function BiometricToggle({ navigation }) {
                 useNativeDriver: true,
             }).start();
         }
-    }, [isFacialIDEnabled]);
+    }, [isFingerprintEnabled]);
 
-    const toggleFacialID = () => {
-        setIsFacialIDEnabled(!isFacialIDEnabled);
-        setIsAnyAuthEnabled(!isAnyAuthEnabled);
-    };
-
-    const handleSwitchChange = async (value) => {
-        if (value) {
-            await handleFingerprintAuth();
-        }
-    };
 
     useEffect(() => {
         (async () => {
@@ -75,14 +112,14 @@ export default function BiometricToggle({ navigation }) {
     }, []);
 
     const handleFingerprintAuth = async () => {
-        const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
-        if (!savedBiometrics) {
-            Toast.show({
-                type: 'error',
-                text1: 'Biometric record not found',
-                text2: 'Please ensure you have set up biometrics in your device settings',
-            });
-        }
+        // const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+        // if (!savedBiometrics) {
+        //     Toast.show({
+        //         type: 'error',
+        //         text1: 'Biometric record not found',
+        //         text2: 'Please ensure you have set up biometrics in your device settings',
+        //     });
+        // }
 
         const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
         if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
@@ -98,35 +135,10 @@ export default function BiometricToggle({ navigation }) {
             fallbackLabel: 'Enter Password',
         });
 
-        const userDetailsString = await AsyncStorage.getItem('userDetails');
-        const userDetails = JSON.parse(userDetailsString);
-
         if (success) {
-            setIsFingerprintEnabled(true);
-            setIsAnyAuthEnabled(true)
-            const updatedUserDetails = {
-                ...userDetails,
-                fingerprint: true,
-            };
-
-            await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
-
-            return Toast.show({
-                type: 'success',
-                text1: 'Fingerprint registered successfully',
-            });
+            SendDetails()
+            setModalActive(false);
         } else {
-            setIsFingerprintEnabled(false);
-            if (isFacialIDEnabled === false) {
-                setIsAnyAuthEnabled(false)
-            }
-            const updatedUserDetails = {
-                ...userDetails,
-                fingerprint: false,
-            };
-
-            await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
-
             return Toast.show({
                 type: 'error',
                 text1: 'Fingerprint cannot be registered',
@@ -140,69 +152,6 @@ export default function BiometricToggle({ navigation }) {
             setIsFaceIDSupported(compatible);
         })();
     }, []);
-
-    const handleFacialIDAuth = async () => {
-        const userDetailsString = await AsyncStorage.getItem('userDetails');
-        const userDetails = JSON.parse(userDetailsString);
-
-        const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
-        if (!savedBiometrics) {
-            return Toast.show({
-                type: 'error',
-                text1: 'Biometric record not found',
-                text2: 'Please ensure you have set up biometrics in your device settings',
-            });
-        }
-
-        const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
-        if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
-            return Toast.show({
-                type: 'error',
-                text1: 'Facial recognition not supported',
-                text2: 'Please ensure your device supports Facial recognition authentication.',
-            });
-        }
-
-        const { success, error } = await LocalAuthentication.authenticateAsync({
-            promptMessage: 'Use facial recognition to access your account',
-            fallbackLabel: 'Enter Password',
-        });
-
-        if (success) {
-            const updatedUserDetails = {
-                ...userDetails,
-                facialId: true,
-            };
-
-            await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
-
-            Toast.show({
-                type: 'success',
-                text1: 'Facial ID has been added succesfully',
-            });
-            return
-        } else {
-            const updatedUserDetails = {
-                ...userDetails,
-                facialId: false,
-            };
-
-            await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
-            return Toast.show({
-                type: 'error',
-                text1: 'FacialID cannot be registered',
-            });
-        }
-    };
-
-    const handleSubmit = () => {
-        setIsModalVisible(true);
-    }
-
-    const handleModalProceed = () => {
-        setIsModalVisible(false);
-        navigation.navigate('SetupAdditionalSecurity');
-    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -221,7 +170,7 @@ export default function BiometricToggle({ navigation }) {
                     <Text style={styles.text}>Fingerprint</Text>
                     <Switch
                         value={isFingerprintEnabled}
-                        onValueChange={handleSwitchChange}
+                        onValueChange={toggleFingerPrint}
                         trackColor={{ false: '#ffffff', true: '#ffffff' }}
                         thumbColor={isFingerprintEnabled ? '#767577' : '#f4f3f4'}
                         ios_backgroundColor="#3e3e3e"
@@ -229,41 +178,12 @@ export default function BiometricToggle({ navigation }) {
                 </View>
             </View>
 
-            {isAnyAuthEnabled && (
-                <View style={styles.buttonContainer}>
-                    <StyledButton
-                        title="Cancel"
-                        onPress={() => setIsAnyAuthEnabled(false)}
-                        width="30%"
-                        paddingVertical={10}
-                        marginTop={0}
-                        backgroundColor="#212121"
-                        borderWidth={0}
-                        TextColor="#FFFFFF"
-                        borderRadius={10}
-                        fontSize={15}
-                    />
-
-                    <StyledButton
-                        title="Proceed"
-                        onPress={handleSubmit}
-                        width="30%"
-                        paddingVertical={10}
-                        marginTop={0}
-                        backgroundColor="#FFFFFF"
-                        borderWidth={2}
-                        TextColor="#000000"
-                        borderRadius={15}
-                        fontSize={15}
-                    />
-                </View>
-            )}
-
+            
             <Modal
                 transparent={true}
-                visible={isFacialIDEnabled}
+                visible={modalActive}
                 animationType="none"
-                onRequestClose={toggleFacialID}
+                onRequestClose={handleModalClose}
             >
                 <Animated.View style={[styles.modal, { transform: [{ translateY: slideAnim }] }]}>
                     <View style={styles.modalContent}>
@@ -275,10 +195,10 @@ export default function BiometricToggle({ navigation }) {
                         </View>
 
                         <View style={styles.bottomSection}>
-                            <TouchableOpacity style={styles.cancelbutton} onPress={toggleFacialID}>
+                            <TouchableOpacity style={styles.cancelbutton} onPress={() => navigation.goBack()}>
                                 <Text style={styles.buttonText1}>Cancel</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.confirmbutton} onPress={handleFacialIDAuth}>
+                            <TouchableOpacity style={styles.confirmbutton} onPress={handleFingerprintAuth}>
                                 <Text style={styles.buttonText2}>Confirm</Text>
                             </TouchableOpacity>
                         </View>
@@ -286,12 +206,6 @@ export default function BiometricToggle({ navigation }) {
                     </View>
                 </Animated.View>
             </Modal>
-
-            <SecurityModal
-                visible={isModalVisible}
-                onClose={() => setIsModalVisible(false)}
-                onProceed={handleModalProceed}
-            />
         </SafeAreaView>
     );
 }
