@@ -55,10 +55,10 @@ export default function UserDetails({navigation, route}) {
         validationSchema={validationSchema}
         onSubmit={async (values) => {
           try {
-            await AsyncStorage.setItem('userDetails', JSON.stringify(values));
+            await AsyncStorage.setItem('loginDetails', JSON.stringify(values));
             navigation.navigate('SecurityIntro', {values});
           } catch (error) {
-            Alert.alert('Error', 'Failed to save user details.');
+            Alert.alert('Error', 'Failed to save user login details.');
           }
         }}
       >

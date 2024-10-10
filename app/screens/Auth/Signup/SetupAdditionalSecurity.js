@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Switch} from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Switch, Platform} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import signupApi from '../../../api/auth'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppContext } from '../../../context/AppContext';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 import BackButton from '../../../components/BackButton';
 import StyledButton from '../../../components/StyledButton';
 import Toast from 'react-native-toast-message';
@@ -19,23 +22,25 @@ export default function SetupAdditionalSecurity ({navigation}) {
     const [isConfirmPinModalVisible, setIsConfrimPinModalVisible] = useState(false);
     const [isPassphraseModalVisible, setIsPassphraseModalVisible] = useState(false);
     const [loading, setLoading] = useState(false);
+    const { userDetails, setUserDetails } = useContext(AppContext);
 
-    let userDetails = null;
+
+    let loginDetails = null;
 
     useEffect(() => {
       const fetchAndUpdateUserDetails = async () => {
         try {
-          const userDetailsString = await AsyncStorage.getItem('userDetails');
-          userDetails = JSON.parse(userDetailsString);
+          const userDetailsString = await AsyncStorage.getItem('loginDetails');
+          loginDetails = JSON.parse(userDetailsString);
           const updatedUserDetails = {
-            ...userDetails,
-            pin: userDetails.pin || "",
-            passphrase: userDetails.passphrase || "",
+            ...loginDetails,
+            pin: loginDetails.pin || "",
+            passphrase: loginDetails.passphrase || "",
           };
   
-          await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
+          await AsyncStorage.setItem('loginDetails', JSON.stringify(updatedUserDetails));
         } catch (error) {
-          console.error('Error updating user details:', error);
+          console.error('Error updating user login details:', error);
         }
       };
   
@@ -60,9 +65,9 @@ export default function SetupAdditionalSecurity ({navigation}) {
 
     const handlePinSubmit = async (pinCode) => {
       setLoading(true);
-      if (userDetails) {
-        userDetails.pin = pinCode;
-        await AsyncStorage.setItem('userDetails', JSON.stringify(userDetails));
+      if (loginDetails) {
+        loginDetails.pin = pinCode;
+        await AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
       }
 
         setIsPinModalVisible(false)
@@ -73,9 +78,9 @@ export default function SetupAdditionalSecurity ({navigation}) {
 
     const handleConfirmPin = async (confirmCode) => {
       setLoading(true);
-      if (userDetails.pin === confirmCode) {
-        userDetails.confirmPin = confirmCode;
-        await AsyncStorage.setItem('userDetails', JSON.stringify(userDetails));
+      if (loginDetails.pin === confirmCode) {
+        loginDetails.confirmPin = confirmCode;
+        await AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
     
         setIsConfrimPinModalVisible(false);
         setIsAnyAuthEnabled(true);
@@ -114,9 +119,9 @@ export default function SetupAdditionalSecurity ({navigation}) {
     };
 
   const handlePassphraseGenerated = async (generatedPassphrase) => {
-    if (userDetails) {
-      userDetails.passphrase = generatedPassphrase;
-      await AsyncStorage.setItem('userDetails', JSON.stringify(userDetails));
+    if (loginDetails) {
+      loginDetails.passphrase = generatedPassphrase;
+      await AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
     }
 
       setPassphrase(generatedPassphrase);
@@ -126,13 +131,22 @@ export default function SetupAdditionalSecurity ({navigation}) {
   };
   
   const handleProceed = async () => {
-      const { email, firstName, lastName, phoneNumber, facialId, fingerprint, displayName, pin, passphrase, confirmPin } = userDetails;
+      const { email, firstName, lastName, phoneNumber, facialId, fingerprint, displayName, pin, passphrase, confirmPin } = loginDetails;
 
-        const deviceInfo ={
-          deviceId: "12345",
-          deviceName: "Tecno",
-          deviceType: "Android"
+      let deviceId;
+
+      if (Platform.OS === 'android') {
+        deviceId = await Application.getAndroidId();
+      } else if (Platform.OS === 'ios') {
+        deviceId = await Application.getIosIdForVendorAsync();
       }
+  
+      const deviceInfo = {
+         deviceType: Device.osName,
+         deviceName: await Device.deviceName,
+         deviceId: deviceId,
+    }
+  
       setLoading(true);
       const response = await signupApi.signUp( email, firstName, lastName, phoneNumber, pin, passphrase, confirmPin, displayName, fingerprint, facialId,
         deviceInfo );
@@ -148,15 +162,17 @@ export default function SetupAdditionalSecurity ({navigation}) {
         type: 'success',
         text1: response.data.message,
       });
+      console.log(response.data.rider.rider)
       const token = response.data.rider.token
       const bioToken = response.data.rider.bioToken
       await AsyncStorage.setItem('userToken', token);
       await AsyncStorage.setItem('bioToken', bioToken);
+      setUserDetails(response.data.rider.rider);
       setLoading(false);
       navigation.navigate('ThankYou');
   };
   
-    const isAnyToggleEnabled = isCreatePin || isCreatePassphrase;
+  const isAnyToggleEnabled = isCreatePin || isCreatePassphrase;
 
   return (
     <SafeAreaView style={styles.container}>

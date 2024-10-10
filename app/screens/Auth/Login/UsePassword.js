@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import passwordApi from './../../../api/auth'
-import { StyleSheet, Text, View, StatusBar, ActivityIndicator, Keyboard, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, ActivityIndicator, Keyboard, TouchableOpacity, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppContext } from '../../../context/AppContext';
 import StyledButton from '../../../components/StyledButton';
@@ -10,6 +10,8 @@ import BackButton from '../../../components/BackButton';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Formik } from 'formik';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 import * as yup from 'yup';
 import zxcvbn from 'zxcvbn';
 
@@ -43,16 +45,24 @@ export default function UsePassword({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(null);
-  const { userDetails, updateUserDetails } = useContext(AppContext);
+  const { userDetails, setUserDetails } = useContext(AppContext);
 
   const handleSubmit = async (values, { resetForm }) => {
     setLoading(true);
     const { email, password } = values;
 
+    let deviceId;
+
+    if (Platform.OS === 'android') {
+      deviceId = await Application.getAndroidId();
+    } else if (Platform.OS === 'ios') {
+      deviceId = await Application.getIosIdForVendorAsync();
+    }
+
     const deviceInfo = {
-      deviceId: "12345",
-      deviceName: "Tecno",
-      deviceType: "Android"
+       deviceType: Device.osName,
+       deviceName: await Device.deviceName,
+       deviceId: deviceId,
   }
 
     const response = await passwordApi.loginWithPassword(email, password, deviceInfo);
@@ -70,12 +80,13 @@ export default function UsePassword({ navigation, route }) {
     });
 
     await AsyncStorage.setItem('userToken', response.data.token);
-    updateUserDetails(response.data.rider);
+    await AsyncStorage.setItem('bioToken', response.data.bioToken);
+    await AsyncStorage.setItem('email', email);
+    setUserDetails(response.data.rider);
       setLoading(false);
       resetForm();
      return navigation.navigate('WelcomeHome');
   }
-
 
   const handlePasswordChange = (password) => {
     const result = zxcvbn(password);

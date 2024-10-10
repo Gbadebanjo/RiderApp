@@ -143,6 +143,7 @@ export default function CreateAccount({ navigation }) {
               error={touched.email && errors.email}
               errorMessage={errors.email}
             />
+            {touched.email && errors.email && <Text style={styles.error}>{errors.email}</Text>}
 
             <InputField
               label="Password"
@@ -163,13 +164,13 @@ export default function CreateAccount({ navigation }) {
               errorMessage={errors.password}
               showPasswordToggle={true}
             />
-            {/* {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>} */}
+            {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>}
 
-            {passwordStrength && (
+            {/* {passwordStrength && (
             <Text style={styles.passwordStrength}>
               Password Strength: {passwordStrength.score}/4 - {passwordStrength.feedback.suggestions.join(' ')}
             </Text>
-          )}
+          )} */}
 
             <InputField
               label="Confirm Password"
@@ -186,6 +187,8 @@ export default function CreateAccount({ navigation }) {
               errorMessage={errors.confirm}
               showPasswordToggle={true}
             />
+            {touched.confirm && errors.confirm && <Text style={styles.error}>{errors.confirm}</Text>}
+
             <StyledButton
               title={
                 loading ? (
