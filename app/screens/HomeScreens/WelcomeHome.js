@@ -201,8 +201,8 @@ const styles = StyleSheet.create({
   },
   nameBox: {
     flex: 1,
-    marginLeft: 16,
-    gap: 7,
+    marginLeft: 10,
+    // gap: 7,
   },
   notification: {
     marginLeft: 20,

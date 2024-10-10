@@ -17,6 +17,11 @@ const biometricsLogin = (biometricToken, loginMethod) => authClient.post('biomet
 
 const fetchUserDetails = () => dashboardClient.get('');
 const updateUser = (values) => dashboardClient.put('update', values);
+const confirmPassword = (password) => dashboardClient.post('confirm', { password });
+const updatePin = (values) => dashboardClient.post('update-security/pin', values);
+const updatePassphrase = (value) => dashboardClient.post('update-security/passphrase', value);
+const updateFingerPrint = (value) => dashboardClient.post('update-security/fingerprint', value);
+const updateFacialId = (value) => dashboardClient.post('update-security/facialId', value);
 
 export default {
     requestOtp,
@@ -32,5 +37,10 @@ export default {
     setAuthToken,
     enableBiometrics,
     biometricsLogin,
-    updateUser
+    updateUser,
+    confirmPassword,
+    updatePin,
+    updatePassphrase,
+    updateFingerPrint,
+    updateFacialId
 }
