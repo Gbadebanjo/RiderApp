@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import otpApi from '../../../api/auth'
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,7 +19,7 @@ const validationSchema = yup.object().shape({
 const CELL_COUNT = 6;
 
 export default function ConfirmSignup({navigation, route}) {
-    const { email } = route.params;
+    const { email, password, confirm } = route.params;
     const [loading, setLoading] = useState(false);
     const [value, setValue] = useState('');
     const [errorMessage, setErrorMessage] = useState(''); 
@@ -28,6 +28,7 @@ export default function ConfirmSignup({navigation, route}) {
       value,
       setValue,
     });
+    const [countdown, setCountdown] = useState(180);
 
     const handleVerify = async (values, {resetForm}) => {
       setLoading(true);
@@ -52,16 +53,37 @@ export default function ConfirmSignup({navigation, route}) {
 
     const handleResend = async () => {
       setLoading(true);
-      const response = await otpApi.getOtp(email);
-
-      if (!response.ok) {
-        setLoading(false);
-        return alert(response.data.message);
-      }
+      const res = await otpApi.requestOtp(email, password, confirm);
+  
       setLoading(false);
-      // console.log(response.data.message);
-      return alert(response.data.message);
+      if (res.ok) {
+        setCountdown(180);
+        Toast.show({
+          type: 'success',
+          text2: res.data.message,
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text2: res.data.message,
+        });
+      }
     }
+
+    useEffect(() => {
+      if (countdown > 0) {
+        const timer = setInterval(() => {
+          setCountdown(prevCountdown => prevCountdown - 1);
+        }, 1000);
+        return () => clearInterval(timer);
+      }
+    }, [countdown]);
+  
+    const formatTime = (seconds) => {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    };
 
 
   return (
@@ -113,14 +135,14 @@ export default function ConfirmSignup({navigation, route}) {
       </Formik>
         
         <View style={styles.lowerparts}>
-            <Text style={styles.resendText}>I didn’t receive any code? 00:04</Text>
+        <Text style={styles.resendText}>I didn’t receive any code? {formatTime(countdown)}</Text>
 
             <View style={styles.buttonContainer}>
-               <TouchableOpacity>
-                    <Text style={styles.resendCode}>Resend code</Text>
-               </TouchableOpacity>
-               <TouchableOpacity>
-                    <Text style={styles.resendCode}>Send SMS</Text>
+              <TouchableOpacity disabled={countdown > 0} onPress={handleResend}>
+                <Text style={[styles.resendCode, countdown > 0 && styles.disabledText]}>Resend code</Text>
+              </TouchableOpacity>
+               <TouchableOpacity disabled>
+                    <Text style={styles.disabledText}>Send SMS</Text>
                </TouchableOpacity>
             </View>
         </View>
@@ -223,5 +245,8 @@ const styles = StyleSheet.create({
   linkText: {
     textDecorationLine: 'underline',
     color: '#0000EE',
+  },
+  disabledText: {
+    color: 'gray', 
   },
 });

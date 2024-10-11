@@ -4,6 +4,7 @@
     "slug": "RidersRydePRO",
     "version": "1.0.0",
     "scheme": "ridersrydepro",
+    "icon": "./app/assets/newRydeproLogo.png",
     "splash": {
       "image": "./app/assets/Logo Image.png",
       "resizeMode": "contain",

@@ -79,8 +79,6 @@ export default function UseFingerprint({navigation}) {
            deviceId: deviceId,
       }
     
-      console.log('Device info', deviceInfo);
-
         const response = await fingerprintApi.fingerprintLogin(email, fingerprintToken, deviceInfo);
         if (!response.ok) {
           setLoading(false);

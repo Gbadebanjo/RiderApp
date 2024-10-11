@@ -93,13 +93,12 @@ export default function CreateAccount({ navigation }) {
   
       setLoading(false);
       if (res.ok) {
-        console.log(res.data)
         Toast.show({
           type: 'success',
           text1: 'Account Created Successfully',
           text2: res.data.message,
         });
-        navigation.navigate('ConfirmSignup', { email: values.email });
+        navigation.navigate('ConfirmSignup', { email: values.email, password: values.password, confirm: values.confirm});
           resetForm();
       } else {
         Toast.show({

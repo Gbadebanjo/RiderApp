@@ -163,9 +163,10 @@ export default function SetupAdditionalSecurity ({navigation}) {
         type: 'success',
         text1: response.data.message,
       });
-      console.log(response.data.rider.rider)
       const token = response.data.rider.token
       const bioToken = response.data.rider.bioToken
+      console.log(bioToken)
+      console.log(token)
       await AsyncStorage.setItem('userToken', token);
       await AsyncStorage.setItem('bioToken', bioToken);
       setUserDetails(response.data.rider.rider);
