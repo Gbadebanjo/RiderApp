@@ -49,13 +49,13 @@ export default function Security({navigation}) {
                     </View>
                 </TouchableOpacity>
             </View>  
-            <View style={styles.devices}>
+            <TouchableOpacity style={styles.devices} onPress={() => navigation.navigate('DevicesList')}>
             <Entypo name="mobile" size={20} color='#767676' />
             <View style={{flexDirection: 'column', marginLeft: 20}}>
                 <Text style={{color: '#f7f7f7', fontSize: 14}}>Devices</Text>
                 <Text style={{color: '#f9f9f9', fontSize: 14}}>List of devices where you're logged in</Text>    
             </View>
-            </View>      
+            </TouchableOpacity>      
     </SafeAreaView>
     );
 }

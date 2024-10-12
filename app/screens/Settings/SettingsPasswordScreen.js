@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, Image } from 'react-native';
+import { TextInput, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import  passwordApi  from '../../api/auth';
 import { setAuthToken } from '../../api/client';
@@ -24,7 +25,7 @@ export default function SettingsPasswordScreen({ navigation, route }) {
     setAuthToken(token);
 
     try {
-      console.log('Password:', password);
+      // console.log('Password:', password);
       const response = await passwordApi.confirmPassword(password);
       if (!response.ok) {
         return Toast.show({
@@ -35,7 +36,7 @@ export default function SettingsPasswordScreen({ navigation, route }) {
       navigation.navigate(originScreen, { success: true , action: route.params?.action });
     }
     catch (error) {
-      console.error('An error occurred:', error);
+      // console.error('An error occurred:', error);
       Toast.show({
         type: 'error',
         text1: 'An error occurred. Please try again.',
@@ -56,6 +57,10 @@ export default function SettingsPasswordScreen({ navigation, route }) {
         returnKeyType='Submit' // Change the return key to 'Submit'
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backArrow}>
+        <Ionicons name="arrow-back" size={24} color='#8d8d8d' />
+        <Text style={{ color: '#8d8d8d' }}>Back</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -83,6 +88,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#8d8d8d',
     marginVertical: 30,
     marginHorizontal: 80,
+    paddingHorizontal: 50,
+    paddingVertical: 10,
     marginBottom: 20,
     borderRadius: 5,
     color: '#fff',
@@ -92,6 +99,15 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  backArrow: {
+    position: 'absolute',
+    bottom: 50,
+    left: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
   },
 });
 
