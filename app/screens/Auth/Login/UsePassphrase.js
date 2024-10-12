@@ -31,6 +31,13 @@ export default function UsePassphrase({navigation, route}) {
           });
         }
 
+        const getLocation= await AsyncStorage.getItem('userLocation');
+        const stringLocation = JSON.parse(getLocation);
+        const location = {
+          long: stringLocation.longitude,
+          lat: stringLocation.latitude,
+        }
+
         let deviceId;
 
         if (Platform.OS === 'android') {
@@ -45,7 +52,7 @@ export default function UsePassphrase({navigation, route}) {
            deviceId: deviceId,
       }
     
-        const response = await passphraseApi.loginWithPassPhrase(email, passPhrase, deviceInfo);
+        const response = await passphraseApi.loginWithPassPhrase(email, passPhrase, deviceInfo, location);
         Keyboard.dismiss();
         if (!response.ok) {
           setLoading(false);

@@ -65,6 +65,13 @@ export default function UseFaceid({navigation}) {
           text1: 'You have not setup FaceID Authentication on your account'
         });
       } 
+
+      const getLocation= await AsyncStorage.getItem('userLocation');
+      const stringLocation = JSON.parse(getLocation);
+      const location = {
+        long: stringLocation.longitude,
+        lat: stringLocation.latitude,
+      }
       
       let deviceId;
 
@@ -79,7 +86,7 @@ export default function UseFaceid({navigation}) {
          deviceName: await Device.deviceName,
          deviceId: deviceId,
     }
-      const response = await facialIDApi.loginWithPincode(email, faceidToken, deviceInfo);
+      const response = await facialIDApi.loginWithPincode(email, faceidToken, deviceInfo, location);
       if (!response.ok) {
         setLoading(false);
         const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';

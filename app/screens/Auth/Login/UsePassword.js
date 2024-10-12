@@ -51,6 +51,13 @@ export default function UsePassword({ navigation, route }) {
     setLoading(true);
     const { email, password } = values;
 
+    const getLocation= await AsyncStorage.getItem('userLocation');
+    const stringLocation = JSON.parse(getLocation);
+    const location = {
+      long: stringLocation.longitude,
+      lat: stringLocation.latitude,
+    }
+    
     let deviceId;
 
     if (Platform.OS === 'android') {
@@ -65,7 +72,7 @@ export default function UsePassword({ navigation, route }) {
        deviceId: deviceId,
   }
 
-    const response = await passwordApi.loginWithPassword(email, password, deviceInfo);
+    const response = await passwordApi.loginWithPassword(email, password, deviceInfo, location);
     if (!response.ok) {
       setLoading(false);
       const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';

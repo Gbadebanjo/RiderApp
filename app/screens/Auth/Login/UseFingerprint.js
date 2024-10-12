@@ -78,8 +78,16 @@ export default function UseFingerprint({navigation}) {
            deviceName: await Device.deviceName,
            deviceId: deviceId,
       }
+
+      const getLocation= await AsyncStorage.getItem('userLocation');
+      const stringLocation = JSON.parse(getLocation);
+      
+      const location = {
+        long: stringLocation.longitude,
+        lat: stringLocation.latitude,
+      }
     
-        const response = await fingerprintApi.fingerprintLogin(email, fingerprintToken, deviceInfo);
+        const response = await fingerprintApi.fingerprintLogin(email, fingerprintToken, deviceInfo, location);
         if (!response.ok) {
           setLoading(false);
           const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';

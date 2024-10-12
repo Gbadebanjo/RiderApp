@@ -47,6 +47,13 @@ export default function UsePincode({navigation}) {
           });
         }
 
+        const getLocation= await AsyncStorage.getItem('userLocation');
+        const stringLocation = JSON.parse(getLocation);
+        const location = {
+          long: stringLocation.longitude,
+          lat: stringLocation.latitude,
+        }
+
         let deviceId;
 
         if (Platform.OS === 'android') {
@@ -61,7 +68,7 @@ export default function UsePincode({navigation}) {
            deviceId: deviceId,
       }
     
-        const response = await api.loginWithPincode(email, pinCode, deviceInfo);
+        const response = await api.loginWithPincode(email, pinCode, deviceInfo, location);
         Keyboard.dismiss();
         if (!response.ok) {
           setLoading(false);

@@ -134,6 +134,13 @@ export default function SetupAdditionalSecurity ({navigation}) {
   const handleProceed = async () => {
       const { email, firstName, lastName, phoneNumber, facialId, fingerprint, displayName, pin, passphrase, confirmPin } = loginDetails;
 
+      const getLocation= await AsyncStorage.getItem('userLocation');
+      const stringLocation = JSON.parse(getLocation);
+      const location = {
+        long: stringLocation.longitude,
+        lat: stringLocation.latitude,
+      }
+      
       let deviceId;
 
       if (Platform.OS === 'android') {
@@ -150,7 +157,7 @@ export default function SetupAdditionalSecurity ({navigation}) {
   
       setLoading(true);
       const response = await signupApi.signUp( email, firstName, lastName, phoneNumber, pin, passphrase, confirmPin, displayName, fingerprint, facialId,
-        deviceInfo );
+        deviceInfo, location);
 
       if (!response.ok) {
         setLoading(false);
