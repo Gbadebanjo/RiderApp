@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Switch } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Switch, Platform} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import signupApi from '../../../api/auth'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppContext } from '../../../context/AppContext';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 import BackButton from '../../../components/BackButton';
 import StyledButton from '../../../components/StyledButton';
 import Toast from 'react-native-toast-message';
@@ -10,91 +13,94 @@ import CreatePinModal from '../../../components/CreatePinModal';
 import ConfirmPinModal from '../../../components/ConfirmPinModal';
 import CreatePassphraseModal from '../../../components/CreatePassphraseModal';
 
-export default function SetupAdditionalSecurity({ navigation }) {
-  const [isCreatePin, setIsCreatePin] = useState(false);
-  const [isCreatePassphrase, setIsCreatePassphrase] = useState(false);
-  const [isAnyAuthEnabled, setIsAnyAuthEnabled] = useState(false);
-  const [passphrase, setPassphrase] = useState('');
-  const [isPinModalVisible, setIsPinModalVisible] = useState(false);
-  const [isConfirmPinModalVisible, setIsConfrimPinModalVisible] = useState(false);
-  const [isPassphraseModalVisible, setIsPassphraseModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
+export default function SetupAdditionalSecurity ({navigation}) {
+    const [isCreatePin, setIsCreatePin] = useState(false);
+    const [isCreatePassphrase, setIsCreatePassphrase] = useState(false);
+    const [isAnyAuthEnabled, setIsAnyAuthEnabled] = useState(false);
+    const [passphrase, setPassphrase] = useState('');
+    const [isPinModalVisible, setIsPinModalVisible] = useState(false);
+    const [isConfirmPinModalVisible, setIsConfrimPinModalVisible] = useState(false);
+    const [isPassphraseModalVisible, setIsPassphraseModalVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const { userDetails, setUserDetails } = useContext(AppContext);
 
-  let userDetails = null;
 
-  useEffect(() => {
-    const fetchAndUpdateUserDetails = async () => {
-      try {
-        const userDetailsString = await AsyncStorage.getItem('userDetails');
-        userDetails = JSON.parse(userDetailsString);
-        const updatedUserDetails = {
-          ...userDetails,
-          pin: userDetails.pin || "",
-          passphrase: userDetails.passphrase || "",
-        };
+    let loginDetails = null;
 
-        await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
-      } catch (error) {
-        console.error('Error updating user details:', error);
+    useEffect(() => {
+      const fetchAndUpdateUserDetails = async () => {
+        try {
+          const userDetailsString = await AsyncStorage.getItem('loginDetails');
+          loginDetails = JSON.parse(userDetailsString);
+          const updatedUserDetails = {
+            ...loginDetails,
+            pin: loginDetails.pin || "",
+            passphrase: loginDetails.passphrase || "",
+          };
+  
+          await AsyncStorage.setItem('loginDetails', JSON.stringify(updatedUserDetails));
+        } catch (error) {
+          console.error('Error updating user login details:', error);
+        }
+      };
+  
+      fetchAndUpdateUserDetails();
+    });
+
+    const togglePin = (value) => {
+        setIsCreatePin(value);
+        if (value) {
+            setIsPinModalVisible(true);
+        } else {
+            setIsPinModalVisible(false);
+        }
+        setIsAnyAuthEnabled(value || isCreatePassphrase);
+    };
+
+    const handleCloseCreatePin = () => {
+        setIsPinModalVisible(false);
+        setIsCreatePin(false);
+        setIsAnyAuthEnabled(false);
+    };
+
+    const handlePinSubmit = async (pinCode) => {
+      setLoading(true);
+      if (loginDetails) {
+        loginDetails.pin = pinCode;
+        await AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
+
+        setIsPinModalVisible(false)
+        setIsCreatePin(true);
+        setIsConfrimPinModalVisible(true);
+        setLoading(false);
       }
     };
 
-    fetchAndUpdateUserDetails();
-  });
-
-  const togglePin = (value) => {
-    setIsCreatePin(value);
-    if (value) {
-      setIsPinModalVisible(true);
-    } else {
-      setIsPinModalVisible(false);
+    const handleConfirmPin = async (confirmCode) => {
+      setLoading(true);
+      if (loginDetails.pin === confirmCode) {
+        loginDetails.confirmPin = confirmCode;
+        await AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
+    
+        setIsConfrimPinModalVisible(false);
+        setIsAnyAuthEnabled(true);
+        setLoading(false);
+        return Toast.show({
+          type: 'success',
+          text1: 'Pin code created successfully',
+        });
+      } else {
+        setIsConfrimPinModalVisible(false);
+        setIsCreatePin(false);
+        setIsAnyAuthEnabled(false);
+        setLoading(false);
+        return Toast.show({
+          type: 'error',
+          text1: 'Pin codes do not match',
+        });
+      }
     }
-    setIsAnyAuthEnabled(value || isCreatePassphrase);
-  };
 
-  const handleCloseCreatePin = () => {
-    setIsPinModalVisible(false);
-    setIsCreatePin(false);
-    setIsAnyAuthEnabled(false);
-  };
-
-  const handlePinSubmit = async (pinCode) => {
-    setLoading(true);
-    if (userDetails) {
-      userDetails.pin = pinCode;
-      await AsyncStorage.setItem('userDetails', JSON.stringify(userDetails));
-    }
-
-    setIsPinModalVisible(false)
-    setIsCreatePin(true);
-    setIsConfrimPinModalVisible(true);
-    setLoading(false);
-  }
-
-  const handleConfirmPin = async (confirmCode) => {
-    setLoading(true);
-    if (userDetails.pin === confirmCode) {
-      userDetails.confirmPin = confirmCode;
-      await AsyncStorage.setItem('userDetails', JSON.stringify(userDetails));
-
-      setIsConfrimPinModalVisible(false);
-      setIsAnyAuthEnabled(true);
-      setLoading(false);
-      return Toast.show({
-        type: 'success',
-        text1: 'Pin code created successfully',
-      });
-    } else {
-      setIsConfrimPinModalVisible(false);
-      setIsCreatePin(false);
-      setIsAnyAuthEnabled(false);
-      setLoading(false);
-      return Toast.show({
-        type: 'error',
-        text1: 'Pin codes do not match',
-      });
-    }
-  }
 
   const togglePasspharse = (value) => {
     setIsCreatePassphrase(value);
@@ -114,9 +120,9 @@ export default function SetupAdditionalSecurity({ navigation }) {
   };
 
   const handlePassphraseGenerated = async (generatedPassphrase) => {
-    if (userDetails) {
-      userDetails.passphrase = generatedPassphrase;
-      await AsyncStorage.setItem('userDetails', JSON.stringify(userDetails));
+    if (loginDetails) {
+      loginDetails.passphrase = generatedPassphrase;
+      await AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
     }
 
     setPassphrase(generatedPassphrase);
@@ -124,18 +130,34 @@ export default function SetupAdditionalSecurity({ navigation }) {
     setIsAnyAuthEnabled(true);
     setIsPassphraseModalVisible(false);
   };
-
+  
   const handleProceed = async () => {
-    const { email, firstName, lastName, phoneNumber, facialId, fingerprint, displayName, pin, passphrase, confirmPin } = userDetails;
+      const { email, firstName, lastName, phoneNumber, facialId, fingerprint, displayName, pin, passphrase, confirmPin } = loginDetails;
 
-    const deviceInfo = {
-      deviceId: "12345",
-      deviceName: "Tecno",
-      deviceType: "Android"
+      const getLocation= await AsyncStorage.getItem('userLocation');
+      const stringLocation = JSON.parse(getLocation);
+      const location = {
+        long: stringLocation.longitude,
+        lat: stringLocation.latitude,
+      }
+      
+      let deviceId;
+
+      if (Platform.OS === 'android') {
+        deviceId = await Application.getAndroidId();
+      } else if (Platform.OS === 'ios') {
+        deviceId = await Application.getIosIdForVendorAsync();
+      }
+  
+      const deviceInfo = {
+         deviceType: Device.osName,
+         deviceName: await Device.deviceName,
+         deviceId: deviceId,
     }
-    setLoading(true);
-    const response = await signupApi.signUp(email, firstName, lastName, phoneNumber, pin, passphrase, confirmPin, displayName, fingerprint, facialId,
-      deviceInfo);
+  
+      setLoading(true);
+      const response = await signupApi.signUp( email, firstName, lastName, phoneNumber, pin, passphrase, confirmPin, displayName, fingerprint, facialId,
+        deviceInfo, location);
 
       if (!response.ok) {
         setLoading(false);
@@ -150,8 +172,11 @@ export default function SetupAdditionalSecurity({ navigation }) {
       });
       const token = response.data.rider.token
       const bioToken = response.data.rider.bioToken
+      console.log(bioToken)
+      console.log(token)
       await AsyncStorage.setItem('userToken', token);
       await AsyncStorage.setItem('bioToken', bioToken);
+      setUserDetails(response.data.rider.rider);
       setLoading(false);
       navigation.navigate('ThankYou');
   };

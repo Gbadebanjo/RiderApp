@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import api from '../../../api/auth';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -165,13 +165,13 @@ export default function Login({navigation}) {
               >
                 <TouchableOpacity style={styles.modalOverlay} onPress={toggleModal}>
                   <View style={styles.modalContent}>
-                    <TouchableOpacity onPress={()=> alert('Contact us')}>
+                    <TouchableOpacity>
                       <Text style={styles.modalItem}>Contact Us</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=> alert('Contact us')}>
+                    <TouchableOpacity>
                       <Text style={styles.modalItem}>Faq</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=> navigation.navigate('EnterEmail')}>
+                    <TouchableOpacity>
                       <Text style={styles.modalItem}>Account Recovery</Text>
                     </TouchableOpacity>
                   </View>

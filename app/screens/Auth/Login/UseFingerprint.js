@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, Platform } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react';
 import fingerprintApi from '../../../api/auth';
-// import DeviceInfo from 'react-native-device-info';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppContext } from '../../../context/AppContext';
@@ -49,9 +50,13 @@ export default function UseFingerprint({navigation}) {
     
       if (success) {      
         const fingerprintToken = await AsyncStorage.getItem('bioToken');
-        const details = await AsyncStorage.getItem('userDetails');
-        const email = details.email;
-        console.log("fingerprintToken", fingerprintToken);
+        const email = await AsyncStorage.getItem('email');
+        if (!email) {
+          return Toast.show({
+            type: 'error', 
+            text1: 'Please login with your email and password to acesss your account',
+          });
+        }
 
         if (!fingerprintToken) {
           return Toast.show({
@@ -60,13 +65,29 @@ export default function UseFingerprint({navigation}) {
           });
         } 
         
-        const deviceInfo = {
-            deviceId: "12345",
-            deviceName: "Tecno",
-            deviceType: "Android"
-        }
+        let deviceId;
 
-        const response = await fingerprintApi.fingerprintLogin(email, fingerprintToken, deviceInfo);
+        if (Platform.OS === 'android') {
+          deviceId = await Application.getAndroidId();
+        } else if (Platform.OS === 'ios') {
+          deviceId = await Application.getIosIdForVendorAsync();
+        }
+    
+        const deviceInfo = {
+           deviceType: Device.osName,
+           deviceName: await Device.deviceName,
+           deviceId: deviceId,
+      }
+
+      const getLocation= await AsyncStorage.getItem('userLocation');
+      const stringLocation = JSON.parse(getLocation);
+      
+      const location = {
+        long: stringLocation.longitude,
+        lat: stringLocation.latitude,
+      }
+    
+        const response = await fingerprintApi.fingerprintLogin(email, fingerprintToken, deviceInfo, location);
         if (!response.ok) {
           setLoading(false);
           const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
@@ -80,6 +101,7 @@ export default function UseFingerprint({navigation}) {
             text1: response.data.message,
         });
         await AsyncStorage.setItem('userToken', response.data.token);
+        await AsyncStorage.setItem('bioToken', response.data.bioToken);
         setUserDetails(response.data.rider);
     
         setLoading(false);

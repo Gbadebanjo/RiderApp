@@ -24,7 +24,8 @@ export default function FirstScreen({ navigation }) {
 
     if (address.length > 0) {
       const { country, region: state, city, postalCode: zipCode } = address[0];
-      const locationDetails = { country, state, city, zipCode };
+      const { latitude, longitude } = location.coords;
+      const locationDetails = { country, state, city, zipCode, latitude, longitude };
       console.log('Location Details:', locationDetails);
       await AsyncStorage.setItem('userLocation', JSON.stringify(locationDetails));
     }

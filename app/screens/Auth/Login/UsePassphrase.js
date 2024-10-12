@@ -1,8 +1,10 @@
 import React, {useState, useContext} from 'react';
 import passphraseApi from '../../../api/auth'
-import { StyleSheet, Text, View, StatusBar, TextInput, Keyboard} from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TextInput, Keyboard, Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 import { AppContext } from '../../../context/AppContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../../components/BackButton';
@@ -20,18 +22,37 @@ export default function UsePassphrase({navigation, route}) {
       const handleContinue = async (values, { resetForm }) => {
         setLoading(true);
 
-        const userDetailsString = await AsyncStorage.getItem('userDetails');
-        details = JSON.parse(userDetailsString);
         const { passPhrase } = values;
-        const email = details.email;
-
-        const deviceInfo = {
-            deviceId: "12345",
-            deviceName: "Tecno",
-            deviceType: "Android"
+        const email = await AsyncStorage.getItem('email');
+        if (!email) {
+          return Toast.show({
+            type: 'error', 
+            text1: 'Please login with your email and password to acesss your account',
+          });
         }
 
-        const response = await passphraseApi.loginWithPassPhrase(email, passPhrase, deviceInfo);
+        const getLocation= await AsyncStorage.getItem('userLocation');
+        const stringLocation = JSON.parse(getLocation);
+        const location = {
+          long: stringLocation.longitude,
+          lat: stringLocation.latitude,
+        }
+
+        let deviceId;
+
+        if (Platform.OS === 'android') {
+          deviceId = await Application.getAndroidId();
+        } else if (Platform.OS === 'ios') {
+          deviceId = await Application.getIosIdForVendorAsync();
+        }
+    
+        const deviceInfo = {
+           deviceType: Device.osName,
+           deviceName: await Device.deviceName,
+           deviceId: deviceId,
+      }
+    
+        const response = await passphraseApi.loginWithPassPhrase(email, passPhrase, deviceInfo, location);
         Keyboard.dismiss();
         if (!response.ok) {
           setLoading(false);
@@ -46,6 +67,7 @@ export default function UsePassphrase({navigation, route}) {
             text1: response.data.message,
         });
         await AsyncStorage.setItem('userToken', response.data.token);
+        await AsyncStorage.setItem('bioToken', response.data.bioToken);
         setUserDetails(response.data.rider);
     
           setLoading(false);

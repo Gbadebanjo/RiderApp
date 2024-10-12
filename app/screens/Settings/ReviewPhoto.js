@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, Image, SafeAreaView, Alert } from 'react-native';
 import Centerlogo from '../../components/centerlogo';
 import StyledButton from '../../components/StyledButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { dashboardClient, setAuthToken } from '../../api/client';
 import { AppContext } from '../../context/AppContext';
 import Toast from 'react-native-toast-message';
@@ -10,10 +11,10 @@ export default function ReviewPhoto({ navigation, route }) {
   const { photo, facing } = route.params;
   const { userDetails, setUserDetails } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhiZjg3YzM1LTU0OTEtNDdhNC05ZGNjLWIxY2IyNDU5NDI5MSIsInJvbGUiOiJyaWRlciIsImlhdCI6MTcyODQxMDY4NiwiZXhwIjoxNzI4NDI4Njg2fQ.oW9rGOegew0EJumPPjvNHbw31H8B6Pk6pHnsNhBUos4'
 
   const handleSubmit = async () => {
     setLoading(true);
+    const token = await AsyncStorage.getItem('userToken');
     setAuthToken(token);
     const formData = new FormData();
     formData.append('image', {
@@ -28,6 +29,7 @@ export default function ReviewPhoto({ navigation, route }) {
         },
       });
       if (!response.ok) {
+        console.log(response.data);
         setLoading(false);
         return Toast.show({
           type: 'error',

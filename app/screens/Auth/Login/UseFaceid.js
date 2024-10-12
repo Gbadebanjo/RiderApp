@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View, StatusBar, Alert } from 'react-native'
+import { StyleSheet, Text, View, StatusBar, Platform } from 'react-native'
 import React , { useEffect, useState, useContext} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import facialIDApi from '../../../api/auth'
 import * as LocalAuthentication from 'expo-local-authentication';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 import { AppContext } from '../../../context/AppContext';
 import SocialLogo from '../../../components/SocialLogo';
 import StyledButton from '../../../components/StyledButton';
@@ -48,26 +50,43 @@ export default function UseFaceid({navigation}) {
     });
   
     if (success) {   
-      const faceiDToken = await AsyncStorage.getItem('bioToken');
-      const details = await AsyncStorage.getItem('userDetails');
-      const email = details.email;
-      console.log(faceiDToken);
-      console.log(email)
+      const faceidToken = await AsyncStorage.getItem('bioToken');
+      const email = await AsyncStorage.getItem('email');
+      if (!email) {
+        return Toast.show({
+          type: 'error', 
+          text1: 'Please login with your email and password to acesss your account',
+        });
+      }
 
-      if (!faceiDToken) {
+      if (!faceidToken) {
         return Toast.show({
           type: 'error', 
           text1: 'You have not setup FaceID Authentication on your account'
         });
       } 
-      
-      const deviceInfo = {
-          deviceId: "12345",
-          deviceName: "Tecno",
-          deviceType: "Android"
-      }
 
-      const response = await facialIDApi.loginWithPincode(email, faceidToken, deviceInfo);
+      const getLocation= await AsyncStorage.getItem('userLocation');
+      const stringLocation = JSON.parse(getLocation);
+      const location = {
+        long: stringLocation.longitude,
+        lat: stringLocation.latitude,
+      }
+      
+      let deviceId;
+
+      if (Platform.OS === 'android') {
+        deviceId = await Application.getAndroidId();
+      } else if (Platform.OS === 'ios') {
+        deviceId = await Application.getIosIdForVendorAsync();
+      }
+  
+      const deviceInfo = {
+         deviceType: Device.osName,
+         deviceName: await Device.deviceName,
+         deviceId: deviceId,
+    }
+      const response = await facialIDApi.loginWithPincode(email, faceidToken, deviceInfo, location);
       if (!response.ok) {
         setLoading(false);
         const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
@@ -81,6 +100,7 @@ export default function UseFaceid({navigation}) {
           text1: response.data.message,
       });
       await AsyncStorage.setItem('userToken', response.data.token);
+      await AsyncStorage.setItem('bioToken', response.data.bioToken);
       setUserDetails(response.data.rider);
   
       setLoading(false);

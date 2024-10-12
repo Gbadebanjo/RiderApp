@@ -23,16 +23,16 @@ export default function SetupSecurity({navigation}) {
     useEffect(() => {
       const fetchAndUpdateUserDetails = async () => {
         try {
-          const userDetailsString = await AsyncStorage.getItem('userDetails');
-          const userDetails = JSON.parse(userDetailsString);
+          const userDetailsString = await AsyncStorage.getItem('loginDetails');
+          const loginDetails = JSON.parse(userDetailsString);
   
           const updatedUserDetails = {
-            ...userDetails,
+            ...loginDetails,
             fingerprint: isFingerprintEnabled,
             facialId: isFacialIDEnabled,
           };
   
-          await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
+          await AsyncStorage.setItem('loginDetails', JSON.stringify(updatedUserDetails));
         } catch (error) {
           console.error('Error updating user details:', error);
         }
@@ -99,18 +99,18 @@ export default function SetupSecurity({navigation}) {
           fallbackLabel: 'Enter Password',
         });
 
-        const userDetailsString = await AsyncStorage.getItem('userDetails');
-        const userDetails = JSON.parse(userDetailsString);
+        const userDetailsString = await AsyncStorage.getItem('loginDetails');
+        const loginDetails = JSON.parse(userDetailsString);
     
         if (success) {
           setIsFingerprintEnabled(true);
           setIsAnyAuthEnabled(true)
           const updatedUserDetails = {
-            ...userDetails,
+            ...loginDetails,
             fingerprint: true,
           };
 
-          await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
+          await AsyncStorage.setItem('loginDetails', JSON.stringify(updatedUserDetails));
 
           return Toast.show({
             type: 'success',
@@ -122,11 +122,11 @@ export default function SetupSecurity({navigation}) {
             setIsAnyAuthEnabled(false)
           }
           const updatedUserDetails = {
-            ...userDetails,
+            ...loginDetails,
             fingerprint: false,
           };
 
-          await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
+          await AsyncStorage.setItem('loginDetails', JSON.stringify(updatedUserDetails));
 
           return Toast.show({
             type: 'error',
@@ -143,8 +143,8 @@ export default function SetupSecurity({navigation}) {
       }, []);
 
       const handleFacialIDAuth = async () => {
-        const userDetailsString = await AsyncStorage.getItem('userDetails');
-        const userDetails = JSON.parse(userDetailsString);
+        const userDetailsString = await AsyncStorage.getItem('loginDetails');
+        const loginDetails = JSON.parse(userDetailsString);
 
         const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
         if (!savedBiometrics) {
@@ -171,11 +171,11 @@ export default function SetupSecurity({navigation}) {
       
         if (success) {     
           const updatedUserDetails = {
-            ...userDetails,
+            ...loginDetails,
             facialId: true,
           };
 
-          await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));    
+          await AsyncStorage.setItem('loginDetails', JSON.stringify(updatedUserDetails));    
   
           Toast.show({
             type: 'success',
@@ -184,11 +184,11 @@ export default function SetupSecurity({navigation}) {
           return 
         } else {
           const updatedUserDetails = {
-            ...userDetails,
+            ...loginDetails,
             facialId: false,
           };
 
-          await AsyncStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
+          await AsyncStorage.setItem('loginDetails', JSON.stringify(updatedUserDetails));
           return Toast.show({
             type: 'error',
             text1: 'FacialID cannot be registered',

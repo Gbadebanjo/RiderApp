@@ -2,13 +2,13 @@ import { dashboardClient, authClient, setAuthToken } from './client';
 
 const requestOtp = (email, password, confirm) => authClient.post('request-otp', { email, password, confirm });
 const verifyOtp = (email, otp) => authClient.post('verify-otp', { email, otp });
-const signUp = (email, firstName, lastName, phone, pin, passphrase, confirmPin, displayName, fingerprint, facialId, deviceInfo) => 
-    authClient.post('register?type=Individual', { email, firstName, lastName, phone, pin, passphrase, confirmPin, displayName, fingerprint, facialId, deviceInfo });
-const loginWithPassword = (email, password, deviceInfo) => authClient.post('login?loginType=password', { email, password, deviceInfo });
-const loginWithPassPhrase = (email, passphrase, deviceInfo) => authClient.post('login?loginType=passphrase', { email, passphrase, deviceInfo });
-const loginWithPincode = (email, pin, deviceInfo) => authClient.post('login?loginType=pin', { email, pin, deviceInfo });
-const fingerprintLogin = (email, bioToken, deviceInfo) => authClient.post('login?loginType=fingerprint', { email, bioToken, deviceInfo });
-const faceIDLogin = (email, bioToken, deviceInfo) => authClient.post('login?loginType=faceid', { email, bioToken, deviceInfo });
+const signUp = (email, firstName, lastName, phone, pin, passphrase, confirmPin, displayName, fingerprint, facialId, deviceInfo, location) => 
+    authClient.post('register?type=Individual', { email, firstName, lastName, phone, pin, passphrase, confirmPin, displayName, fingerprint, facialId, deviceInfo, location });
+const loginWithPassword = (email, password, deviceInfo, location) => authClient.post('login?loginType=password', { email, password, deviceInfo, location });
+const loginWithPassPhrase = (email, passphrase, deviceInfo, location) => authClient.post('login?loginType=passphrase', { email, passphrase, deviceInfo });
+const loginWithPincode = (email, pin, deviceInfo, location) => authClient.post('login?loginType=pin', { email, pin, deviceInfo, location });
+const fingerprintLogin = (email, bioToken, deviceInfo, location) => authClient.post('login?loginType=fingerprint', { email, bioToken, deviceInfo, location });
+const faceIDLogin = (email, bioToken, deviceInfo, location) => authClient.post('login?loginType=faceid', { email, bioToken, deviceInfo, location });
 
 
 const additionalInfo = (accountDetails) => authClient.put('additional-info', accountDetails);

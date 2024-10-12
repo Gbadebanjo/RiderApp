@@ -133,7 +133,7 @@ export default function Passphrase ({ isVisible, navigation, onClose, onPassphra
                                         borderRadius={30}
                                         TextColor="#fff"
                                         fontSize={16} />
-                                </View>
+                            </View>
                     </>
                     ) : (
                         <View style={styles.generateContainer}>
@@ -152,7 +152,7 @@ export default function Passphrase ({ isVisible, navigation, onClose, onPassphra
                             />
 
                             <StyledButton
-                                title="Confrim and Copy"
+                                title="Confirm and Copy"
                                 onPress={handelCreateNConfirm}
                                 width="100%"
                                 height={49}

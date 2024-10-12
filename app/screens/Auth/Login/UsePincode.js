@@ -1,6 +1,13 @@
-import React, {useRef, useState} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import React, {useRef, useState, useContext} from 'react';
+import api from '../../../api/auth'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRoute } from '@react-navigation/native';
+import { AppContext } from '../../../context/AppContext';
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -16,6 +23,8 @@ const validationSchema = yup.object().shape({
 const CELL_COUNT = 6;
 
 export default function UsePincode({navigation}) {
+    const [loading, setLoading] = useState(false);
+    const { userDetails, setUserDetails } = useContext(AppContext);
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -25,10 +34,61 @@ export default function UsePincode({navigation}) {
     const [errorMessage, setErrorMessage] = useState('');
     const formRef = useRef();
 
-    const handleContinue = (values) => {
+
+    const handleContinue = async (values) => {
+        setLoading(true);
+
         const { pinCode } = values;
-        navigation.navigate('ConfirmPincode', { pinCode });
-      };
+        const email = await AsyncStorage.getItem('email');
+        if (!email) {
+          return Toast.show({
+            type: 'error', 
+            text1: 'Please login with your email and password to acesss your account',
+          });
+        }
+
+        const getLocation= await AsyncStorage.getItem('userLocation');
+        const stringLocation = JSON.parse(getLocation);
+        const location = {
+          long: stringLocation.longitude,
+          lat: stringLocation.latitude,
+        }
+
+        let deviceId;
+
+        if (Platform.OS === 'android') {
+          deviceId = await Application.getAndroidId();
+        } else if (Platform.OS === 'ios') {
+          deviceId = await Application.getIosIdForVendorAsync();
+        }
+    
+        const deviceInfo = {
+           deviceType: Device.osName,
+           deviceName: await Device.deviceName,
+           deviceId: deviceId,
+      }
+    
+        const response = await api.loginWithPincode(email, pinCode, deviceInfo, location);
+        Keyboard.dismiss();
+        if (!response.ok) {
+          setLoading(false);
+          const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+          return Toast.show({
+            type: 'error', 
+            text1: errorMessage,
+          });
+        }
+        Toast.show({
+            type: 'success',
+            text1: response.data.message,
+        });
+        await AsyncStorage.setItem('userToken', response.data.token);
+        await AsyncStorage.setItem('bioToken', response.data.bioToken);
+        setUserDetails(response.data.rider);
+    
+          setLoading(false);
+         return navigation.navigate('WelcomeHome');
+      }
 
     return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
