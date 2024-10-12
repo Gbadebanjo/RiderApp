@@ -44,7 +44,7 @@ export default function BiometricToggle({ navigation, route }) {
           const action = route.params?.action;
           // console.log('Action:', action);
           if (action === 'enable') {
-            setModalActive(true);
+            handleFingerprintAuth();
           } else {
             SendDetails()
           }
@@ -112,15 +112,6 @@ export default function BiometricToggle({ navigation, route }) {
     }, []);
 
     const handleFingerprintAuth = async () => {
-        // const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
-        // if (!savedBiometrics) {
-        //     Toast.show({
-        //         type: 'error',
-        //         text1: 'Biometric record not found',
-        //         text2: 'Please ensure you have set up biometrics in your device settings',
-        //     });
-        // }
-
         const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
         if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
             return Toast.show({
@@ -177,35 +168,6 @@ export default function BiometricToggle({ navigation, route }) {
                     />
                 </View>
             </View>
-
-            
-            <Modal
-                transparent={true}
-                visible={modalActive}
-                animationType="none"
-                onRequestClose={handleModalClose}
-            >
-                <Animated.View style={[styles.modal, { transform: [{ translateY: slideAnim }] }]}>
-                    <View style={styles.modalContent}>
-                        <View style={styles.topSection}>
-                            <Text style={styles.modalTitle}>Verify It's You</Text>
-                            <Text style={styles.modalText}>You can use face authentication to secure your accounts</Text>
-                            <Image source={face} style={styles.logo} />
-                            <Text style={styles.modalCenterText}>Tap Confirm to complete</Text>
-                        </View>
-
-                        <View style={styles.bottomSection}>
-                            <TouchableOpacity style={styles.cancelbutton} onPress={() => navigation.goBack()}>
-                                <Text style={styles.buttonText1}>Cancel</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.confirmbutton} onPress={handleFingerprintAuth}>
-                                <Text style={styles.buttonText2}>Confirm</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                    </View>
-                </Animated.View>
-            </Modal>
         </SafeAreaView>
     );
 }
