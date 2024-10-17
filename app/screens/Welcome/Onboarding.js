@@ -1,120 +1,134 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, ImageBackground, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react';
+import '../../components/StyledButton';
+import StyledButton from '../../components/StyledButton';
+import {FontAwesome } from '@expo/vector-icons';
 
 export default function Onboarding({ navigation }) {
-
-  const offers = [
-    { image: require('../../assets/ridersDiscount.png'), texthead: 'Exclusive Rider Discount', textbody: 'Sign up as an Early Access Rider and get 15% off your first 30 rides!', textbody2: 'Limited-time offer.' },
-    { image: require('../../assets/cardriving.png'), texthead: 'Refer Friends, Earn More!', textbody: 'Sign up as an Early Access Rider and get 15% off your first 30 rides!', textbody2: 'Limited-time offer.' },
-    { image: require('../../assets/coins.png'), texthead: 'Cash Back and Miles Points', textbody: 'Cash Back on Every Ride! Earn cashback and miles points with RYDEPRO.' },
-  ];
-
-  const [currentOffer, setCurrentOffer] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentOffer((currentOffer + 1) % offers.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [currentOffer]);
+  const [loading, setLoading] = useState(false);
 
   return (
+  <ImageBackground source={require('../../assets/About us.jpeg')} style={styles.background}>
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <TouchableOpacity onPress={() => navigation.navigate('FirstScreen')} style={styles.skipContainer}>
-      <Text style={styles.skip} >Skip</Text>
-      </TouchableOpacity>
-      <View style={styles.Img}>
-        <Image source={offers[currentOffer].image} style={styles.picture} />
-      </View>
-      <View style={styles.texts}>
-      <Text style={styles.texthead}>{offers[currentOffer].texthead}</Text>
-      <Text style={styles.textbody}>{offers[currentOffer].textbody}</Text>
-      <Text style={styles.textbody}>{offers[currentOffer].textbody2}</Text>
-      </View>
-      <View style={styles.circlesContainer}>
-        {offers.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.circle,
-              currentOffer === index && styles.activeCircle,
-            ]}
-          />
-        ))}
-      </View>
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+        
+        <View  style={styles.mainTexts}>
+          <View style={styles.texts1}>
+            <Text style={styles.texthead}>Earn Cash Back and Miles Points</Text>
+            <Text style={styles.textbody}>
+                <Text style={styles.spantext}>Cash Back: </Text>
+              Earn a percentage of your fare back
+            </Text>
+            <Text style={styles.textbody}>
+                <Text style={styles.spantext}>Miles Points: </Text>
+              Get points for every mile traveled.
+            </Text>
+          </View>
+          <View style={styles.texts1}>
+            <Text style={styles.texthead}>Exclusive Rider Discount</Text>
+            <Text style={styles.textbody}>Sign up as an Early Access Rider. Get 15% off your first 30 rides! Limited-time offer.</Text>
+          </View>
+          <View style={styles.texts}>
+            <Text style={styles.texthead}>Refer Friends, Earn More!</Text>
+            <Text style={styles.textbody}>For each friend you refer, you’ll get an extra 15% off your next 20 rides</Text>
+          </View>
+        </View>
+        
+        <StyledButton
+          title={
+          loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              'Get Started'
+            )
+           }
+          onPress={() => navigation.navigate('FirstScreen')}
+          width="85%"
+          height={55}
+          paddingVertical={10}
+          marginTop={40}
+          backgroundColor="#D0D0D0"
+          borderWidth={0}
+          TextColor="#0E0E0E"
+          borderRadius={10}
+        />
+
+        <View style={styles.bottomContainer}>
+          <Text style={styles.unitedText}>United States of America</Text>
+          <Text style={styles.bottomtexts}>Veteran Owned Business</Text>
+          <Text>
+            <FontAwesome name="registered" size={14} color="#1f1f1f" />
+            <Text style={styles.bottomtexts}> 2024 RYDEPRO, </Text>
+            <Text style={styles.bottomtexts}>All Rights Reserved</Text>
+          </Text>
+        </View>
     </SafeAreaView>
+  </ImageBackground>
   )
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     width: '100%',
-    paddingTop: 10,
   },
-  skipContainer: {
-    width: '92%',
-    textAlign: 'right',
-    textDecorationLine: 'underline',
-    color: '#0F0D7E',
-  },
-  skip: {
-    textAlign: 'right',
-    textDecorationLine: 'underline',
-    color: '#0F0D7E',
-  },
-  Img: {
-    paddingHorizontal: 15,
-    marginTop: 70,
-    width: '100%',
+  texts1: {
     alignItems: 'center',
+    width: '100%',
+    marginBottom: '10%',
   },
-  picture: {
-    width: '95%',
-    resizeMode: 'contain',
+  mainTexts: {
+    marginTop: '30%',
+    alignItems: 'center',
+    width: '100%',
   },
   texts: {
-    marginTop: 100,
+    alignItems: 'center',
     width: '100%',
   },
   texthead: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'start',
-    paddingHorizontal: 15,
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: '2%',
+    textAlign: 'center',
+    color: '#FCFCFC',
   },
   textbody: {
+    fontWeight: '400',
+    width: '80%',
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#DADADA',
+    marginBottom: '2%',
+  },
+  spantext: {
+    fontWeight: '700',
     width: '90%',
     fontSize: 16,
-    textAlign: 'start',
-    paddingHorizontal: 15,
-    color: '#0A0954',
+    textAlign: 'center',
+    color: '#DADADA',
   },
-  circlesContainer: {
-    flexDirection: 'row',
-    marginTop: 70,
-    marginBottom: 20,
-  },
-  circle: {
-    width: 15,
-    height: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    margin: 2,
-  },
-  activeCircle: {
-    backgroundColor: '#000',
-  },
-  button: {
+  bottomContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    marginBottom: 36,
+    marginBottom: '2%',
+  },
+  bottomtexts: {
+    color: '#1f1f1f',
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: '2%'
+  },
+  unitedText: {
+    fontSize: 14,
+    color: '#1f1f1f',
+    textAlign: 'center',
+    marginBottom: '2%'
   },
 })

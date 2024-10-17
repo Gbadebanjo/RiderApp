@@ -6,6 +6,8 @@ import { AppProvider } from './app/context/AppContext';
 
 import Splash from './app/screens/Welcome/Splash';
 import Onboarding from './app/screens/Welcome/Onboarding';
+import UserLocation from './app/screens/Welcome/UserLocation';
+import Language from './app/screens/Welcome/Language';
 import FirstScreen from './app/screens/Auth/Signup/FirstScreen';
 import CreateAccount from './app/screens/Auth/Signup/CreateAccount';
 import Login from './app/screens/Auth/Login/Login';
@@ -64,6 +66,8 @@ export default function App() {
         <Stack.Navigator initialRouteName='Splash'>
           <Stack.Screen name='Splash' component={Splash} options={{ headerShown: false }} />
           <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }} />
+          <Stack.Screen name='UserLocation' component={UserLocation} options={{ headerShown: false }} />
+          <Stack.Screen name='Language' component={Language} options={{ headerShown: false }} />
           <Stack.Screen name='FirstScreen' component={FirstScreen} options={{ headerShown: false }} />
           <Stack.Screen name='WelcomeGuest' component={WelcomeGuest} options={{ headerShown: false }} />
           <Stack.Screen name='WelcomeHome' component={NavButtons} options={{ headerShown: false }} />

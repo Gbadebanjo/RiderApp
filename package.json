@@ -21,7 +21,7 @@
     "apisauce": "^3.0.1",
     "cli": "^1.0.1",
     "country-state-city": "^3.2.1",
-    "expo": "~51.0.37",
+    "expo": "~51.0.38",
     "expo-application": "^5.9.1",
     "expo-asset": "^10.0.10",
     "expo-auth-session": "^5.5.2",
