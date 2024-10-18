@@ -66,11 +66,12 @@ const getStyles = (width, marginLeft, paddingLeft, flex, isFocused, fullBorder, 
       marginBottom: 10
     },
     label: {
-      color: '#212121',
-      fontSize: 16,
+      color: '#0E0E0E',
+      fontSize: 14,
       marginTop: 15,
+      fontWeight: '500',
       alignSelf: 'flex-start',
-      marginLeft: marginLeft,
+      // marginLeft: marginLeft,
     },
     input: {
       borderColor: isFocused ? '#212121' : '#CCCCCC',

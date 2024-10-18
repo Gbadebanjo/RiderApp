@@ -7,6 +7,8 @@ import { Formik } from 'formik';
 import Toast from 'react-native-toast-message';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import * as yup from 'yup';
+import {MaterialIcons } from '@expo/vector-icons';
+
 import BackButton from '../../../components/BackButton';
 
 const validationSchema = yup.object().shape({
@@ -90,62 +92,70 @@ export default function ConfirmSignup({navigation, route}) {
   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <BackButton style={styles.Icon} />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <Centerlogo/>
-      <Text style={styles.title}>Confirm 6-digit code</Text>
-      <Text style={styles.subtitle}>Please check your email inbox or spam</Text>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.content}>
+            <View>
+              <Centerlogo logoWidth='100%' logoHeight={80} />
+              <Text style={styles.title}>Enter 6-digit code</Text>
+              <Text style={styles.subtitle}>Please check your email inbox or spam</Text>
 
-      {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
+              <Formik
+                initialValues={{ code: '' }}
+                validationSchema={validationSchema}
+                onSubmit={handleVerify}
+              >
+                {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                  <>
+                    <CodeField
+                        ref={ref}
+                        {...props}
+                        value={values.code}
+                        onChangeText={handleChange('code')}
+                        cellCount={CELL_COUNT}
+                        rootStyle={styles.codeFieldRoot}
+                        keyboardType='name-phone-pad'
+                        textContentType="oneTimeCode"
+                        onSubmitEditing={handleSubmit} 
+                        renderCell={({ index, symbol, isFocused }) => (
+                        <Text
+                            key={index}
+                            style={[
+                                styles.cell,
+                                isFocused && styles.focusCell,
+                                symbol && styles.completeCell,
+                            ]}
+                            onLayout={getCellOnLayoutHandler(index)}
+                        >
+                            {symbol || (isFocused ? <Cursor /> : null)}
+                        </Text>
+                        )}
+                        />
+                    {touched.code && errors.code && <Text style={styles.errorText}>{errors.code}</Text>}
 
-      <Formik
-        initialValues={{ code: '' }}
-        validationSchema={validationSchema}
-        onSubmit={handleVerify}
-      >
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-          <>
-             <CodeField
-                ref={ref}
-                {...props}
-                value={values.code}
-                onChangeText={handleChange('code')}
-                cellCount={CELL_COUNT}
-                rootStyle={styles.codeFieldRoot}
-                keyboardType='name-phone-pad'
-                textContentType="oneTimeCode"
-                onSubmitEditing={handleSubmit} 
-                renderCell={({ index, symbol, isFocused }) => (
-                <Text
-                    key={index}
-                    style={[
-                        styles.cell,
-                        isFocused && styles.focusCell,
-                        symbol && styles.completeCell,
-                    ]}
-                    onLayout={getCellOnLayoutHandler(index)}
-                >
-                    {symbol || (isFocused ? <Cursor /> : null)}
-                </Text>
+                      {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
+                  </>
                 )}
-                />
-            {touched.code && errors.code && <Text style={styles.errorText}>{errors.code}</Text>}
-          </>
-        )}
-      </Formik>
-        
-        <View style={styles.lowerparts}>
-        <Text style={styles.resendText}>I didn’t receive any code? {formatTime(countdown)}</Text>
+              </Formik>
+          
+              <View style={styles.lowerparts}>
+                <Text style={styles.resendText}>I didn’t receive any code? {formatTime(countdown)}</Text>
 
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity disabled={countdown > 0} onPress={handleResend}>
-                <Text style={[styles.resendCode, countdown > 0 && styles.disabledText]}>Resend code</Text>
-              </TouchableOpacity>
-               <TouchableOpacity disabled>
-                    <Text style={styles.disabledText}>Send SMS</Text>
-               </TouchableOpacity>
+                  <View style={styles.buttonContainer}>
+                    <TouchableOpacity disabled={countdown > 0} onPress={handleResend}>
+                      <Text style={[styles.resendCode, countdown > 0 && styles.disabledText]}>Resend code</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity disabled>
+                          <Text style={styles.disabledText}>Send SMS</Text>
+                    </TouchableOpacity>
+                  </View>
+              </View>            
             </View>
-        </View>
+            
+              <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginBottom: 16, }} onPress={()=> navigation.goBack()}>
+                <MaterialIcons name="keyboard-backspace" size={24} color='#CCCCCC'/>
+                <Text style={{color:'#CCCCCC'}}> Back</Text>
+              </TouchableOpacity>
+          </View> 
       </ScrollView>
     </SafeAreaView>
   </TouchableWithoutFeedback>
@@ -154,18 +164,21 @@ export default function ConfirmSignup({navigation, route}) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 30,
+    flex: 1,
     paddingTop: 15,
   },
   Icon: {
     alignSelf: 'flex-start',
   },
   scrollContainer: {
+    flexGrow: 1,
+  },
+  content: {
     flex: 1,
-    width: '100%',
-    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    paddingHorizontal: 30,
   },
   logo: {
     width: '20%',
@@ -198,7 +211,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   lowerparts:{
-    marginTop: 80,
+    marginTop: 50,
     },
   buttonContainer:{
     flexDirection: 'row',

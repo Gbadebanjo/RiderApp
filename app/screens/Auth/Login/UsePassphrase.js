@@ -80,9 +80,8 @@ export default function UsePassphrase({navigation, route}) {
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
             <View style={styles.titleContainer}> 
                 <BackButton style={styles.Icon} />
-                <Text style={styles.title}>Sign In using passphrase</Text>
             </View>  
-            <Text style={styles.subTitle}>Kindly provide phrase accordingly to login</Text>  
+            <Text style={styles.subTitle}>Enter your Passphrase to sign in</Text>  
             <View style={styles.mainContent}>
 
              {errorMessage ? <Text style={styles.bigerrorText}>{errorMessage}</Text> : null}
@@ -121,17 +120,18 @@ export default function UsePassphrase({navigation, route}) {
                             </View>
 
                             <StyledButton
-                                title="Login"
+                                title="Next"
                                 onPress={handleSubmit}
-                                width="100%"
+                                width="40%"
                                 height={53}
                                 loading={loading}
                                 paddingVertical={10}
                                 marginTop={50}
+                                marginLeft="60%"
                                 backgroundColor={buttonColor}
                                 borderWidth={0}
                                 TextColor="#fff"
-                                borderRadius={20}
+                                borderRadius={10}
                                 disabled={buttonDisabled}
                             />  
                         </>
@@ -156,15 +156,10 @@ const styles = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 30,
-    },
-    title: {
-        fontSize: 23,
-        fontWeight: '700',
-        marginLeft: '5%'
     },
     subTitle: {
-        fontSize: 16,
+        fontSize: 20,
+        marginTop: '15%',
         fontWeight: '400',
         width: '100%',
         textAlign: 'center',
@@ -184,7 +179,7 @@ const styles = StyleSheet.create({
     },
     generateContainer: {
         flex: 1,
-        marginTop: '15%',
+        marginTop: '5%',
         justifyContent: 'space-between',
         marginBottom: '10%'
     },
@@ -206,6 +201,7 @@ const styles = StyleSheet.create({
         width: '100%',
         borderRadius: 8,
         padding: 20,
+        textAlign: 'center',
     },
     characterCount:{
         textAlign: 'right',

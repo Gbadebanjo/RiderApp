@@ -17,7 +17,7 @@ function StyledButton({
   TextColor,
   iconName,
   paddingVertical,
-  fontSize = 18,
+  fontSize = 16,
   loading, 
   borderRadius= 10,
   appleLogo,
@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   text: {
-    // flex: 1,
     textAlign: 'center',
   },
   icon: {

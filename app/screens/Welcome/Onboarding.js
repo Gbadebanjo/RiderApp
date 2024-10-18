@@ -11,7 +11,7 @@ export default function Onboarding({ navigation }) {
   return (
   <ImageBackground source={require('../../assets/About us.jpeg')} style={styles.background}>
     <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+        <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
         
         <View  style={styles.mainTexts}>
           <View style={styles.texts1}>
