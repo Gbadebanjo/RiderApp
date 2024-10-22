@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator, StatusBar, Modal, Easing, TouchableWithoutFeedback, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AntDesign, Feather, Entypo, FontAwesome6, FontAwesome5, MaterialCommunityIcons, Octicons, Ionicons } from '@expo/vector-icons';
+import { AntDesign, Feather, Entypo, FontAwesome6, FontAwesome5, MaterialIcons, MaterialCommunityIcons, SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState, useRef, useContext } from 'react';
@@ -37,72 +37,104 @@ export default function SettingHome({ navigation }) {
         }
     };
 
-
     return (
-        <LinearGradient
-            colors={['#212121', '#212121', '#ffffff', '#ffffff']} // Black to White
-            locations={[0, 0.55, 0.55, 1]} // Define the color stops
-            start={{ x: 0, y: 0 }} // Gradient from top to bottom
-            end={{ x: 0, y: 1 }}
-            style={styles.linearGradient}
-        >
-            <SafeAreaView style={styles.safeArea}>
-                <StatusBar barStyle="light-content" backgroundColor='#212121' translucent={false} />
-                <View>
-                    <View style={styles.head}>
-                        <TouchableOpacity style={styles.notification}>
-                            <AntDesign name="search1" size={17} color="#fff" style={styles.notification} />
-                        </TouchableOpacity>
+        <SafeAreaView style={styles.safeArea}>
+            <StatusBar barStyle="light-content" backgroundColor='#212121' translucent={false} />
+            <View style={styles.profileContainer}>
+                <TouchableOpacity style={styles.image}>
+                    <Image source={userDetails?.profileImg ? { uri: userDetails?.profileImg } : require('../../assets/ProfileTemplate.png')} style={styles.img} />
+                </TouchableOpacity>
+                {/* <Text style={{ color: '#fff', fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 20 }}>{userDetails?.firstName} {userDetails?.lastName}</Text> */}
+                <Text style={{ color: '#0E0E0E', fontSize: 20, fontWeight: '700', textAlign: 'center', margin: 5 }}>John Doe</Text>
+                {/* <Text style={{ color: '#464646', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>User ID: {userDetails?.accountId}</Text> */}
+                <Text style={{ color: '#555555', fontSize: 14, textAlign: 'center' }}>
+                    User ID: <Text style={{ color: '#0E0E0E', fontWeight: '700' }}>234567654345</Text>
+                </Text>
+                <Text style={{ color: '#555555', fontSize: 14, textAlign: 'center', margin: 7 }}>Ratings</Text>
+                <TouchableOpacity style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('Account')}>
+                    <Text style={styles.viewBox}>View Profile</Text>
+                </TouchableOpacity>
+            </View>
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView} >
+                <Text style={styles.textHead}>User</Text>
+                <TouchableOpacity style={styles.eachItem}>
+                    <View style={styles.iconWrapper}>
+                        <Ionicons name="timer-outline" size={22} color="#8a8a8a" />
                     </View>
-                    <TouchableOpacity style={styles.image}>
-                        <Image source={userDetails?.profileImg ? { uri: userDetails?.profileImg } : require('../../assets/ProfileTemplate.png')} style={styles.img} />
-                        {/* <Ionicons name="camera-outline" size={26} color="#fff" style={styles.icon} /> */}
-                    </TouchableOpacity>
-                    <Text style={{ color: '#fff', fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 20 }}>{userDetails?.firstName} {userDetails?.lastName}</Text>
-                    <Text style={{ color: '#fff', fontSize: 14, textAlign: 'center', marginTop: 2 }}>{userDetails?.accountType}</Text>
-                    <Text style={{ color: '#464646', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>User ID: {userDetails?.accountId}</Text>
-                </View>
-                <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView} >
-                    <Text style={styles.textHead}>Accounts</Text>
-                    <TouchableOpacity style={styles.eachItem}
-                        onPress={() => navigation.navigate('Account')}>
-                        <Text style={styles.eachItemText}>Manage Profile</Text>
-                        <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.eachItem}
-                        onPress={() => navigation.navigate('Security')}>
-                        <Text style={styles.eachItemText}>Manage Security Options</Text>
-                        <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.eachItem}
-                        onPress={() => navigation.navigate('HelpAndSupport')}>
-                        <Text style={styles.eachItemText}>Help and Support</Text>
-                        <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
-                    </TouchableOpacity>
-                    <Text style={styles.textHead}>Promotions and Rewards</Text>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('RewardProgram')}
-                        style={styles.eachItem}
-                    >
-                        <Text style={styles.eachItemText}>Rewards Program</Text>
-                        <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('InviteReferral')}
-                        style={styles.eachItem}
-                    >
-                        <Text style={styles.eachItemText}>Invite Referral</Text>
-                        <Ionicons name="chevron-forward" size={20} color="#000" style={styles.forwardIcon} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={toggleModal}
-                        style={styles.eachItem}
-                    >
-                        <Text style={{ color: '#c92014', fontSize: 16, padding: 10 }}>Logout</Text>
-                        <Ionicons name="chevron-forward" size={20} color="#c92014" style={styles.forwardIcon} />
-                    </TouchableOpacity>
-                </ScrollView>
-            </SafeAreaView>
+                    <Text style={styles.disabledEachItemText}>Ride History</Text>
+                    <MaterialCommunityIcons name="lock-outline" size={20} color="#8a8a8a" />
+                </TouchableOpacity>
+                <Text style={styles.textHead}>Promotions</Text>
+                <TouchableOpacity style={styles.eachItem} onPress={() => navigation.navigate('RewardProgram')}>
+                    <View style={styles.iconWrapper}>
+                        <SimpleLineIcons name="badge" size={22} color="#8a8a8a" />
+                    </View>
+                    <Text style={styles.disabledEachItemText} >Rewards and Miles Points</Text>
+                    <MaterialCommunityIcons name="lock-outline" size={20} color="#8a8a8a" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.eachItem} onPress={() => navigation.navigate('InviteReferral')}>
+                    <View style={styles.iconWrapper}>
+                        <AntDesign name="adduser" size={22} color="#000" />
+                    </View>
+                    <Text style={styles.eachItemText}>Referral Program</Text>
+                    <Ionicons name="chevron-forward" size={20} color="#8a8a8a" style={styles.forwardIcon} />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.eachItem} onPress={() => navigation.navigate('RewardProgram')}>
+                    <View style={styles.iconWrapper}>
+                        <AntDesign name="creditcard" size={22} color="#8a8a8a" />
+                    </View>
+                    <Text style={styles.disabledEachItemText} >Payment Methods</Text>
+                    <MaterialCommunityIcons name="lock-outline" size={20} color="#8a8a8a" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.eachItem}>
+                    <View style={styles.iconWrapper}>
+                        <AntDesign name="gift" size={22} color="#000" />
+                    </View>
+                    <Text style={styles.eachItemText}>Promotions and offers</Text>
+                    <Ionicons name="chevron-forward" size={20} color="#8a8a8a" />
+                </TouchableOpacity>
+                <Text style={styles.textHead}>Settings</Text>
+                <TouchableOpacity style={styles.eachItem} onPress={() => navigation.navigate('Security')}>
+                    <View style={styles.iconWrapper}>
+                        <AntDesign name="setting" size={22} color="#000" />
+                    </View>
+                    <Text style={styles.eachItemText}>Security Options</Text>
+                    <Ionicons name="chevron-forward" size={20} color="#8a8a8a" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.eachItem}
+                    onPress={() => navigation.navigate('HelpAndSupport')}>
+                    <View style={styles.iconWrapper}>
+                        <AntDesign name="customerservice" size={22} color="#000" />
+                    </View>
+                    <Text style={styles.eachItemText}>Support and Help</Text>
+                    <Ionicons name="chevron-forward" size={20} color="#8a8a8a" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.eachItem}
+                    onPress={() => navigation.navigate('HelpAndSupport')}>
+                    <View style={styles.iconWrapper}>
+                        <Ionicons name="briefcase-outline" size={22} color="#000" />
+                    </View>
+                    <Text style={styles.eachItemText}>Legal</Text>
+                    <Ionicons name="chevron-forward" size={20} color="#8a8a8a" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.eachItem}
+                    onPress={() => navigation.navigate('HelpAndSupport')}>
+                    <View style={styles.iconWrapper}>
+                        <MaterialIcons name="language" size={22} color="#000" />
+                    </View>
+                    <Text style={styles.eachItemText}>Language</Text>
+                    <Ionicons name="chevron-forward" size={20} color="#8a8a8a" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={toggleModal}
+                    style={styles.eachItem}
+                >
+                    <View style={styles.iconWrapper}>
+                        <Ionicons name="log-in-outline" size={22} color="#c92014" />
+                    </View>
+                    <Text style={{ color: '#c92014', fontSize: 16, padding: 10 }}>Logout</Text>
+                </TouchableOpacity>
+            </ScrollView>
 
             <Modal
                 animationType="slide"
@@ -128,31 +160,45 @@ export default function SettingHome({ navigation }) {
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
-        </LinearGradient>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    linearGradient: {
-        flex: 1,
-    },
     safeArea: {
         flex: 1,
+
+        backgroundColor: '#f7f7f7',
+    },
+    profileContainer: {
+        marginTop: 30,
+        marginBottom: 15,
+        justifyContent: 'center',
+        alignContent: 'center',
     },
     scrollView: {
-        backgroundColor: '#fff',
-        flexGrow: 1,
-
-    },
-    notification: {
-        backgroundColor: '#464646',
-        padding: 5,
-        borderRadius: 20,
+        flex: 1,
     },
     image: {
-        width: 120,
-        height: 120,
         alignSelf: 'center',
+        borderRadius: 60,
+    },
+    viewBox: {
+        color: '#212121',
+        fontSize: 16,
+        fontWeight: '700',
+        paddingVertical: 8,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: '#d0d0d0',
+    },
+    img: {
+        width: 110,
+        height: 110,
+        borderRadius: 60,
+        objectFit: 'cover',
+
     },
     head: {
         flexDirection: 'row',
@@ -161,41 +207,46 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         marginTop: 10,
     },
-    img: {
-        width: 120,
-        height: 120,
-        borderRadius: 75,
-    },
     icon: {
         position: 'absolute',
         bottom: 0,
         right: 0,
         padding: 5,
     },
+    iconWrapper: {
+        backgroundColor: '#f5f5f5',
+        padding: 10,
+        borderRadius: 20,
+    },
     textHead: {
-        color: '#000',
-        fontSize: 22,
-        fontWeight: '700',
+        color: '#8a8a8a',
+        fontSize: 16,
+        fontWeight: '500',
         marginLeft: 20,
         marginTop: 20,
     },
     eachItem: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#f5f7fa',
+        backgroundColor: '#fff',
         marginHorizontal: 20,
         marginVertical: 10,
-        paddingVertical: 15,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
         borderRadius: 10,
     },
     eachItemText: {
         color: '#212121',
-        fontSize: 16,
+        fontSize: 17,
         padding: 10,
+        flex: 1,
+        fontWeight: '500'
     },
-    forwardIcon: {
-        marginRight: 10,
+    disabledEachItemText: {
+        color: '#8a8a8a',
+        fontSize: 17,
+        padding: 10,
+        flex: 1,
     },
     rewards: {
         flexDirection: 'row',

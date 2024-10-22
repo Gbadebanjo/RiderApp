@@ -67,9 +67,9 @@ const Account = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.namContainer}>
-            <Text style={styles.name}>{userDetails.firstName} {userDetails.lastName}</Text>
-            <Text style={styles.account}>{userDetails.accountType}</Text>
-            <Text style={styles.id}>User ID: {userDetails.accountId}</Text>
+            <Text style={styles.name}>{userDetails?.firstName} {userDetails?.lastName}</Text>
+            <Text style={styles.account}>{userDetails?.accountType}</Text>
+            <Text style={styles.id}>User ID: {userDetails?.accountId}</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -78,7 +78,7 @@ const Account = ({ navigation, route }) => {
         >
           <View style={styles.namedetails}>
             <Text style={styles.namehead}>Name</Text>
-            <Text style={styles.nametext}>{userDetails.firstName} {userDetails.lastName}</Text>
+            <Text style={styles.nametext}>{userDetails?.firstName} {userDetails?.lastName}</Text>
           </View>
           <Ionicons
             name={showName ? 'chevron-up' : 'chevron-down'}
@@ -91,7 +91,7 @@ const Account = ({ navigation, route }) => {
             <View style={styles.detailscontainer}>
               <View style={styles.namedetails}>
                 <Text style={styles.namehead}>First Name</Text>
-                <Text style={styles.nametext}>{userDetails.firstName}</Text>
+                <Text style={styles.nametext}>{userDetails?.firstName}</Text>
               </View>
             </View>
             <View style={styles.detailscontainer}>
