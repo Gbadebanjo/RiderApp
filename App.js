@@ -20,8 +20,9 @@ import UsePincode from './app/screens/Auth/Login/UsePincode';
 import WelcomeGuest from './app/screens/Auth/Signup/WelcomeGuest';
 import ConfirmSignup from './app/screens/Auth/Signup/ConfirmSignup';
 import SetPassword from './app/screens/Auth/Signup/SetPassword';
-import UserDetails from './app/screens/Profile/UserDetails';
-import SecurityIntro from './app/screens/Auth/Signup/SecurityIntro';
+import UserDetails from './app/screens/Registration/UserDetails';
+import SettingHome from './app/screens/Settings/SettingHome';
+import SecurityIntro from './app/screens/Registration/SecurityIntro';
 import SetupSecurity from './app/screens/Auth/Signup/SetupSecurity';
 import SetupAdditionalSecurity from './app/screens/Auth/Signup/SetupAdditionalSecurity';
 import Security from './app/screens/Settings/Security';    // In use
@@ -53,7 +54,7 @@ import PinSettings from './app/screens/Settings/PinSettings'; // In use
 import PinPasswordScreen from './app/screens/Settings/PinPasswordScreen'; // In use
 import CreatePinScreen from './app/screens/Settings/CreatePinScreen'; // In use
 import ConfirmPinScreen from './app/screens/Settings/ConfirmPinScreen'; // In use
-
+import DevicesList from './app/screens/Settings/DevicesList'; // In use
 
 import NavButtons from './app/components/NavButtons';  // In use
 
@@ -83,6 +84,7 @@ export default function App() {
           <Stack.Screen name='SetPassword' component={SetPassword} options={{ headerShown: false }} />
           <Stack.Screen name='MenuLanding' component={NavButtons} options={{ headerShown: false }} />
           <Stack.Screen name='UserDetails' component={UserDetails} options={{ headerShown: false }} />
+          <Stack.Screen name='SettingHome' component={SettingHome} options={{ headerShown: false }} />
           <Stack.Screen name='SecurityIntro' component={SecurityIntro} options={{ headerShown: false }} />
           <Stack.Screen name='SetupSecurity' component={SetupSecurity} options={{ headerShown: false }} />
           <Stack.Screen name='SetupAdditionalSecurity' component={SetupAdditionalSecurity} options={{ headerShown: false }} />
@@ -116,6 +118,8 @@ export default function App() {
           <Stack.Screen name='PinPasswordScreen' component={PinPasswordScreen} options={{ headerShown: false }} />
           <Stack.Screen name='CreatePinScreen' component={CreatePinScreen} options={{ headerShown: false }} />
           <Stack.Screen name='ConfirmPinScreen' component={ConfirmPinScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='DevicesList' component={DevicesList} options={{ headerShown: false }} />
+
         </Stack.Navigator>
         <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
       </NavigationContainer>

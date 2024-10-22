@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect} from 'react';
+import React, { useRef, useState, useEffect, useContext} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,6 +10,7 @@ import PhoneInput from 'react-native-phone-number-input';
 import * as yup from 'yup';
 import BackButton from '../../components/BackButton';
 import ISO6391 from 'iso-639-1';
+import { AppContext } from '../../context/AppContext';
 
 const validationSchema = yup.object().shape({
     accountType: yup.string().required('Account Type is required'),
@@ -39,6 +40,8 @@ export default  function UserDetails({navigation, route}) {
     const [selectedLanguage, setSelectedLanguage] = useState('');
     const [languages, setLanguages] = useState([]);
     const [locationDetails, setLocationDetails] = useState({});
+  const { userDetails, setUserDetails } = useContext(AppContext);
+  
 
   useEffect(() => {
     const fetchLanguages = () => {
@@ -89,9 +92,9 @@ export default  function UserDetails({navigation, route}) {
         validationSchema={validationSchema}
         onSubmit={async (values) => {
           try {
+            setUserDetails(values)
             await AsyncStorage.setItem('loginDetails', JSON.stringify(values));
-            Alert.alert('Success', 'User login details saved successfully.');
-            navigation.navigate('SecurityIntro', {values});
+            navigation.navigate('SettingHome');
           } catch (error) {
             Alert.alert('Error', 'Failed to save user login details.');
           }
