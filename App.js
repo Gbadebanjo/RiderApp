@@ -20,7 +20,7 @@ import UsePincode from './app/screens/Auth/Login/UsePincode';
 import WelcomeGuest from './app/screens/Auth/Signup/WelcomeGuest';
 import ConfirmSignup from './app/screens/Auth/Signup/ConfirmSignup';
 import SetPassword from './app/screens/Auth/Signup/SetPassword';
-import UserDetails from './app/screens/Auth/Signup/UserDetails';
+import UserDetails from './app/screens/Profile/UserDetails';
 import SecurityIntro from './app/screens/Auth/Signup/SecurityIntro';
 import SetupSecurity from './app/screens/Auth/Signup/SetupSecurity';
 import SetupAdditionalSecurity from './app/screens/Auth/Signup/SetupAdditionalSecurity';

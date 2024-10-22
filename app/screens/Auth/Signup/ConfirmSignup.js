@@ -34,20 +34,20 @@ export default function ConfirmSignup({navigation, route}) {
 
     const handleVerify = async (values, {resetForm}) => {
       setLoading(true);
-      const response = await otpApi.verifyOtp(email, values.code);
-      Keyboard.dismiss();
-      if (!response.ok) {
-        setLoading(false);
-        return Toast.show({
-          type: 'error', 
-          text1: response.data.message,
-        });
-      }
-      Toast.show({
-        type: 'success',
-        text1: response.data.message,
-      });
-      resetForm();
+      // const response = await otpApi.verifyOtp(email, values.code);
+      // Keyboard.dismiss();
+      // if (!response.ok) {
+      //   setLoading(false);
+      //   return Toast.show({
+      //     type: 'error', 
+      //     text1: response.data.message,
+      //   });
+      // }
+      // Toast.show({
+      //   type: 'success',
+      //   text1: response.data.message,
+      // });
+      // resetForm();
       return navigation.navigate('UserDetails', { 
         email: email,
       });

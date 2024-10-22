@@ -19,7 +19,8 @@ const InputField = ({
   flex = 0,
   fullBorder = false,
   borderRadius = 0,
-  paddingVertical = 5
+  paddingVertical = 4,
+  backgroundColor,
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -27,20 +28,20 @@ const InputField = ({
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-  const styles = getStyles(width, marginLeft, paddingLeft, flex, isFocused, fullBorder, borderRadius, paddingVertical, marginTop);
+  const styles = getStyles(width, marginLeft, paddingLeft, flex, isFocused, fullBorder, borderRadius, paddingVertical, marginTop,  backgroundColor,);
 
   return (
     <View style={styles.inputContainer}>
       <Text style={styles.label}>{label}</Text>
       <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%'}}>
       <TextInput
-        style={[styles.input, error && styles.error, error && styles.errorTextColor]}
+        style={[styles.input, error && styles.error, error && styles.errorTextColor, backgroundColor && { backgroundColor }]}
         placeholder={placeholder}
         textContentType={textContentType}
         returnKeyType={returnKeyType}
         secureTextEntry={textContentType === 'password' && !isPasswordVisible}
         onChangeText={onChangeText}
-        placeholderTextColor="#d2d2d4"
+        placeholderTextColor="#8A8A8A"
         value={value}
         width={width}
         onFocus={() => setIsFocused(true)}
@@ -57,7 +58,7 @@ const InputField = ({
   );
 };
 
-const getStyles = (width, marginLeft, paddingLeft, flex, isFocused, fullBorder, borderRadius, paddingVertical, marginTop ) =>
+const getStyles = (width, marginLeft, paddingLeft, flex, isFocused, fullBorder, backgroundColor,borderRadius, paddingVertical, marginTop ) =>
   StyleSheet.create({
     inputContainer: {
       flex: flex,
@@ -74,15 +75,18 @@ const getStyles = (width, marginLeft, paddingLeft, flex, isFocused, fullBorder, 
       // marginLeft: marginLeft,
     },
     input: {
-      borderColor: isFocused ? '#212121' : '#CCCCCC',
+      borderColor: isFocused ? '#8A8A8A' : '#CCCCCC',
       borderBottomWidth: 1,
       borderWidth: fullBorder ? 1 : 0,
       borderRadius: fullBorder ? borderRadius : 0,
+      // borderBottomLeftRadius: 10,
       marginTop: marginTop,
       fontSize: 14,
       paddingVertical: paddingVertical,
       marginLeft: marginLeft,
       paddingLeft: paddingLeft,
+      backgroundColor: backgroundColor || 'transparent', 
+      color: '#8A8A8A',
     },
     error : {
       borderColor: 'red',
