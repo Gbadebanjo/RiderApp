@@ -25,8 +25,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   textIcon: {
-    marginTop: 4,
-    fontSize: 11,
+    marginTop: 10,
+    fontSize: 14,
     textAlign: 'center',
+    color: '#0E0E0E',
+    fontWeight: '700'
   },
 });

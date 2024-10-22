@@ -1,14 +1,17 @@
 import React, { useState, useContext } from 'react';
 import passwordApi from './../../../api/auth'
-import { StyleSheet, Text, View, StatusBar, ActivityIndicator, Keyboard, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, StatusBar, ActivityIndicator, Keyboard, TouchableOpacity, Platform, Modal, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppContext } from '../../../context/AppContext';
 import StyledButton from '../../../components/StyledButton';
 import InputField from '../../../components/InputField';
 import Centerlogo from '../../../components/centerlogo';
-import BackButton from '../../../components/BackButton';
+import Separator from '../../../components/OrSeparator';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Entypo } from '@expo/vector-icons';
+import AppleLogo from '../../../assets/AppleLogo.png';
+import GoogleLogo from '../../../assets/GoogleIcon.png';
 import { Formik } from 'formik';
 import * as Device from 'expo-device';
 import * as Application from 'expo-application';
@@ -46,6 +49,11 @@ export default function UsePassword({ navigation, route }) {
   const [error, setError] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(null);
   const { userDetails, setUserDetails } = useContext(AppContext);
+  const [modalVisible, setModalVisible] = useState(false);
+
+    const toggleModal = () => {
+        setModalVisible(!modalVisible);
+  };
 
   const handleSubmit = async (values, { resetForm }) => {
     setLoading(true);
@@ -103,14 +111,38 @@ export default function UsePassword({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+       <ScrollView contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
       <View style={styles.maincontent}>
         <View style={styles.topcontent}>
-          <BackButton style={styles.Icon} />
-          <Centerlogo style={styles.logo}/>
+          <Centerlogo logoWidth='100%' logoHeight={80} />
+                      <TouchableOpacity onPress={toggleModal} style={styles.dotsButton}>
+              <Entypo name="dots-three-horizontal" size={24} color="black" />
+            </TouchableOpacity>      
+
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={toggleModal}
+                animationType="fade"
+              >
+                <TouchableOpacity style={styles.modalOverlay} onPress={toggleModal}>
+                  <View style={styles.modalContent}>
+                    <TouchableOpacity>
+                      <Text style={styles.modalItem}>Contact Us</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                      <Text style={styles.modalItem}>Faq</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                      <Text style={styles.modalItem}>Account Recovery</Text>
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              </Modal>
         </View>
 
-      <Text style={styles.title}>Welcome!</Text>
-      <Text style={styles.subtitle}>Sign In</Text>
+      <Text style={styles.title}>Hi, Welcome back!</Text>
+      <Text style={styles.subtitle}>Please sign in to continue</Text>
 
       <Formik
         initialValues={{ email: '', password: ''  }}
@@ -120,7 +152,7 @@ export default function UsePassword({ navigation, route }) {
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
           <>
             <InputField
-              label="Email"
+              label="Email Address"
               placeholder=""
               keyboardType="email-address"
               autoCapitalize="none"
@@ -156,29 +188,6 @@ export default function UsePassword({ navigation, route }) {
             />
             {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>}
 
-            {/* {passwordStrength && (
-            <Text style={styles.passwordStrength}>
-              Password Strength: {passwordStrength.score}/4 - {passwordStrength.feedback.suggestions.join(' ')}
-            </Text>
-          )} */}
-
-            <InputField
-              label="Confirm Password"
-              placeholder=""
-              keyboardType="password"
-              autoCapitalize="none"
-              textContentType="password"
-              returnKeyType="next"
-              width="100%"
-              onChangeText={handleChange('confirmPassword')}
-              onBlur={handleBlur('confirmPassword')}
-              value={values.confirmPassword}
-              error={touched.confirmPassword && errors.confirmPassword}
-              errorMessage={errors.confirmPassword}
-              showPasswordToggle={true}
-            />
-            {touched.confirmPassword && errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword}</Text>}
-
             <StyledButton
               title={
                 loading ? (
@@ -194,11 +203,11 @@ export default function UsePassword({ navigation, route }) {
               width="100%"
               height={53}
               paddingVertical={10}
-              marginTop={40}
+              marginTop={20}
               backgroundColor="#212121"
               borderWidth={2}
               TextColor="#fff"
-              borderRadius={20}
+              borderRadius={10}
             />
           </>
         )}
@@ -206,16 +215,39 @@ export default function UsePassword({ navigation, route }) {
 
       </View>
 
-      <Text style={styles.lastText}>
-        By proceeding, you agree to RYDEPRO’s 
-          <Text style={{textDecorationLine: 'underline'}}> Terms, </Text>
-          <Text style={{textDecorationLine: 'underline'}}> Privacy</Text>  Notice and can unsubscribe by emailing 
-          <TouchableOpacity>
-            <Text style={{fontWeight: '900'}}>
-            "Unsubscribe"
-            </Text>
-          </TouchableOpacity>
-        </Text>
+      <Separator />
+      
+        <View style={styles.socialsLogo}>
+          <View style={styles.eachLogo}>
+            <View style={styles.logo}>
+              <Image source={GoogleLogo} />
+            </View>
+            <Text style={styles.socialText}>Google</Text>
+          </View>
+          <View style={styles.eachLogo}>
+            <View style={styles.logo}>
+              <Image source={AppleLogo} />
+            </View>
+            <Text style={styles.socialText}>Apple</Text>
+          </View>
+      </View>
+
+        <View style={styles.three}>
+            <TouchableOpacity onPress={() => navigation.navigate('FirstScreen')}>
+              <Text style={styles.signupText}>Sign In</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('CreateAccount')}>
+              <Text style={styles.signupText}>Terms</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('CreateAccount')}>
+              <Text style={styles.privacyText}>Privacy</Text>
+            </TouchableOpacity>
+        </View>
+
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Text style={styles.cancel}>Cancel</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -224,34 +256,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    width: '100%',
     paddingTop: 30,
-    paddingHorizontal: 30,
-    justifyContent: 'space-between'
+    paddingHorizontal: 20,
   },
   maincontent: {
-    width: '100%', 
-},
+    // width: '100%', 
+  },
+  scrollViewContent: {
+    width: '100%',
+  },
   topcontent: {
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
-  logo: {
-    width: '20%',
-  },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     marginTop: 20,
-    fontWeight: '700',
-    alignSelf: 'flex-start',
-    marginBottom: 40,
-  },
-  subtitle: {
-    fontSize: 24,
     fontWeight: '500',
     alignSelf: 'flex-start',
-    marginBottom: 0,
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: '400',
+    alignSelf: 'flex-start',
+    marginBottom: 5,
   },
   lastText: {
     fontSize: 12,
@@ -260,5 +288,71 @@ const styles = StyleSheet.create({
     color: '#212121',
     width: '100%',
     marginBottom: 10,
-  }
+  },
+  dotsButton: {
+    position: 'absolute',
+    right: 0,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'black',
+    padding: 20,
+    borderRadius: 10,
+    marginTop: 60,
+    marginRight: 20,
+  },
+  modalItem: {
+    color: 'white',
+    fontSize: 14,
+    marginVertical: 10,
+    textAlign: 'center',
+  },
+  three: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: '10%',
+  },
+  signupText: {
+    fontSize: 18,
+    fontWeight: '500',
+    textAlign: 'center',
+    color: '#0E0E0E',
+    borderRightWidth: 2,
+    borderRightColor: '#D0D0D0',
+    paddingHorizontal: 10,
+  },
+  privacyText: {
+    fontSize: 18,
+    fontWeight: '500',
+    textAlign: 'center',
+    color: '#0E0E0E',
+    paddingHorizontal: 10,
+  },
+  socialsLogo: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 30,
+    marginTop: '8%',
+  },
+  socialText: {
+    fontSize: 16,
+    color: '#0E0E0E',
+    fontWeight: '700'
+  },
+  logo: {
+    borderWidth: 1,
+    borderColor: '#DADADA',
+    padding: 15,
+    borderRadius: 50,
+  },
+  eachLogo: {
+    alignItems: 'center',
+  },
+    cancel: {
+       marginTop: '10%',
+    },
 });

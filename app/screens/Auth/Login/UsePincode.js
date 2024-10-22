@@ -1,8 +1,9 @@
 import React, {useRef, useState, useContext} from 'react';
 import api from '../../../api/auth'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, StatusBar, Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
+import BackButton from '../../../components/BackButton';
 import { AppContext } from '../../../context/AppContext';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,7 +12,8 @@ import * as Application from 'expo-application';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Fontisto, MaterialIcons } from '@expo/vector-icons';
+import { Fontisto } from '@expo/vector-icons';
+import StyledButton from '../../../components/StyledButton';
 
 const validationSchema = yup.object().shape({
     pinCode: yup
@@ -20,7 +22,7 @@ const validationSchema = yup.object().shape({
       .required('Enter the 6-digit code'),
   });
   
-const CELL_COUNT = 6;
+const CELL_COUNT = 4;
 
 export default function UsePincode({navigation}) {
     const [loading, setLoading] = useState(false);
@@ -94,11 +96,11 @@ export default function UsePincode({navigation}) {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-
-            <View style={styles.mainContent}>
+          <View style={styles.mainContent}>
+            <BackButton/>
                 <View style={styles.pinContainer}> 
-                    <Fontisto name="locked" size={70} color="black" />
-                    <Text style={styles.subTitle}>Enter Pin</Text>    
+                    <Fontisto name="locked" size={60} color="black" />
+                    <Text style={styles.subTitle}>Enter your Pin to Sign In</Text>    
                 </View>                  
                 <View>
                     <Formik
@@ -119,7 +121,6 @@ export default function UsePincode({navigation}) {
                                 rootStyle={styles.codeFieldRoot}
                                 keyboardType="name-phone-pad"
                                 textContentType="oneTimeCode"
-                                // onSubmitEditing={} 
                                 renderCell={({ index, symbol, isFocused }) => (
                                 <Text
                                     key={index}
@@ -145,15 +146,30 @@ export default function UsePincode({navigation}) {
                 </View>
             </View> 
 
-            <View style={styles.bottomContent}>
-                <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={()=> navigation.goBack()}>
-                    <MaterialIcons name="keyboard-backspace" size={24} color={'black'}/>
-                    <Text> Back</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => formRef.current.handleSubmit()}>
-                    <Text>Next</Text>
-                </TouchableOpacity>
-            </View>       
+ 
+            <StyledButton
+              title={
+                loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  'Next'
+                )
+              }
+              onPress={() => {
+                Keyboard.dismiss();
+                handleContinue();
+              }}
+              width="40%"
+              height={53}
+              paddingVertical={10}
+              marginTop={20}
+              marginLeft='60%'
+              marginBottom='10%'
+              backgroundColor="#212121"
+              borderWidth={2}
+              TextColor="#fff"
+              borderRadius={10}
+            />      
     </SafeAreaView>
     </TouchableWithoutFeedback>
     );
@@ -169,7 +185,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     pinContainer: {
-        marginTop: 30,
+        marginTop: '20%',
         width: '100%',
         alignItems: 'center',
         marginBottom: 30,
@@ -186,20 +202,22 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     mainContent: {
-        marginTop: '30%',
+        marginTop: '10%',
         width: '100%',
     },
     codeFieldRoot: {
-        marginTop: '15%',
+        marginTop: '5%',
         width: '90%',
         alignSelf: 'center',
       },
       cell: {
         width: 40,
-        height: 40,
+        paddingTop: 20,
+        paddingBottom: 10,
         marginTop: 20,
         fontSize: 24,
         borderBottomWidth: 2,
+        borderTopWidth: 2,
         borderColor: '#CCCCCC',
         textAlign: 'center',
         ...Platform.select({
@@ -220,7 +238,7 @@ const styles = StyleSheet.create({
     },
       inputText: {
         color: 'black', 
-        fontSize: 18,
+        fontSize: 28,
     },
       errorText: {
         color: 'red',
