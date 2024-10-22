@@ -1,120 +1,127 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Entypo, Ionicons } from '@expo/vector-icons';
+import { Entypo, Ionicons, FontAwesome5, Feather } from '@expo/vector-icons';
 
-export default function Security({navigation}) {
+export default function Security({ navigation }) {
+    const [isFacialIDEnabled, setIsFacialIDEnabled] = useState(false);
+
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#212121" />
-            <View style={styles.titleContainer}> 
-                <Ionicons name="arrow-back" size={24} color='#fff'
-                    onPress={() => navigation.goBack()}
+            <ScrollView showsVerticalScrollIndicator={false}>
+            <TouchableOpacity style={styles.titleContainer} onPress={() => navigation.goBack()}>
+                <Feather name="chevron-left" size={20} color='#111' />
+            </TouchableOpacity>
+            <Text style={styles.title}>Security</Text>
+            <Text style={styles.subTitle}>Enable both layers of Security</Text>
+            <Text style={styles.option}>First Layer Security Option</Text>
+            <View style={styles.eachSecurity}>
+                <Text style={styles.text}>Face ID</Text>
+                <Switch
+                    value={isFacialIDEnabled}
+                    // onValueChange={toggleFacialID}
+                    trackColor={{ false: '#ffffff', true: '#ffffff' }}
+                    thumbColor={isFacialIDEnabled ? '#767577' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
                 />
-                <Text style={styles.title}>Additional Security</Text>
-            </View>    
-            <Text style={styles.subTitle}>Add Two Additional Security</Text>    
-            <View style={styles.securityContainer}>
-                <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('FacialIdToggle')}
-                    >
-                    <View style={styles.eachFeature}>
-                        <Text style={styles.text}>Facial Identification</Text>
-                        <Entypo name="chevron-small-right" size={20} color='#fff' />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('BiometricToggle')}
-                    >
-                    <View style={styles.eachFeature}>
-                        <Text style={styles.text}>Biometrics</Text>
-                        <Entypo name="chevron-small-right" size={20} color='#fff' />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('PinSettings')}
-                    >
-                    <View style={styles.eachFeature}>
-                        <Text style={styles.text}>Pin</Text>
-                        <Entypo name="chevron-small-right" size={23} color='#fff' />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.eachSecurity}
-                    onPress={() => navigation.navigate('PassphraseScreen')}
-                    >
-                    <View style={styles.eachFeature}>
-                        <Text style={styles.text}>Passphrase</Text>
-                        <Entypo name="chevron-small-right" size={20} color='#fff' />
-                    </View>
-                </TouchableOpacity>
-            </View>  
-            <TouchableOpacity style={styles.devices} onPress={() => navigation.navigate('DevicesList')}>
-            <Entypo name="mobile" size={20} color='#767676' />
-            <View style={{flexDirection: 'column', marginLeft: 20}}>
-                <Text style={{color: '#f7f7f7', fontSize: 14}}>Devices</Text>
-                <Text style={{color: '#f9f9f9', fontSize: 14}}>List of devices where you're logged in</Text>    
             </View>
-            </TouchableOpacity>      
-    </SafeAreaView>
+            <Text style={styles.or}> Or</Text>
+            <View style={styles.eachSecurity}>
+                <Text style={styles.text}>Finger ID</Text>
+                <Switch
+                    value={isFacialIDEnabled}
+                    // onValueChange={toggleFacialID}
+                    trackColor={{ false: '#ffffff', true: '#ffffff' }}
+                    thumbColor={isFacialIDEnabled ? '#767577' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
+                />
+            </View>
+            <Text style={styles.option}>Second Layer Security Option</Text>
+            <TouchableOpacity style={styles.eachSecurity}>
+                <Text style={styles.text}>Pin</Text>
+                <Feather name="chevron-right" size={20} color='#111' />
+            </TouchableOpacity>
+            <Text style={styles.or}> Or</Text>
+            <TouchableOpacity style={styles.eachSecurity}>
+                <Text style={styles.text}>Passphrase</Text>
+                <Feather name="chevron-right" size={20} color='#111' />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.password}>
+            <Text style={styles.text}>Change Password</Text>
+            <Feather name="chevron-right" size={20} color='#111' />
+            </TouchableOpacity>
+
+
+            <TouchableOpacity style={styles.devices} onPress={() => navigation.navigate('DevicesList')}>
+                <Entypo name="mobile" size={20} color='#767676' />
+                <View style={{ flexDirection: 'column', marginLeft: 20 }}>
+                    <Text style={{ color: '#0e0e0e', fontSize: 14 }}>Devices</Text>
+                    <Text style={{ color: '#3c3c3c', fontSize: 12 }}>List of devices where you're logged in</Text>
+                </View>
+            </TouchableOpacity>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#212121',
         paddingHorizontal: 20,
     },
     icon: {
-        padding: 10,
+        padding: 20,
         color: '#fff',
         backgroundColor: '#fff',
     },
     titleContainer: {
-        marginVertical: 30,
-        flexDirection: 'row',
-        alignItems: 'center',
+        paddingVertical: 30,
     },
     title: {
         fontSize: 20,
-        fontWeight: '400',
-        color: '#fff',
-        marginLeft: 20,
+        fontWeight: '500',
+        color: '#0e0e0e',
     },
     subTitle: {
         fontSize: 16,
         fontWeight: '400',
-        color: '#767676',
-        paddingHorizontal: 10,
+        color: '#3c3c3c',
+        paddingVertical: 10,
     },
-    securityContainer: {
-        marginBottom: 20,
-        paddingHorizontal: 10,
+    option: {
+        fontSize: 14,
+        fontWeight: '400',
+        color: '#8a8a8a',
+        paddingVertical: 20,
     },
     eachSecurity: {
         flexDirection: 'row',
-        width: '100%',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 30,
+        marginVertical: 20,
     },
-    eachFeature: {
+    password: {
         flexDirection: 'row',
-        width: '100%',
         justifyContent: 'space-between',
+        alignItems: 'center',
+        marginVertical: 20,
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        paddingVertical: 30,
+        borderColor: '#dadada',
     },
     text: {
         fontSize: 16,
         fontWeight: '400',
-        color: '#fff',
+        color: '#000',
+    },
+    or: {
+        color: '#8a8a8a',
+        fontSize: 14,
     },
     devices: {
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 20,
-        borderTopWidth: 1,
-        borderTopColor: '#767676',
-        paddingVertical: 20,
     },
 });
