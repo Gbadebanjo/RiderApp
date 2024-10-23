@@ -8,7 +8,7 @@ import Centerlogo from '../../../components/centerlogo';
 import Toast from 'react-native-toast-message';
 import Separator from '../../../components/OrSeparator';
 import { Formik } from 'formik';
-import { Entypo, Feather, Ionicons, AntDesign } from '@expo/vector-icons';
+import { Entypo, Feather } from '@expo/vector-icons';
 import * as yup from 'yup';
 import * as WebBrowser from 'expo-web-browser';
 import AppleLogo from '../../../assets/AppleLogo.png';
@@ -23,8 +23,12 @@ const validationSchema = yup.object().shape({
     .email('Please enter a valid email')
     .required('Enter your Email Address'),
     password: yup
-    .string()
-    .required('Enter your Password'),
+        .string()
+        .required('Enter your Password')
+        .min(8, 'Password must be at least 8 characters long')
+        .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+        .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+        .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
     confirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
 
@@ -96,31 +100,26 @@ export default function CreateAccount({ navigation }) {
 
 
   const handleSubmit = async (values, { resetForm }) => {
-      // const { email, password, confirm } = values;
-      // setLoading(true);
-      // const res = await otpApi.requestOtp(email, password, confirm);
+      const { email, password, confirm } = values;
+      setLoading(true);
+      const res = await otpApi.requestOtp(email, password, confirm);
   
-      // setLoading(false);
-      // if (res.ok) {
-      //   Toast.show({
-      //     type: 'success',
-      //     text1: 'Account Created Successfully',
-      //     text2: res.data.message,
-      //   });
+      setLoading(false);
+      if (res.ok) {
+        Toast.show({
+          type: 'success',
+          text1: 'Account Created Successfully',
+          text2: res.data.message,
+        });
         navigation.navigate('ConfirmSignup', { email: values.email, password: values.password, confirm: values.confirm});
-      //     resetForm();
-      // } else {
-      //   Toast.show({
-      //     type: 'error',
-      //     text1: 'Account Creation Failed',
-      //     text2: res.data.message,
-      //   });
-      // }
-    };
-
-    const handlePasswordChange = (password) => {
-      const result = zxcvbn(password);
-      setPasswordStrength(result);
+          resetForm();
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Account Creation Failed',
+          text2: res.data.message,
+        });
+      }
     };
 
   return (
@@ -187,10 +186,7 @@ export default function CreateAccount({ navigation }) {
               textContentType='password'
               returnKeyType="next"
               width="100%"
-              onChangeText={(text) => {
-                handleChange('password')(text);
-                handlePasswordChange(text);
-              }}
+              onChangeText={handleChange('password')}
               onBlur={handleBlur('password')}
               value={values.password}
               secureTextEntry

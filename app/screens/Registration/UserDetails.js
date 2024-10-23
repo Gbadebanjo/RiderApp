@@ -1,7 +1,13 @@
 import React, { useRef, useState, useEffect, useContext} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ScrollView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import signupApi from '../../api/auth'
+import AntDesign from '@expo/vector-icons/AntDesign';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
+import Toast from 'react-native-toast-message';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import StyledButton from '../../components/StyledButton';
 import { Formik } from 'formik';
 import InputField from '../../components/InputField';
@@ -18,13 +24,15 @@ const validationSchema = yup.object().shape({
     lastName: yup.string().required('Last Name is required'),
     middleName: yup.string().required('Middle Name is required'),
     displayName: yup.string().required('Display Name is required'),
-    otherLanguage: yup.string().required('Other Language is required'),
+    otherLangSpoken: yup.string().required('Other Language is required'),
+    dateOfBirth: yup.string().required('Date of birth is required'),
+    gender: yup.string().required('Gender is required'),
     accessibility: yup.string().optional(),
     email: yup
     .string()
     .email('Please enter a valid email')
     .required('Enter your Email Address'),
-    phoneNumber: yup.string().required('Phone Number required'),
+    phone: yup.string().required('Phone Number required'),
     country: yup.string().required('Country is required'),
     state: yup.string().required('State is required'),
     city: yup.string().required('City is required'),
@@ -34,13 +42,31 @@ const validationSchema = yup.object().shape({
 export default  function UserDetails({navigation, route}) {
     const { email } = route.params;
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [loading, setLoading] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const phoneInputRef = useRef(null);
     const saveEmail = AsyncStorage.setItem('email', email);
     const [selectedLanguage, setSelectedLanguage] = useState('');
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [selectedDate, setSelectedDate] = useState('');
     const [languages, setLanguages] = useState([]);
     const [locationDetails, setLocationDetails] = useState({});
-  const { userDetails, setUserDetails } = useContext(AppContext);
+    const { userDetails, setUserDetails } = useContext(AppContext);
+  
+    const showDatePicker = () => {
+      setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+      setDatePickerVisibility(false);
+    };
+  
+  const pickDate = (date, setFieldValue) => {
+    const formattedDate = date.toLocaleDateString();
+    setSelectedDate(formattedDate);
+    setFieldValue('dateOfBirth', formattedDate);
+    hideDatePicker();
+  };
   
 
   useEffect(() => {
@@ -67,6 +93,56 @@ export default  function UserDetails({navigation, route}) {
     fetchLocationDetails();
   }, []);
 
+
+  const handleNext = async (values) => {
+      setLoading(true)
+      const { email, firstName, middleName, lastName, otherLangSpoken, dateOfBirth, phone, gender, displayName, country, state, city, } = values;
+
+      const getLocation= await AsyncStorage.getItem('userLocation');
+      const stringLocation = JSON.parse(getLocation);
+      const signupLocation = {
+        long: stringLocation.longitude,
+        lat: stringLocation.latitude,
+      }
+    
+    const location = {country, state, city,}
+    
+      console.log('signupLocation', signupLocation)
+      
+      let deviceId;
+
+      if (Platform.OS === 'android') {
+        deviceId = await Application.getAndroidId();
+      } else if (Platform.OS === 'ios') {
+        deviceId = await Application.getIosIdForVendorAsync();
+      }
+  
+      const deviceInfo = {
+         deviceType: Device.osName,
+         deviceName: await Device.deviceName,
+         deviceId: deviceId,
+    }  
+      const response = await signupApi.signUp(email, firstName, middleName, lastName, otherLangSpoken, gender, dateOfBirth, phone, displayName, deviceInfo, signupLocation, location);
+      console.log(response);
+      if (!response.ok) {
+        setLoading(false);
+        return Toast.show({
+          type: 'error', 
+          text1: response.data.message,
+        });
+      }
+      Toast.show({
+        type: 'success',
+        text1: response.data.message,
+      });
+      const token = response.data.rider.token
+      console.log(token)
+      await AsyncStorage.setItem('userToken', token);
+      setUserDetails(response.data.rider.rider);
+      setLoading(false);
+      return navigation.navigate('SettingHome');
+    }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -80,27 +156,20 @@ export default  function UserDetails({navigation, route}) {
              lastName: '',
              middleName: '',
              displayName: '',
-             accessibility: '',
+             otherLangSpoken: selectedLanguage || '',
+             dateOfBirth: '',
+             gender: '',
              email: email,
-             phoneNumber: '',
+             phone: '',
              referralCode: '',
-             otherLanguage: selectedLanguage || '',
              country: locationDetails.country || '',
              state: locationDetails.state || '',
              city: locationDetails.city || '',
             }}
         validationSchema={validationSchema}
-        onSubmit={async (values) => {
-          try {
-            setUserDetails(values)
-            await AsyncStorage.setItem('loginDetails', JSON.stringify(values));
-            navigation.navigate('SettingHome');
-          } catch (error) {
-            Alert.alert('Error', 'Failed to save user login details.');
-          }
-        }}
+          onSubmit={handleNext}
       >
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+        {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, touched }) => (
             <>
             <Text style={styles.profile}>Profile</Text>
             <InputField
@@ -189,18 +258,54 @@ export default  function UserDetails({navigation, route}) {
                 value={selectedLanguage}
                 onValueChange={(value) => {
                     setSelectedLanguage(value);
-                    handleChange('otherLanguage')(value);
+                    handleChange('otherLangSpoken')(value);
                 }}
                   initialValue=""
                   placeholder="Choose Language"
-                  error={touched.otherLanguage && errors.otherLanguage}
-                  errorMessage={errors.otherLanguage}
+                  error={touched.otherLangSpoken && errors.otherLangSpoken}
+                  errorMessage={errors.otherLangSpoken}
                   width="100%" 
                 />
-                {touched.otherLanguage && errors.otherLanguage && (
-                  <Text style={styles.errorText}>{errors.otherLanguage}</Text>
+                {touched.otherLangSpoken && errors.otherLangSpoken && (
+                  <Text style={styles.errorText}>{errors.otherLangSpoken}</Text>
               )}
 
+              <Text style={styles.phonelabel}>Date of Birth</Text>
+              <View>
+                <TouchableOpacity style={styles.dateContainer} onPress={showDatePicker}>
+                  <Text style={styles.dateText}>{selectedDate || 'Select Date'}</Text>
+                  <AntDesign name="calendar" size={20} color="black" />
+                </TouchableOpacity>
+                  <DateTimePickerModal
+                    isVisible={isDatePickerVisible}
+                    mode="date"
+                    onConfirm={(date) => pickDate(date, setFieldValue)}
+                    onCancel={hideDatePicker}
+                  />
+                  {touched.dateOfBirth && errors.dateOfBirth && (
+                      <Text style={styles.errorText}>{errors.dateOfBirth}</Text>
+                  )}
+                </View>
+
+              <SelectInput
+                label="Gender"
+                items={[
+                    { label: 'Male', value: 'Male' },
+                    { label: 'Female', value: 'Female' },
+                    { label: 'Other', value: 'Other' },
+                ]}
+                placeholder='Select Gender'
+                onValueChange={handleChange('gender')}
+                initialValue={locationDetails.gender || ''}
+                value={values.gender}
+                width="100%"
+                error={errors.gender}
+                errorMessage={errors.gender}
+              />
+              {touched.gender && errors.gender && (
+                <Text style={styles.errorText}>{errors.gender}</Text>
+             )}
+              
             <InputField
                 label="Email Address"
                 placeholder="rydapro@gmail.com"
@@ -224,7 +329,7 @@ export default  function UserDetails({navigation, route}) {
                     defaultValue={phoneNumber}
                     defaultCode="US"
                     layout="first"
-                    onChangeText={handleChange('phoneNumber')}
+                    onChangeText={handleChange('phone')}
                     containerStyle={[
                         styles.phoneFlagContainer,
                         isFocused && styles.focusedPhoneFlagContainer,
@@ -233,14 +338,14 @@ export default  function UserDetails({navigation, route}) {
                     withDarkTheme
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    value={values.phoneNumber}
-                    error={touched.phoneNumber && errors.phoneNumber}
-                    errorMessage={errors.phoneNumber}
+                    value={values.phone}
+                    error={touched.phone && errors.phone}
+                    errorMessage={errors.phone}
                 />
                 
-                  {touched.phoneNumber && errors.phoneNumber && (
-                <Text style={styles.errorText}>{errors.phoneNumber}</Text>
-             )}
+                  {touched.phone && errors.phone && (
+                      <Text style={styles.errorText}>{errors.phone}</Text>
+                  )}
               </View>
               
               <SelectInput
@@ -321,7 +426,13 @@ export default  function UserDetails({navigation, route}) {
             />
 
             <StyledButton
-                title="Next"
+                title={
+                loading ? (
+                  <ActivityIndicator color="#fff" />
+                  ) : (
+                    'Next'
+                  )
+                }
                 onPress={handleSubmit}
                 width="40%"
                 height={53}
@@ -362,16 +473,32 @@ const styles = StyleSheet.create({
   },
   phonelabel: {
     marginTop: 15,
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#0E0E0E',
   },
   phoneContainer: {
     height: 50,
     width: '100%',
     marginBottom: 20,
   },
+  dateContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    marginTop: 6,
+    width: '100%',
+    borderBottomWidth: 1,
+    borderColor: '#CCCCCC',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  dateText: {
+    color: '#8A8A8A',
+  },
   phoneFlagContainer: {
     height: '100%',
     borderColor: '#CCCCCC',
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     width: '100%',
   },
   focusedPhoneFlagContainer: {

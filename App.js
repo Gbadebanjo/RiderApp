@@ -5,11 +5,11 @@ import { toastConfig } from './toastConfig';
 import { AppProvider } from './app/context/AppContext';
 
 import Splash from './app/screens/Welcome/Splash';
-import Onboarding from './app/screens/Welcome/Onboarding';
+import Onboarding from './app/screens/Welcome/Onboarding';  // In use
 import UserLocation from './app/screens/Welcome/UserLocation';
-import Language from './app/screens/Welcome/Language';
-import FirstScreen from './app/screens/Auth/Signup/FirstScreen';
-import CreateAccount from './app/screens/Auth/Signup/CreateAccount';
+import Language from './app/screens/Welcome/Language';  // In use
+import FirstScreen from './app/screens/Auth/Signup/FirstScreen';  // In use
+import CreateAccount from './app/screens/Auth/Signup/CreateAccount';  // In use
 import Login from './app/screens/Auth/Login/Login';
 import UseFingerprint from './app/screens/Auth/Login/UseFingerprint';
 import UseFaceid from './app/screens/Auth/Login/UseFaceid';
@@ -18,7 +18,7 @@ import UsePassword from './app/screens/Auth/Login/UsePassword';
 import UsePassphrase from './app/screens/Auth/Login/UsePassphrase';
 import UsePincode from './app/screens/Auth/Login/UsePincode';
 import WelcomeGuest from './app/screens/Auth/Signup/WelcomeGuest';
-import ConfirmSignup from './app/screens/Auth/Signup/ConfirmSignup';
+import ConfirmSignup from './app/screens/Auth/Signup/ConfirmSignup';  // In use
 import SetPassword from './app/screens/Auth/Signup/SetPassword';
 import UserDetails from './app/screens/Registration/UserDetails';
 import SettingHome from './app/screens/Settings/SettingHome';
@@ -38,7 +38,11 @@ import ReviewPhoto from './app/screens/Settings/ReviewPhoto';  // In use
 import RewardProgram from './app/screens/Settings/RewardProgram'; // In use
 import CashbackReward from './app/screens/Settings/CashbackReward'; // In use
 import MilesPoint from './app/screens/Settings/MilesPoint'; // In use
-import RecoveryEmail from './app/screens/Recovery/EnterEmail';
+import RecoveryEmail from './app/screens/Recovery/RecoveryEmail';  // In use
+import RecoveryCode from './app/screens/Recovery/RecoveryCode'; // In use
+import RecoveryPhoneNumber from './app/screens/Recovery/RecoveryPhoneNumber'; // In use
+import NewPassword from './app/screens/Recovery/NewPassword'; // In use
+import ConfirmNewPassword from './app/screens/Recovery/ConfirmNewPassword'; // In use
 import InviteReferral from './app/screens/Settings/InviteReferral';  // In use
 import HelpAndSupport from './app/screens/Settings/HelpAndSupport';   // In use
 import BotLoading from './app/screens/Settings/BotLoading';  // In use
@@ -68,7 +72,7 @@ export default function App() {
           <Stack.Screen name='Splash' component={Splash} options={{ headerShown: false }} />
           <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }} />
           <Stack.Screen name='UserLocation' component={UserLocation} options={{ headerShown: false }} />
-          <Stack.Screen name='Language' component={Language} options={{ headerShown: false }} />
+          <Stack.Screen name='Language' component={Language} options={{ headerShown: false }} /> 
           <Stack.Screen name='FirstScreen' component={FirstScreen} options={{ headerShown: false }} />
           <Stack.Screen name='WelcomeGuest' component={WelcomeGuest} options={{ headerShown: false }} />
           <Stack.Screen name='WelcomeHome' component={NavButtons} options={{ headerShown: false }} />
@@ -97,6 +101,10 @@ export default function App() {
           <Stack.Screen name='CreatePassphrase' component={CreatePassphrase} options={{ headerShown: false }} />
           <Stack.Screen name='GeneratePassphrase' component={GeneratePassphrase} options={{ headerShown: false }} />
           <Stack.Screen name='RecoveryEmail' component={RecoveryEmail} options={{ headerShown: false }} />
+          <Stack.Screen name='RecoveryCode' component={RecoveryCode} options={{ headerShown: false }} />
+          <Stack.Screen name='RecoveryPhoneNumber' component={RecoveryPhoneNumber} options={{ headerShown: false }} />
+          <Stack.Screen name='NewPassword' component={NewPassword} options={{ headerShown: false }} />
+          <Stack.Screen name='ConfirmNewPassword' component={ConfirmNewPassword} options={{ headerShown: false }} />
           <Stack.Screen name='Feedback' component={Feedback} options={{ headerShown: false }} />
           <Stack.Screen name='ThankYou' component={ThankYou} options={{ headerShown: false }} />
           <Stack.Screen name='Photo' component={Photo} options={{ headerShown: false }} />
