@@ -89,7 +89,7 @@ export default function UsePassword({ navigation, route }) {
     await AsyncStorage.setItem('userToken', response.data.token);
     await AsyncStorage.setItem('bioToken', response.data.bioToken);
     await AsyncStorage.setItem('email', email);
-    setUserDetails(response.data.rider);
+    setUserDetails(response.data.rider.rider);
       setLoading(false);
       resetForm();
      return navigation.navigate('WelcomeHome');
