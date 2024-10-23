@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, Modal } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, Modal, ActivityIndicator } from 'react-native'
 import React, { useState, useRef } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Feather } from '@expo/vector-icons';
-import Centerlogo from '../../components/centerlogo';
+import Toast from 'react-native-toast-message';
 import BackButton from '../../components/BackButton';
 import InputField from '../../components/InputField';
 import StyledButton from '../../components/StyledButton';
@@ -19,7 +19,8 @@ const validationSchema = yup.object().shape({
         .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
 });
 
-export default function NewPassword({ navigation }) {
+export default function NewPassword({ navigation, route }) {
+    const email = route.params;
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
      const formikRef = useRef(null); 
@@ -29,7 +30,7 @@ export default function NewPassword({ navigation }) {
   };
 
     const handleContinue = async (values) => {
-        navigation.navigate('ConfirmNewPassword', { password: values.password });
+        navigation.navigate('ConfirmNewPassword', { password: values.password, email: email });
     }
 
   return (

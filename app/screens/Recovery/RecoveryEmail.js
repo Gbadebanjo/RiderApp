@@ -1,16 +1,15 @@
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, Modal } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, Modal, ActivityIndicator } from 'react-native'
 import React, { useState, useRef } from 'react'
+import otpApi from '../../api/auth'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Entypo } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 import Centerlogo from '../../components/centerlogo';
 import BackButton from '../../components/BackButton';
 import InputField from '../../components/InputField';
 import StyledButton from '../../components/StyledButton';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-
-const defaultLogo = require('../../assets/newRydeproLogo.png');
-
 
 const validationSchema = yup.object().shape({
     email: yup
@@ -23,15 +22,37 @@ const validationSchema = yup.object().shape({
 export default function EnterEmail({ navigation }) {
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-     const formikRef = useRef(null); 
+    const formikRef = useRef(null); 
 
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
-  };
+    const toggleModal = () => {
+        setModalVisible(!modalVisible);
+    };
 
-    const handleContinue = async (values) => {
-        navigation.navigate('RecoveryCode', values);
-    }
+    const handleContinue = async (values, { resetForm }) => {
+        const { email } = values;
+        setLoading(true);
+        //   const res = await otpApi.verifyOtp(email);
+        const res = {
+            ok: true,
+        }
+  
+      setLoading(false);
+      if (res.ok) {
+        Toast.show({
+          type: 'success',
+          text1: 'Account Created Successfully',
+        //   text2: res.data.message,
+        });
+          navigation.navigate('RecoveryCode', email);
+          resetForm();
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Account Creation Failed',
+        //   text2: res.data.message,
+        });
+      }
+    };
 
   return (
     <SafeAreaView style={styles.container}>

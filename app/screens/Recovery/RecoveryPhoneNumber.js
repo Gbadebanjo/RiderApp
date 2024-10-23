@@ -1,7 +1,9 @@
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, Modal } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, Modal, ActivityIndicator } from 'react-native'
 import React, { useState, useRef } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Entypo } from '@expo/vector-icons';
+import recoveryApi from '../../api/auth';
+import Toast from 'react-native-toast-message';
 import Centerlogo from '../../components/centerlogo';
 import BackButton from '../../components/BackButton';
 import InputField from '../../components/InputField';
@@ -15,7 +17,8 @@ const validationSchema = yup.object().shape({
   });
 
 
-export default function RecoveryPhoneNumber({ navigation }) {
+export default function RecoveryPhoneNumber({ navigation, route }) {
+    const email = route.params;
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
      const formikRef = useRef(null); 
@@ -24,8 +27,30 @@ export default function RecoveryPhoneNumber({ navigation }) {
     setModalVisible(!modalVisible);
   };
 
-    const handleContinue = async (values) => {
-        navigation.navigate('NewPassword', values);
+    const handleVerify = async (values, { resetForm }) => {
+      const {phone, userId } = values; 
+      setLoading(true);
+      // const response = await recoveryApi.verifyRecoveryDetails(email, phone, userId);
+      const response = {
+        ok: true,
+      }
+      Keyboard.dismiss();
+      if (!response.ok) {
+        setLoading(false);
+        return Toast.show({
+          type: 'error',
+          // text1: response.data.message,
+          text1: phone,
+        });
+      }
+      Toast.show({
+        type: 'success',
+        // text1: response.data.message,
+        text1: userId,
+      });
+        resetForm();
+        navigation.navigate('NewPassword', email);
+    return setLoading(false);
     }
 
   return (
@@ -67,7 +92,7 @@ export default function RecoveryPhoneNumber({ navigation }) {
                             innerRef={formikRef}
                             initialValues={{ phone: '', userId: ''  }}
                             validationSchema={validationSchema}
-                            onSubmit={handleContinue}
+                            onSubmit={handleVerify}
                         >
                             {({ handleChange, handleBlur, values, errors, touched }) => (
                             <>     

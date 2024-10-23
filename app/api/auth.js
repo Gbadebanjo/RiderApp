@@ -5,11 +5,16 @@ const verifyOtp = (email, otp) => authClient.post('verify-otp', { email, otp });
 const signUp = (email, firstName, middleName, lastName, otherLangSpoken, dateOfBirth, phone, displayName, deviceInfo, signupLocation, location, gender) => 
     authClient.post('register?type=Individual', { email, firstName, middleName, lastName, otherLangSpoken, dateOfBirth, phone, displayName, deviceInfo, signupLocation, location, gender});
 const loginWithPassword = (email, password, deviceInfo, location) => authClient.post('login?loginType=password', { email, password, deviceInfo, location });
+
 const loginWithPassPhrase = (email, passphrase, deviceInfo, location) => authClient.post('login?loginType=passphrase', { email, passphrase, deviceInfo });
 const loginWithPincode = (email, pin, deviceInfo, location) => authClient.post('login?loginType=pin', { email, pin, deviceInfo, location });
 const fingerprintLogin = (email, bioToken, deviceInfo, location) => authClient.post('login?loginType=fingerprint', { email, bioToken, deviceInfo, location });
 const faceIDLogin = (email, bioToken, deviceInfo, location) => authClient.post('login?loginType=faceid', { email, bioToken, deviceInfo, location });
 
+const recoveryOtp = (email) => authClient.post('send-otp', { email });
+const verifyRecoveryOtp = (email, otp) => authClient.post('verify-recovery-otp', { email, otp });
+const verifyRecoveryDetails = (email, id, phoneNumber) => authClient.post('verify-details', { email, id, phoneNumber });
+const createNewPassword = (email, newPassword, confirmNewPassword ) => authClient.post('change-password', { email, newPassword, confirmNewPassword});
 
 const additionalInfo = (accountDetails) => authClient.put('additional-info', accountDetails);
 const createPassphrase = (email, passPhrase) => authClient.post('create/passphrase', {email, passPhrase});
@@ -45,5 +50,11 @@ export default {
     confirmPassword,
     updatePin,
     updatePassphrase,
+    updateFingerPrint,
+    updateFacialId,
+    recoveryOtp,
+    verifyRecoveryOtp,
+    verifyRecoveryDetails,
+    createNewPassword,
     updateAuth
 }

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useContext} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ScrollView, Platform } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ScrollView, Platform, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import signupApi from '../../api/auth'
@@ -95,7 +95,8 @@ export default  function UserDetails({navigation, route}) {
 
 
   const handleNext = async (values) => {
-      setLoading(true)
+    setLoading(true)
+    console.log(values)
       const { email, firstName, middleName, lastName, otherLangSpoken, dateOfBirth, phone, gender, displayName, country, state, city, } = values;
 
       const getLocation= await AsyncStorage.getItem('userLocation');
@@ -105,9 +106,13 @@ export default  function UserDetails({navigation, route}) {
         lat: stringLocation.latitude,
       }
     
-    const location = {country, state, city,}
+    const location = {
+      country,
+      state,
+      city
+    }
     
-      console.log('signupLocation', signupLocation)
+      console.log('location', location)
       
       let deviceId;
 
@@ -122,7 +127,7 @@ export default  function UserDetails({navigation, route}) {
          deviceName: await Device.deviceName,
          deviceId: deviceId,
     }  
-      const response = await signupApi.signUp(email, firstName, middleName, lastName, otherLangSpoken, gender, dateOfBirth, phone, displayName, deviceInfo, signupLocation, location);
+      const response = await signupApi.signUp(email, firstName, middleName, lastName, otherLangSpoken, dateOfBirth, phone, displayName, deviceInfo, signupLocation, location,  gender,);
       console.log(response);
       if (!response.ok) {
         setLoading(false);

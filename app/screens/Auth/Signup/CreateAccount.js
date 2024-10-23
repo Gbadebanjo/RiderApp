@@ -41,7 +41,6 @@ const androidClientId = '420976305973-q9sik4t9l4k87bmnd2tduo518iaq5t5l.apps.goog
 export default function CreateAccount({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
@@ -120,7 +119,7 @@ export default function CreateAccount({ navigation }) {
           text2: res.data.message,
         });
       }
-    };
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -139,14 +138,14 @@ export default function CreateAccount({ navigation }) {
               >
                 <TouchableOpacity style={styles.modalOverlay} onPress={toggleModal}>
                   <View style={styles.modalContent}>
+                    <TouchableOpacity onPress={()=> navigation.navigate('RecoveryEmail')}>
+                      <Text style={styles.modalItem}>Account Recovery</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity>
                       <Text style={styles.modalItem}>Contact Us</Text>
                     </TouchableOpacity>
                     <TouchableOpacity>
                       <Text style={styles.modalItem}>Faq</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                      <Text style={styles.modalItem}>Account Recovery</Text>
                     </TouchableOpacity>
                   </View>
                 </TouchableOpacity>
@@ -201,7 +200,6 @@ export default function CreateAccount({ navigation }) {
                   Password should be at least 8 characters long, contain at least 1 uppercase, 1 lowercase, & 1 special character
                 </Text>
               </View>
-
 
             <InputField
               label="Confirm Password"

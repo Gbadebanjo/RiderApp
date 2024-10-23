@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, Modal } from 'react-native'
-import React, { useState, useRef } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { StyleSheet, Text, View, ActivityIndicator, StatusBar, Keyboard, Modal } from 'react-native'
+import React, { useState, useRef } from 'react';
+import recoveryApi from '../../api/auth'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../components/BackButton';
 import InputField from '../../components/InputField';
 import Toast from 'react-native-toast-message';
@@ -16,7 +17,7 @@ const validationSchema = (password) => yup.object().shape({
 });
 
 export default function ConfirmNewPassword({ navigation, route }) {
-    const { password } = route.params;
+    const { password, email } = route.params;
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const formikRef = useRef(null); 
@@ -25,13 +26,30 @@ export default function ConfirmNewPassword({ navigation, route }) {
     setModalVisible(!modalVisible);
   };
 
-    const handleContinue = async (values) => {
-        navigation.navigate('Security');
-        Toast.show({
-            type: 'success',
-            // text1: response.data.message,
-            text1: "Account Recovery Successful",
+    const handleContinue = async (values, { resetForm }) => {
+        const confirmNewPassword = values.confirmPassword
+      setLoading(true);
+      // const response = await recoveryApi.createNewPassword(email, password, confirmNewPassword );
+      const response = {
+        ok: true,
+      }
+      Keyboard.dismiss();
+      if (!response.ok) {
+        setLoading(false);
+        return Toast.show({
+          type: 'error',
+          // text1: response.data.message,
+          text1: confirmNewPassword ,
         });
+      }
+      Toast.show({
+        type: 'success',
+        // text1: response.data.message,
+        text1: confirmNewPassword,
+      });
+      resetForm();
+     navigation.navigate('Security');
+    return setLoading(false);
     }
 
   return (
