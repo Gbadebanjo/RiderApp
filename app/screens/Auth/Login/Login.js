@@ -284,9 +284,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
   },
-  dotsText: {
-    fontSize: 14,
-  },
   modalOverlay: {
     flex: 1,
     justifyContent: 'flex-start',

@@ -6,6 +6,8 @@ import { AppProvider } from './app/context/AppContext';
 
 import Splash from './app/screens/Welcome/Splash';
 import Onboarding from './app/screens/Welcome/Onboarding';
+import UserLocation from './app/screens/Welcome/UserLocation';
+import Language from './app/screens/Welcome/Language';
 import FirstScreen from './app/screens/Auth/Signup/FirstScreen';
 import CreateAccount from './app/screens/Auth/Signup/CreateAccount';
 import Login from './app/screens/Auth/Login/Login';
@@ -18,8 +20,9 @@ import UsePincode from './app/screens/Auth/Login/UsePincode';
 import WelcomeGuest from './app/screens/Auth/Signup/WelcomeGuest';
 import ConfirmSignup from './app/screens/Auth/Signup/ConfirmSignup';
 import SetPassword from './app/screens/Auth/Signup/SetPassword';
-import UserDetails from './app/screens/Auth/Signup/UserDetails';
-import SecurityIntro from './app/screens/Auth/Signup/SecurityIntro';
+import UserDetails from './app/screens/Registration/UserDetails';
+import SettingHome from './app/screens/Settings/SettingHome';
+import SecurityIntro from './app/screens/Registration/SecurityIntro';
 import SetupSecurity from './app/screens/Auth/Signup/SetupSecurity';
 import SetupAdditionalSecurity from './app/screens/Auth/Signup/SetupAdditionalSecurity';
 import Security from './app/screens/Settings/Security';    // In use
@@ -53,7 +56,6 @@ import CreatePinScreen from './app/screens/Settings/CreatePinScreen'; // In use
 import ConfirmPinScreen from './app/screens/Settings/ConfirmPinScreen'; // In use
 import DevicesList from './app/screens/Settings/DevicesList'; // In use
 
-
 import NavButtons from './app/components/NavButtons';  // In use
 
 const Stack = createStackNavigator();
@@ -65,6 +67,8 @@ export default function App() {
         <Stack.Navigator initialRouteName='Splash'>
           <Stack.Screen name='Splash' component={Splash} options={{ headerShown: false }} />
           <Stack.Screen name='Onboarding' component={Onboarding} options={{ headerShown: false }} />
+          <Stack.Screen name='UserLocation' component={UserLocation} options={{ headerShown: false }} />
+          <Stack.Screen name='Language' component={Language} options={{ headerShown: false }} />
           <Stack.Screen name='FirstScreen' component={FirstScreen} options={{ headerShown: false }} />
           <Stack.Screen name='WelcomeGuest' component={WelcomeGuest} options={{ headerShown: false }} />
           <Stack.Screen name='WelcomeHome' component={NavButtons} options={{ headerShown: false }} />
@@ -80,6 +84,7 @@ export default function App() {
           <Stack.Screen name='SetPassword' component={SetPassword} options={{ headerShown: false }} />
           <Stack.Screen name='MenuLanding' component={NavButtons} options={{ headerShown: false }} />
           <Stack.Screen name='UserDetails' component={UserDetails} options={{ headerShown: false }} />
+          <Stack.Screen name='SettingHome' component={SettingHome} options={{ headerShown: false }} />
           <Stack.Screen name='SecurityIntro' component={SecurityIntro} options={{ headerShown: false }} />
           <Stack.Screen name='SetupSecurity' component={SetupSecurity} options={{ headerShown: false }} />
           <Stack.Screen name='SetupAdditionalSecurity' component={SetupAdditionalSecurity} options={{ headerShown: false }} />

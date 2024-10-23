@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign, Feather, Entypo, FontAwesome6, FontAwesome5, MaterialIcons, MaterialCommunityIcons, SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { AppContext } from '../../context/AppContext';
@@ -12,7 +12,6 @@ export default function SettingHome({ navigation }) {
     const { userDetails, setUserDetails } = useContext(AppContext);
     const [showLogOut, setShowLogOut] = useState(false);
     const slideAnim = useRef(new Animated.Value(300)).current;
-
 
     const logOut = async () => {
         try {
@@ -37,6 +36,17 @@ export default function SettingHome({ navigation }) {
         }
     };
 
+
+    useEffect( () => {
+        const timer = setTimeout(() => {
+            if (!userDetails.security) {
+            navigation.navigate('SecurityIntro')
+        } 
+       }, 1000);
+
+        return () => clearTimeout(timer); 
+    }, [userDetails]);
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar barStyle="light-content" backgroundColor='#212121' translucent={false} />
@@ -44,7 +54,9 @@ export default function SettingHome({ navigation }) {
                 <TouchableOpacity style={styles.image}>
                     <Image source={userDetails?.profileImg ? { uri: userDetails?.profileImg } : require('../../assets/ProfileTemplate.png')} style={styles.img} />
                 </TouchableOpacity>
+                {/* <Text style={{ color: '#fff', fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 20 }}>{userDetails?.firstName} {userDetails?.lastName}</Text> */}
                 <Text style={{ color: '#0E0E0E', fontSize: 20, fontWeight: '700', textAlign: 'center', margin: 5 }}>{userDetails?.firstName} {userDetails?.lastName}</Text>
+                {/* <Text style={{ color: '#464646', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>User ID: {userDetails?.accountId}</Text> */}
                 <Text style={{ color: '#555555', fontSize: 14, textAlign: 'center' }}>
                     User ID: <Text style={{ color: '#0E0E0E', fontWeight: '700' }}>{userDetails?.accountId}</Text>
                 </Text>
@@ -158,6 +170,7 @@ export default function SettingHome({ navigation }) {
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
+
         </SafeAreaView>
     );
 }
@@ -165,8 +178,8 @@ export default function SettingHome({ navigation }) {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-
         backgroundColor: '#f7f7f7',
+        // width: '100%'
     },
     profileContainer: {
         marginTop: 30,
@@ -196,7 +209,6 @@ const styles = StyleSheet.create({
         height: 110,
         borderRadius: 60,
         objectFit: 'cover',
-
     },
     head: {
         flexDirection: 'row',
