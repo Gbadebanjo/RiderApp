@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect} from 'react';
-// import otpApi from '../../../api/auth'
+import recoveryApi from '../../api/auth'
 import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, StatusBar, Keyboard, ScrollView, TouchableWithoutFeedback, Modal} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Centerlogo from '../../components/centerlogo';
@@ -21,7 +21,7 @@ const validationSchema = yup.object().shape({
 const CELL_COUNT = 4;
 
 export default function RecoveryCode({navigation, route}) {
-    const { email } = route.params;
+  const email = route.params;
     const [loading, setLoading] = useState(false);
     const [value, setValue] = useState('');
     const [errorMessage, setErrorMessage] = useState(''); 
@@ -38,23 +38,28 @@ export default function RecoveryCode({navigation, route}) {
     setModalVisible(!modalVisible);
   };
 
-    const handleVerify = async (values, {resetForm}) => {
+    const handleConfirm = async (values, {resetForm}) => {
       setLoading(true);
-      // const response = await otpApi.verifyOtp(email, values.code);
-      // Keyboard.dismiss();
-      // if (!response.ok) {
-      //   setLoading(false);
-      //   return Toast.show({
-      //     type: 'error',
-      //     text1: response.data.message,
-      //   });
-      // }
-      // Toast.show({
-      //   type: 'success',
-      //   text1: response.data.message,
-      // });
-      // resetForm();
-     navigation.navigate('RecoveryPhoneNumber');
+      // const response = await recoveryApi.verifyRecoveryOtp(email, values.code);
+      const response = {
+        ok: true,
+      }
+      Keyboard.dismiss();
+      if (!response.ok) {
+        setLoading(false);
+        return Toast.show({
+          type: 'error',
+          // text1: response.data.message,
+          text1: values.code,
+        });
+      }
+      Toast.show({
+        type: 'success',
+        // text1: response.data.message,
+        text1: values.code,
+      });
+      resetForm();
+     navigation.navigate('RecoveryPhoneNumber', email);
     return setLoading(false);
     }
 
@@ -135,7 +140,7 @@ export default function RecoveryCode({navigation, route}) {
                 innerRef={formikRef}
                 initialValues={{ code: '' }}
                 validationSchema={validationSchema}
-                onSubmit={handleVerify}
+                onSubmit={handleConfirm}
               >
                 {({ handleChange, handleBlur, values, errors, touched }) => (
                   <>
