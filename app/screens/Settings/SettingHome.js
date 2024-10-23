@@ -58,7 +58,7 @@ export default function SettingHome({ navigation }) {
                 <Text style={{ color: '#0E0E0E', fontSize: 20, fontWeight: '700', textAlign: 'center', margin: 5 }}>{userDetails?.firstName} {userDetails?.lastName}</Text>
                 {/* <Text style={{ color: '#464646', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>User ID: {userDetails?.accountId}</Text> */}
                 <Text style={{ color: '#555555', fontSize: 14, textAlign: 'center' }}>
-                    User ID: <Text style={{ color: '#0E0E0E', fontWeight: '700' }}>234567654345</Text>
+                    User ID: <Text style={{ color: '#0E0E0E', fontWeight: '700' }}>{userDetails?.accountId}</Text>
                 </Text>
                 <Text style={{ color: '#555555', fontSize: 14, textAlign: 'center', margin: 7 }}>Ratings</Text>
                 <TouchableOpacity style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('Account')}>
