@@ -22,6 +22,7 @@ const Account = ({ navigation, route }) => {
   const [isProfilePicHidden, setIsProfilePicHidden] = useState(false); // State to manage profile picture visibility
   const slideAnim = useRef(new Animated.Value(300)).current; // Initial value for sliding animation
 
+  console.log(userDetails)
   const toggleNameDetails = () => {
     setShowName(!showName);
   };
@@ -46,92 +47,47 @@ const Account = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.headcontainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()} >
-            <FontAwesome name="angle-left" size={24} color="black" />
-          </TouchableOpacity>
-          <Text style={styles.head}>Account</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Edit')}>
-            <Text style={styles.edit}>Edit</Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.nameContainer}>
-          <View style={styles.Img}>
-            <Image source={isProfilePicHidden || !userDetails?.profileImg ? require('../../assets/ProfileTemplate.png') : { uri: userDetails.profileImg }}
-              style={{ width: 80, height: 80, borderRadius: 50 }} />
-            <TouchableOpacity
-              style={styles.cam}
-              onPress={toggleModal} // Open the modal
-            >
-              <Ionicons name="camera-outline" size={22} color="#fff" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.namContainer}>
-            <Text style={styles.name}>{userDetails?.firstName} {userDetails?.lastName}</Text>
-            <Text style={styles.account}>{userDetails?.accountType}</Text>
-            <Text style={styles.id}>User ID: {userDetails?.accountId}</Text>
-          </View>
+        <TouchableOpacity onPress={() => navigation.goBack()} >
+          <FontAwesome name="angle-left" size={24} color="#0c0c0c" />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.detailscontainer}
-          onPress={toggleNameDetails}
-        >
-          <View style={styles.namedetails}>
-            <Text style={styles.namehead}>Name</Text>
-            <Text style={styles.nametext}>{userDetails?.firstName} {userDetails?.lastName}</Text>
+        <View style={styles.userProfileHeader}>
+          <Text style={styles.head}>Profile</Text>
+          <View style={styles.image}>
+            <Image source={isProfilePicHidden || !userDetails?.profileImg ? require('../../assets/ProfileTemplate.png') : { uri: userDetails.profileImg }} style={styles.imageStyle} resizeMode="cover" />
           </View>
-          <Ionicons
-            name={showName ? 'chevron-up' : 'chevron-down'}
-            size={14}
-            color="#000"
-          />
-        </TouchableOpacity>
-        {showName && (
-          <>
-            <View style={styles.detailscontainer}>
-              <View style={styles.namedetails}>
-                <Text style={styles.namehead}>First Name</Text>
-                <Text style={styles.nametext}>{userDetails?.firstName}</Text>
-              </View>
-            </View>
-            <View style={styles.detailscontainer}>
-              <View style={styles.namedetails}>
-                <Text style={styles.namehead}>Last Name</Text>
-                <Text style={styles.nametext}>{userDetails?.lastName}</Text>
-              </View>
-            </View>
-          </>
-        )}
-        <View style={styles.detailscontainer}>
-          <View style={styles.namedetails}>
-            <Text style={styles.namehead}>Display Name(Alias)</Text>
-            <Text style={styles.nametext}>{userDetails?.displayName}</Text>
-          </View>
+          <TouchableOpacity style={styles.profilePicture} onPress={toggleModal} >
+            <Text style={styles.profileText}>Change Profile Picture</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.editContainer} onPress={() => navigation.navigate('Edit')}>
+            <Feather name="edit-2" size={18} color="#0c0c0c" />
+            <Text style={styles.edit}>Edit Profile</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.detailscontainer}>
-          <View style={styles.namedetails}>
-            <Text style={styles.namehead}>Phone Number</Text>
-            <Text style={styles.nametext}>{userDetails?.phone}</Text>
-          </View>
-        </View>
-        <View style={styles.detailscontainer}>
-          <View style={styles.namedetails}>
-            <Text style={styles.namehead}>Email Address</Text>
-            <Text style={styles.nametext}>{userDetails?.email}</Text>
-          </View>
-        </View>
-        <View style={styles.detailscontainer}>
-          <View style={styles.namedetails}>
-            <Text style={styles.namehead}>Emergency Contact</Text>
-            <Text style={styles.nametext}>{userDetails?.emergency.name ? userDetails?.emergency.name : "Nil"}</Text>
-          </View>
-        </View>
-        <View style={styles.detailscontainer}>
-          <View style={styles.namedetails}>
-            <Text style={styles.namehead}>Emergency Number</Text>
-            <Text style={styles.nametext}>{userDetails?.emergency.phone ? userDetails?.emergency.phone : "Nil"}</Text>
-          </View>
-        </View>
+
+          <Text style={styles.label}>Account Type</Text>
+          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.accountType}</Text></View>
+          <Text style={styles.label}>First Name</Text>
+          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.firstName}</Text></View>
+          <Text style={styles.label}>Last Name</Text>
+          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.lastName}</Text></View>
+          <Text style={styles.label}>Display Name</Text>
+          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.displayName}</Text></View>
+          <Text style={styles.label}>Other Language Spoken</Text>
+          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.otherLangSpoken}</Text></View>
+          <Text style={styles.label}>Date of Birth</Text>
+          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.dateOfBirth}</Text></View>
+          {/* <Text style={styles.label}>Gender</Text>
+          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.firstName}</Text></View> */}
+          <Text style={styles.label}>Email Address</Text>
+          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.email}</Text></View>
+          <Text style={styles.label}>Phone Number</Text>
+          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.phone}</Text></View>
+          <Text style={styles.label}>City</Text>
+          <View style={styles.value}><Text style={styles.valueText}>{JSON.parse(userDetails.location)?.city }</Text></View>
+          <Text style={styles.label}>State</Text>
+          <View style={styles.value}><Text style={styles.valueText}>{JSON.parse(userDetails.location)?.state}</Text></View>
+          <Text style={styles.label}>Country</Text>
+          <View style={styles.value}><Text style={styles.valueText}>{JSON.parse(userDetails.location)?.country}</Text></View>
       </ScrollView>
 
       <Modal
@@ -189,90 +145,81 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     paddingHorizontal: 20,
   },
-  headcontainer: {
+  head: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#161718',
+    marginTop: 15,
+    alignSelf: 'flex-start',
+  },
+  userProfileHeader: {
+    alignItems: 'center',
+  },
+  image: {
+    alignSelf: 'center',
+    height: 100,
+    width: 100,
+    borderRadius: 60,
+  },
+  imageStyle: {
+    height: '100%',
+    width: '100%',
+    borderRadius: 60,
+  },
+  profilePicture: {
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    padding: 10,
+    borderRadius: 10,
+    marginVertical: 8,
+    borderWidth: 1,
+    borderColor: '#d8d8d8'
+  },
+  profileText: {
+    color: '#0e0e0e',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  editContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
-  head: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#161718',
-    textAlign: 'center',
+    backgroundColor: '#f5f5f5',
+    gap: 7,
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 8,
+    borderWidth: 1,
+    alignSelf: 'flex-end',
+    borderColor: '#d8d8d8'
   },
   edit: {
-    color: '#1B6ADF',
-    fontSize: 16,
-    textDecorationLine: 'underline',
+    color: '#0e0e0e',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  label: {
+    color: '#0e0e0e',
+    fontSize: 14,
+    fontWeight: '600',
+    // marginVertical: 10,
+    marginTop: 20,
+    marginBottom: 10,
+    marginHorizontal: 5,
 
   },
-  nameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#F5F7FA',
+  value: {
+    backgroundColor: '#f5f5f5',
+    padding: 15,
     borderRadius: 10,
-    width: '100%',
-    height: 100,
-    marginTop: 20,
+    borderBottomWidth: 1,
+    borderColor: '#d8d8d8'
   },
-  Img: {
-    position: 'relative',
-    borderRadius: 50,
+  valueText: {
+    color: '#8a8a8a',
+    fontSize: 16,
+    fontWeight: '500',
   },
-  cam: {
-    width: 30,
-    height: 30,
-    backgroundColor: '#000',
-    borderRadius: 20,
-    position: 'absolute',
-    opacity: 0.8,
-    bottom: 0,
-    right: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  namContainer: {
-    marginLeft: 16,
-    flex: 1,
-    gap: 7,
-    color: '#212121',
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  account: {
-    fontSize: 14,
-  },
-  id: {
-    fontSize: 14,
-    color: '#464646',
-  },
-  detailscontainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#F5F7FA',
-    borderRadius: 10,
-    width: '100%',
-    height: 65,
-    marginTop: 20,
-  },
-  namedetails: {
-    flex: 1,
-    gap: 7,
-  },
-  namehead: {
-    fontSize: 20,
-    color: '#212121',
-    fontWeight: '600',
-  },
-  nametext: {
-    fontSize: 14,
-    color: '#464646',
-  },
+
   modalBackground: {
     flex: 1,
     justifyContent: 'flex-end',

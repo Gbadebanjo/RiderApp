@@ -137,12 +137,7 @@ export default function BiometricToggle({ navigation, route }) {
         }
     };
 
-    useEffect(() => {
-        (async () => {
-            const compatible = await LocalAuthentication.hasHardwareAsync();
-            setIsFaceIDSupported(compatible);
-        })();
-    }, []);
+  
 
     return (
         <SafeAreaView style={styles.container}>
@@ -301,3 +296,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 });
+
+
+
+

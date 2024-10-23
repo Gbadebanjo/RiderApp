@@ -42,7 +42,7 @@ export default function FacialIdToggle({ navigation, route }) {
       const action = route.params?.action;
       // console.log('Action:', action);
       if (action === 'enable') {
-        setModalActive(true);
+        setModalActive(true);  
       } else {
         SendDetails()
       }
