@@ -164,15 +164,15 @@ export default function Login({navigation}) {
                 animationType="fade"
               >
                 <TouchableOpacity style={styles.modalOverlay} onPress={toggleModal}>
-                  <View style={styles.modalContent}>
+                <View style={styles.modalContent}>
+                    <TouchableOpacity onPress={()=> navigation.navigate('RecoveryEmail')}>
+                      <Text style={styles.modalItem}>Account Recovery</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity>
                       <Text style={styles.modalItem}>Contact Us</Text>
                     </TouchableOpacity>
                     <TouchableOpacity>
                       <Text style={styles.modalItem}>Faq</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                      <Text style={styles.modalItem}>Account Recovery</Text>
                     </TouchableOpacity>
                   </View>
                 </TouchableOpacity>

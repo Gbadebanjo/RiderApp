@@ -1,27 +1,27 @@
 import React, {useRef, useState, useEffect} from 'react';
-import otpApi from '../../../api/auth'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
+// import otpApi from '../../../api/auth'
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, StatusBar, Keyboard, ScrollView, TouchableWithoutFeedback, Modal} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Centerlogo from '../../../components/centerlogo';
+import Centerlogo from '../../components/centerlogo';
 import { Formik } from 'formik';
 import Toast from 'react-native-toast-message';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import * as yup from 'yup';
-import {MaterialIcons } from '@expo/vector-icons';
-
-import BackButton from '../../../components/BackButton';
+import { Entypo } from '@expo/vector-icons';
+import StyledButton from '../../components/StyledButton';
+import BackButton from '../../components/BackButton';
 
 const validationSchema = yup.object().shape({
   code: yup
     .string()
-    .length(6, 'Code must be exactly 6 digits')
-    .required('Enter the 6-digit code'),
+    .length(4, 'Code must be exactly 4 digits')
+    .required('Enter the 4-digit code'),
 });
 
-const CELL_COUNT = 6;
+const CELL_COUNT = 4;
 
-export default function ConfirmSignup({navigation, route}) {
-    const { email, password, confirm } = route.params;
+export default function RecoveryCode({navigation, route}) {
+    const { email } = route.params;
     const [loading, setLoading] = useState(false);
     const [value, setValue] = useState('');
     const [errorMessage, setErrorMessage] = useState(''); 
@@ -31,27 +31,31 @@ export default function ConfirmSignup({navigation, route}) {
       setValue,
     });
     const [countdown, setCountdown] = useState(180);
+    const [modalVisible, setModalVisible] = useState(false);
+    const formikRef = useRef(null); 
+
+    const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
 
     const handleVerify = async (values, {resetForm}) => {
       setLoading(true);
-      const response = await otpApi.verifyOtp(email, values.code);
-      Keyboard.dismiss();
-      if (!response.ok) {
-        setLoading(false);
-        return Toast.show({
-          type: 'error', 
-          text1: response.data.message,
-        });
-      }
-      Toast.show({
-        type: 'success',
-        text1: response.data.message,
-      });
-      resetForm();
-      setLoading(false);
-      return navigation.navigate('UserDetails', { 
-        email: email,
-      });
+      // const response = await otpApi.verifyOtp(email, values.code);
+      // Keyboard.dismiss();
+      // if (!response.ok) {
+      //   setLoading(false);
+      //   return Toast.show({
+      //     type: 'error',
+      //     text1: response.data.message,
+      //   });
+      // }
+      // Toast.show({
+      //   type: 'success',
+      //   text1: response.data.message,
+      // });
+      // resetForm();
+     navigation.navigate('RecoveryPhoneNumber');
+    return setLoading(false);
     }
 
     const handleResend = async () => {
@@ -96,16 +100,44 @@ export default function ConfirmSignup({navigation, route}) {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.content}>
             <View>
-              <Centerlogo logoWidth='100%' logoHeight={80} />
-              <Text style={styles.title}>Enter 6-digit code</Text>
-              <Text style={styles.subtitle}>Please check your email inbox or spam</Text>
+                <View style={styles.topContent}>
+                        <BackButton/>
+                        <TouchableOpacity onPress={toggleModal} style={styles.dotsButton}>
+                        <Entypo name="dots-three-horizontal" size={24} color="black" />
+                        </TouchableOpacity>      
 
-              <Formik
+                        <Modal
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={toggleModal}
+                            animationType="fade"
+                        >
+                            <TouchableOpacity style={styles.modalOverlay} onPress={toggleModal}>
+                            <View style={styles.modalContent}>
+                                <TouchableOpacity onPress={()=> navigation.navigate('RecoveryEmail')}>
+                                <Text style={styles.modalItem}>Account Recovery</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity>
+                                <Text style={styles.modalItem}>Contact Us</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity>
+                                <Text style={styles.modalItem}>Faq</Text>
+                                </TouchableOpacity>
+                            </View>
+                            </TouchableOpacity>
+                        </Modal>
+                </View>      
+              <Centerlogo logoWidth='100%' logoHeight={80} />
+              <Text style={styles.title}>Enter Verification code</Text>
+              <Text style={styles.subtitle}>Enter the verification sent to your email</Text>
+
+            <Formik
+                innerRef={formikRef}
                 initialValues={{ code: '' }}
                 validationSchema={validationSchema}
                 onSubmit={handleVerify}
               >
-                {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                {({ handleChange, handleBlur, values, errors, touched }) => (
                   <>
                     <CodeField
                         ref={ref}
@@ -116,7 +148,9 @@ export default function ConfirmSignup({navigation, route}) {
                         rootStyle={styles.codeFieldRoot}
                         keyboardType='name-phone-pad'
                         textContentType="oneTimeCode"
-                        onSubmitEditing={handleSubmit} 
+                        onSubmitEditing={() => {
+                            Keyboard.dismiss();
+                        }}
                         renderCell={({ index, symbol, isFocused }) => (
                         <Text
                             key={index}
@@ -127,7 +161,8 @@ export default function ConfirmSignup({navigation, route}) {
                             ]}
                             onLayout={getCellOnLayoutHandler(index)}
                         >
-                            {symbol || (isFocused ? <Cursor /> : null)}
+                                {/* {symbol || (isFocused ? <Cursor /> : null)} */}
+                                 {symbol ? '*' : (isFocused ? <Cursor /> : null)}
                         </Text>
                         )}
                         />
@@ -152,10 +187,27 @@ export default function ConfirmSignup({navigation, route}) {
               </View>            
             </View>
             
-              <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginBottom: 16, }} onPress={()=> navigation.goBack()}>
-                <MaterialIcons name="keyboard-backspace" size={24} color='#CCCCCC'/>
-                <Text style={{color:'#CCCCCC'}}> Back</Text>
-              </TouchableOpacity>
+                <StyledButton
+                    title={
+                        loading ? (
+                        <ActivityIndicator color="#fff" />
+                        ) : (
+                        'Confirm'
+                        )
+                    }
+                    onPress={() => {
+                        Keyboard.dismiss();
+                        formikRef.current.handleSubmit();
+                    }}
+                    width="100%"
+                    height={53}
+                    paddingVertical={10}
+                    marginTop={40}
+                    backgroundColor="#212121"
+                    borderWidth={2}
+                    TextColor="#fff"
+                    borderRadius={10}
+                />
           </View> 
       </ScrollView>
     </SafeAreaView>
@@ -169,9 +221,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 15,
   },
-  Icon: {
-    alignSelf: 'flex-start',
-  },
   scrollContainer: {
     flexGrow: 1,
   },
@@ -179,13 +228,36 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     padding: 16,
-    paddingHorizontal: 30,
-  },
-  logo: {
-    width: '20%',
-    resizeMode: 'contain',
-    marginTop: 20,
-  },
+    paddingHorizontal: 20,
+   },
+   topContent: {
+     width: '100%',
+     flexDirection: 'row',
+     justifyContent: 'space-between',
+     marginBottom: '5%'
+    },
+    dotsButton: {
+        position: 'absolute',
+        right: 20,
+    },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-end',
+    },
+    modalContent: {
+        backgroundColor: 'black',
+        padding: 20,
+        borderRadius: 10,
+        marginTop: 60,
+        marginRight: 20,
+    },
+    modalItem: {
+        color: 'white',
+        fontSize: 14,
+        marginVertical: 10,
+        textAlign: 'center',
+    },
   title: {
     fontSize: 24,
     marginTop: 30,
@@ -196,14 +268,13 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     fontWeight: '400',
-    alignSelf: 'flex-start',
-    marginBottom: 0,
+    alignSelf: 'center',
   },
   errorText: {
     fontSize: 14,
     color: 'red',
     marginTop: 0,
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
   },
   bigerrorText: {
     fontSize: 18,
@@ -220,12 +291,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
   },
-  boldText: {
-    fontWeight: 'bold',
-  },
-  flexSpacer: {
-    flex: 1,
-  },
   resendText:{
     textAlign: 'center',
   },
@@ -233,16 +298,17 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   codeFieldRoot: {
-    marginTop: 70,
+    marginTop: 50,
     width: '100%',
     alignSelf: 'center',
   },
   cell: {
     width: 40,
-    height: 40,
+    paddingVertical: '5%',
     lineHeight: 38,
     fontSize: 24,
     borderBottomWidth: 2,
+    borderTopWidth: 2,
     borderColor: '#CCCCCC',
     textAlign: 'center',
   },
@@ -252,14 +318,6 @@ const styles = StyleSheet.create({
   completeCell: {
     borderColor: '#000000',
 },
-  inputText: {
-    color: 'black', 
-    fontSize: 18,
-  },
-  linkText: {
-    textDecorationLine: 'underline',
-    color: '#0000EE',
-  },
   disabledText: {
     color: 'gray', 
   },

@@ -39,7 +39,7 @@ export default function SettingHome({ navigation }) {
 
     useEffect( () => {
         const timer = setTimeout(() => {
-            if (!userDetails.security) {
+            if (userDetails.authsEnabled.length <= 1) {
             navigation.navigate('SecurityIntro')
         } 
        }, 1000);
