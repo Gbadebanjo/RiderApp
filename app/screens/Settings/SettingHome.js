@@ -39,10 +39,10 @@ export default function SettingHome({ navigation }) {
 
     useEffect( () => {
         const timer = setTimeout(() => {
-            if (!userDetails.security) {
+            if (userDetails.authsEnabled.length <= 1) {
             navigation.navigate('SecurityIntro')
         } 
-       }, 1000);
+       }, 3000);
 
         return () => clearTimeout(timer); 
     }, [userDetails]);
@@ -55,7 +55,7 @@ export default function SettingHome({ navigation }) {
                     <Image source={userDetails?.profileImg ? { uri: userDetails?.profileImg } : require('../../assets/ProfileTemplate.png')} style={styles.img} />
                 </TouchableOpacity>
                 {/* <Text style={{ color: '#fff', fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 20 }}>{userDetails?.firstName} {userDetails?.lastName}</Text> */}
-                <Text style={{ color: '#0E0E0E', fontSize: 20, fontWeight: '700', textAlign: 'center', margin: 5 }}>{userDetails?.firstName} {userDetails?.lastName}</Text>
+                <Text style={{ color: '#0E0E0E', fontSize: 20, fontWeight: '700', textAlign: 'center', margin: 5 }}>{userDetails?.displayName}</Text>
                 {/* <Text style={{ color: '#464646', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>User ID: {userDetails?.accountId}</Text> */}
                 <Text style={{ color: '#555555', fontSize: 14, textAlign: 'center' }}>
                     User ID: <Text style={{ color: '#0E0E0E', fontWeight: '700' }}>{userDetails?.accountId}</Text>

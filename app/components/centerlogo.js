@@ -3,7 +3,7 @@ import React from 'react';
 
 const defaultLogo = require('../assets/newRydeproLogo.png');
 
-export default function Centerlogo({ align, logoSource = defaultLogo, logoWidth = '30%', logoHeight = 5 }) {
+export default function Centerlogo({ align, logoSource = defaultLogo, logoWidth = '30%', logoHeight = 100 }) {
   return (
     <View style={[styles.container, align === 'left' ? styles.alignLeft : styles.alignCenter]}>
       <Image source={logoSource} style={[styles.logo, { width: logoWidth, height: logoHeight }]} />
@@ -14,7 +14,7 @@ export default function Centerlogo({ align, logoSource = defaultLogo, logoWidth 
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 'auto'
+    height: 'auto',
   },
   alignCenter: {
     alignItems: 'center',
