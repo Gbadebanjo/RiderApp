@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, Switch } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, Feather } from '@expo/vector-icons'
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../../context/AppContext';
 import CreatePassphraseModal from '../../components/CreatePassphraseModal';
@@ -65,16 +65,22 @@ export default function PassphraseScreen({ navigation, route }) {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="default" backgroundColor="#111111" />
-            <View style={styles.titleContainer} >
-                <Ionicons name="arrow-back" size={24} color='#fff'
-                    onPress={() => navigation.goBack()}
-                />
-                <Text style={styles.title}>Passphrase</Text>
-            </View>
+            <TouchableOpacity style={styles.titleContainer} onPress={() => navigation.goBack()} >
+                <Feather name="chevron-left" size={20} color='#111' />
+            </TouchableOpacity>
             <Text style={styles.subtitle}>Passphrase Management</Text>
-
-            <TouchableOpacity onPress={() => navigation.navigate('SettingsPasswordScreen', { originScreen: 'PassphraseScreen' })}>
+            <View style={styles.toggle}>
+                <Text>Pin</Text>
+                <Switch
+                    // value={isPinEnabled}
+                    // onValueChange={handleToggleSwitch}
+                    trackColor={{ false: '#f0f0f0', true: '#f0f0f0' }}
+                    // thumbColor={isPinEnabled ? '#111' : '#8a8a8a'}
+                />
+            </View>
+            <TouchableOpacity onPress={() => navigation.navigate('SettingsPasswordScreen', { originScreen: 'PassphraseScreen' })} style={styles.pinTouch}>
                 <Text style={styles.text} >{passphraseExists ? 'Update  Passphrase' : 'Create Passphrase'}</Text>
+                <Feather name="chevron-right" size={20} color='#8a8a8a' onPress={() => navigation.goBack()} />
             </TouchableOpacity>
             <CreatePassphraseModal
                 isVisible={isPassphraseModalVisible}
@@ -89,7 +95,7 @@ export default function PassphraseScreen({ navigation, route }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#212121',
+        backgroundColor: '#fcfcfc',
         paddingHorizontal: 20,
         width: '100%',
     },
@@ -101,22 +107,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
     },
-    title: {
-        fontSize: 20,
-        fontWeight: '400',
-        color: '#FFFFFF'
-    },
     subtitle: {
-        fontSize: 14,
-        fontWeight: '400',
-        color: '#767676',
+        fontSize: 20,
+        fontWeight: '500',
+        color: '#0c0c0c',
         paddingHorizontal: 2,
     },
     text: {
         fontSize: 14,
         fontWeight: '400',
-        color: '#fff',
-        marginTop: 20,
+        color: '#0c0c0c',
+    },
+    toggle: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginVertical: 20,
+    },
+    pinTouch: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
 
 });
