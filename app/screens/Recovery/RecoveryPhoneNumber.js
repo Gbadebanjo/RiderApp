@@ -30,23 +30,19 @@ export default function RecoveryPhoneNumber({ navigation, route }) {
     const handleVerify = async (values, { resetForm }) => {
       const {phone, userId } = values; 
       setLoading(true);
-      // const response = await recoveryApi.verifyRecoveryDetails(email, phone, userId);
-      const response = {
-        ok: true,
-      }
+      const response = await recoveryApi.verifyRecoveryDetails(email, userId, phone );
       Keyboard.dismiss();
       if (!response.ok) {
         setLoading(false);
         return Toast.show({
           type: 'error',
-          // text1: response.data.message,
-          text1: phone,
+          text1: "FAILURE",
+          text1: response.data.message,
         });
       }
       Toast.show({
         type: 'success',
-        // text1: response.data.message,
-        text1: userId,
+        text1: response.data.message,
       });
         resetForm();
         navigation.navigate('NewPassword', email);

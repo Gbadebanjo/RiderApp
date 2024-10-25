@@ -22,7 +22,6 @@ import ConfirmSignup from './app/screens/Auth/Signup/ConfirmSignup';  // In use
 import SetPassword from './app/screens/Auth/Signup/SetPassword';
 import UserDetails from './app/screens/Registration/UserDetails';
 import SettingHome from './app/screens/Settings/SettingHome';
-import SecurityIntro from './app/screens/Registration/SecurityIntro';
 import SetupSecurity from './app/screens/Auth/Signup/SetupSecurity';
 import SetupAdditionalSecurity from './app/screens/Auth/Signup/SetupAdditionalSecurity';
 import Security from './app/screens/Settings/Security';    // In use
@@ -94,7 +93,6 @@ export default function App() {
           <Stack.Screen name='MenuLanding' component={NavButtons} options={{ headerShown: false }} />
           <Stack.Screen name='UserDetails' component={UserDetails} options={{ headerShown: false }} />
           <Stack.Screen name='SettingHome' component={SettingHome} options={{ headerShown: false }} />
-          <Stack.Screen name='SecurityIntro' component={SecurityIntro} options={{ headerShown: false }} />
           <Stack.Screen name='SetupSecurity' component={SetupSecurity} options={{ headerShown: false }} />
           <Stack.Screen name='SetupAdditionalSecurity' component={SetupAdditionalSecurity} options={{ headerShown: false }} />
           <Stack.Screen name='Security' component={Security} options={{ headerShown: false }} />

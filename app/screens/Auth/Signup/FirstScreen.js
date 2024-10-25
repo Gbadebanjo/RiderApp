@@ -1,17 +1,25 @@
 import React, { useState, useEffect} from 'react';
 import api from '../../../api/auth';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Alert, Modal } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Image, Modal, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 import * as LocalAuthentication from 'expo-local-authentication';
 import Centerlogo from '../../../components/centerlogo';
 import SocialLogo from '../../../components/SocialLogo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Entypo, AntDesign, Ionicons } from '@expo/vector-icons';
-import {FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
+import fingerImage from '../../../assets/Group.png';
+import faceImage from '../../../assets/Vector.png'
 
 
-export default function Login({navigation}) {
-  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+export default function Login({ navigation }) {
+  const [loading, setLoading] = useState(false);
+  // const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+  const [isFacialIDSupported, setIsFacialIdSupported] = useState(false); 
+  const [isFingerprintSupported, setIsFingerprintSupported] = useState(false);  
   const [modalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
@@ -21,87 +29,29 @@ export default function Login({navigation}) {
   useEffect(() => {
     (async () => {
       const compatible = await LocalAuthentication.hasHardwareAsync();
-      setIsBiometricSupported(compatible);
+      // setIsBiometricSupported(compatible);
+      setIsFacialIdSupported(compatible);
+      setIsFingerprintSupported(compatible);
     })();
   }, []);
 
-  const handleBiometricAuth = async () => {
-    const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
-    if (!savedBiometrics) {
-      return Alert.alert(
-        'Biometric record not found',
-        'Please ensure you have set up biometrics in your device settings.',
-        [{ text: 'OK' }]
-      );
-    }
-  
-    const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
-    if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
-      return Alert.alert(
-        'Fingerprint not supported',
-        'Please ensure your device supports fingerprint authentication.',
-        [{ text: 'OK' }]
-      );
-    }
-  
-    const { success, error } = await LocalAuthentication.authenticateAsync({
-      promptMessage: 'Place your Finger to access your account',
-      fallbackLabel: 'Enter Password',
-    });
-  
-    if (success) {      
-      // retrieve biometricToken from asyncStorage
-      const biometricToken = await AsyncStorage.getItem('biometricToken');
-      console.log(biometricToken);
-      if (!biometricToken) {
-        Alert.alert('Error', 'You have not setup Biometric Authentication on your account. Access your account through other authentication methods', [{ text: 'OK' }])
-        return;
-      } 
-      const loginMethod = "biometric";
-  
-      // send request to login with biometric authentication
-      const response = await api.biometricsLogin (biometricToken, loginMethod);
-      console.log(response.data);
-      if (!response.ok) {
-        const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
-        return Alert.alert('Error', errorMessage, [
-          {
-            text: 'OK',
-          },
-        ]);
-      }
-      // save the biometricToken and token received in asyncStorage
-      await AsyncStorage.setItem('biometricToken', response.data.data.biometricToken);
-      await AsyncStorage.setItem('token', response.data.data.token);
-  
-      return Alert.alert('Success', response.data.data.message, [
-        {
-          text: 'OK',
-          onPress: () => navigation.navigate('MenuLanding'), 
-        },
-      ]);
-    } else {
-      Alert.alert('Authentication Failed', error, [{ text: 'OK' }]);
-    }
-  };
-
-  const handleFacialIDAuth = async () => {
+   const handleFacialIDAuth = async () => {
     const savedFaceId = await LocalAuthentication.isEnrolledAsync();
     if (!savedFaceId) {
-      return Alert.alert(
-        'FaceId record not found',
-        'Please ensure you have set up FaceId  in your device settings.',
-        [{ text: 'OK' }]
-      );
+      Toast.show({
+        type: 'error',
+        text1: 'Biometric record not found',
+        text2: 'Please ensure you have set up biometrics in your device settings',
+      });
     }
   
     const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
     if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
-      return Alert.alert(
-        'Facial recognition not supported',
-        'Please ensure your device supports Facial recognition authentication.',
-        [{ text: 'OK' }]
-      );
+      return Toast.show({
+        type: 'error',
+        text1: 'Facial recognition not supported',
+        text2: 'Please ensure your device supports Facial recognition authentication.',
+      });
     }
   
     const { success, error } = await LocalAuthentication.authenticateAsync({
@@ -109,42 +59,160 @@ export default function Login({navigation}) {
       // fallbackLabel: 'Enter Password',
       // disableDeviceFallback: true,
     });
-
-
   
-    if (success) {      
-      // retrieve biometricToken from asyncStorage
-      const facialToken = await AsyncStorage.getItem('facialToken');
-      if (!facialToken) {
-        Alert.alert('Error', 'You have not setup Face ID Authentication on your account. Access your account through other authentication methods', [{ text: 'OK' }])
-        return;
+    if (success) {   
+      const faceidToken = await AsyncStorage.getItem('bioToken');
+      const email = await AsyncStorage.getItem('email');
+      if (!email) {
+        return Toast.show({
+          type: 'error', 
+          text1: 'Please login with your email and password to acesss your account',
+        });
       }
-      const loginMethod = "facial";
-  
-      // send request to login with face ID authentication
-      const response = await api.biometricsLogin(facialToken, loginMethod);
-      if (!response.ok) {
-        const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
-        return Alert.alert('Error', errorMessage, [
-            {
-              text: 'OK',
-            },
-        ]);
+
+      if (!faceidToken) {
+        return Toast.show({
+          type: 'error', 
+          text1: 'You have not setup FaceID Authentication on your account'
+        });
+      } 
+
+      const getLocation= await AsyncStorage.getItem('userLocation');
+      const stringLocation = JSON.parse(getLocation);
+      const location = {
+        long: stringLocation.longitude,
+        lat: stringLocation.latitude,
+      }
+      
+      let deviceId;
+
+      if (Platform.OS === 'android') {
+        deviceId = await Application.getAndroidId();
+      } else if (Platform.OS === 'ios') {
+        deviceId = await Application.getIosIdForVendorAsync();
       }
   
-      // save the biometricToken and token received in asyncStorage
-      await AsyncStorage.setItem('facialToken', response.data.data.facialToken);
-      await AsyncStorage.setItem('token', response.data.data.token);
-  
-      return Alert.alert('Success', response.data.data.message, [
-        {
-          text: 'OK',
-          onPress: () => navigation.navigate('MenuLanding'), 
-        },
-      ]);
-    } else {
-      Alert.alert('Authentication Failed', error, [{ text: 'OK' }]);
+      const deviceInfo = {
+         deviceType: Device.osName,
+         deviceName: await Device.deviceName,
+         deviceId: deviceId,
     }
+      const response = await facialIDApi.loginWithPincode(email, faceidToken, deviceInfo, location);
+      if (!response.ok) {
+        setLoading(false);
+        const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+        return Toast.show({
+          type: 'error', 
+          text1: errorMessage,
+        });
+      }
+      Toast.show({
+          type: 'success',
+          text1: response.data.message,
+      });
+      await AsyncStorage.setItem('userToken', response.data.token);
+      await AsyncStorage.setItem('bioToken', response.data.bioToken);
+      setUserDetails(response.data.rider);
+  
+      setLoading(false);
+      return navigation.navigate('WelcomeHome');
+    } else {
+      return Toast.show({
+        type: 'error', 
+        text1: "Authentication Failed",
+      });
+    }
+  };
+
+  const handleFingerprintAuth = async () => {
+      const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+      if (!savedBiometrics) {
+        Toast.show({
+          type: 'error',
+          text1: 'Biometric record not found',
+          text2: 'Please ensure you have set up biometrics in your device settings',
+        });
+      }
+    
+      const biometricTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
+      if (!biometricTypes.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
+        return Toast.show({
+          type: 'error',
+          text1: 'Fingerprint not supported',
+          text2: 'Please ensure your device supports fingerprint authentication.',
+        });
+      }
+    
+      const { success, error } = await LocalAuthentication.authenticateAsync({
+        promptMessage: 'Place your Finger to access your account',
+        fallbackLabel: 'Enter Password',
+      });
+    
+      if (success) {      
+        const fingerprintToken = await AsyncStorage.getItem('bioToken');
+        const email = await AsyncStorage.getItem('email');
+        if (!email) {
+          return Toast.show({
+            type: 'error', 
+            text1: 'Please login with your email and password to acesss your account',
+          });
+        }
+
+        if (!fingerprintToken) {
+          return Toast.show({
+            type: 'error', 
+            text1: 'You have not setup Biometric Authentication on your account'
+          });
+        } 
+        
+        let deviceId;
+
+        if (Platform.OS === 'android') {
+          deviceId = await Application.getAndroidId();
+        } else if (Platform.OS === 'ios') {
+          deviceId = await Application.getIosIdForVendorAsync();
+        }
+    
+        const deviceInfo = {
+           deviceType: Device.osName,
+           deviceName: await Device.deviceName,
+           deviceId: deviceId,
+      }
+
+      const getLocation= await AsyncStorage.getItem('userLocation');
+      const stringLocation = JSON.parse(getLocation);
+      
+      const location = {
+        long: stringLocation.longitude,
+        lat: stringLocation.latitude,
+      }
+    
+        const response = await api.fingerprintLogin(email, fingerprintToken, deviceInfo, location);
+        if (!response.ok) {
+          setLoading(false);
+          const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
+          return Toast.show({
+            type: 'error', 
+            text1: errorMessage,
+          });
+        }
+        Toast.show({
+            type: 'success',
+            text1: response.data.message,
+        });
+        await AsyncStorage.setItem('userToken', response.data.token);
+        setUserDetails(response.data.rider);
+    
+        setLoading(false);
+        return navigation.navigate('WelcomeHome');
+
+      } else {
+        return Toast.show({
+          type: 'error', 
+          text1: "Authentication Failed",
+        });
+      }
+    
   };
 
   return (
@@ -181,9 +249,19 @@ export default function Login({navigation}) {
 
           <View style={styles.centerContent}>
             <View style={styles.socialsLogo}>
-              <SocialLogo text="Finger ID" onPress={handleBiometricAuth} logo={<Ionicons name="finger-print" size={50} color='#000' style={styles.logo} />} containerWidth='30%'/>
-              <SocialLogo text="Face ID" onPress={handleFacialIDAuth} logo={<AntDesign name="scan1" size={50} color='#000' style={styles.logo}/>} containerWidth='30%'/>
-            </View>
+             <View style={styles.eachLogo}>
+                <TouchableOpacity style={styles.logo} onPress={handleFingerprintAuth}>
+                  <Image source={fingerImage} style={styles.img} resizeMode="contain" />
+                </TouchableOpacity>
+                <Text style={styles.socialText}>Finger ID</Text>
+             </View>
+             <View style={styles.eachLogo}>
+                <TouchableOpacity style={styles.logo} onPress={handleFacialIDAuth}>
+                  <Image source={faceImage} style={styles.img} resizeMode="contain" />
+                </TouchableOpacity>
+                <Text style={styles.socialText}>Face ID</Text>
+             </View>
+          </View>
 
             <TouchableOpacity onPress={() => navigation.navigate('LoginOptions')}>
               <Text style={styles.otherLogin}>Other Sign In Options</Text>
@@ -194,10 +272,10 @@ export default function Login({navigation}) {
             <TouchableOpacity onPress={() => navigation.navigate('CreateAccount')}>
               <Text style={styles.signupText}>Sign Up</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('WelcomeHome')}>
+            <TouchableOpacity>
               <Text style={styles.signupText}>Terms</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('CreateAccount')}>
+            <TouchableOpacity>
               <Text style={styles.privacyText}>Privacy</Text>
             </TouchableOpacity>
         </View>
@@ -242,11 +320,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 30,
   },
+  socialText: {
+    fontSize: 16,
+    color: '#0E0E0E',
+    fontWeight: '700',
+    marginTop: 10
+  },
+  eachLogo: {
+    alignItems: 'center',
+  },
   logo: {
     borderWidth: 1,
     borderColor: '#DADADA',
     padding: 10,
     borderRadius: 50
+  },
+  img: {
+    width: 50,
+    height: 50,
   },
   otherLogin: {
     fontSize: 16,

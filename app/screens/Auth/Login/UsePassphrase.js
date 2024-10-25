@@ -33,10 +33,11 @@ export default function UsePassphrase({navigation, route}) {
 
         const getLocation= await AsyncStorage.getItem('userLocation');
         const stringLocation = JSON.parse(getLocation);
-        const location = {
+          const location = {
           long: stringLocation.longitude,
           lat: stringLocation.latitude,
         }
+          console.log(location);
 
         let deviceId;
 
@@ -53,7 +54,8 @@ export default function UsePassphrase({navigation, route}) {
       }
     
         const response = await passphraseApi.loginWithPassPhrase(email, passPhrase, deviceInfo, location);
-        Keyboard.dismiss();
+          Keyboard.dismiss();
+          console.log(response.data);
         if (!response.ok) {
           setLoading(false);
           const errorMessage = response.data.message || response.data.data?.message || 'An error occurred';
@@ -67,7 +69,6 @@ export default function UsePassphrase({navigation, route}) {
             text1: response.data.message,
         });
         await AsyncStorage.setItem('userToken', response.data.token);
-        await AsyncStorage.setItem('bioToken', response.data.bioToken);
         setUserDetails(response.data.rider);
     
           setLoading(false);

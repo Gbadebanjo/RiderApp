@@ -1,13 +1,17 @@
-import { StyleSheet, Text, View, ActivityIndicator, StatusBar, Keyboard, Modal } from 'react-native'
-import React, { useState, useRef } from 'react';
+import { StyleSheet, Text, View, ActivityIndicator, StatusBar, Keyboard, Platform } from 'react-native'
+import React, { useState, useRef, useContext } from 'react';
 import recoveryApi from '../../api/auth'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../components/BackButton';
 import InputField from '../../components/InputField';
 import Toast from 'react-native-toast-message';
 import StyledButton from '../../components/StyledButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { AppContext } from '../../context/AppContext';
 
 const validationSchema = (password) => yup.object().shape({
     confirmPassword: yup
@@ -21,31 +25,43 @@ export default function ConfirmNewPassword({ navigation, route }) {
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const formikRef = useRef(null); 
-    
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
-  };
+    const { userDetails, setUserDetails } = useContext(AppContext);
+  
+    const toggleModal = () => {
+      setModalVisible(!modalVisible);
+    };
 
     const handleContinue = async (values, { resetForm }) => {
-        const confirmNewPassword = values.confirmPassword
-      setLoading(true);
-      // const response = await recoveryApi.createNewPassword(email, password, confirmNewPassword );
-      const response = {
-        ok: true,
+      const confirmNewPassword = values.confirmPassword
+          let deviceId;
+
+      if (Platform.OS === 'android') {
+        deviceId = await Application.getAndroidId();
+      } else if (Platform.OS === 'ios') {
+        deviceId = await Application.getIosIdForVendorAsync();
       }
+
+      const deviceInfo = {
+        deviceType: Device.osName,
+        deviceName: await Device.deviceName,
+        deviceId: deviceId,
+      };
+      
+      setLoading(true);
+      const response = await recoveryApi.createNewPassword(email, password, confirmNewPassword, deviceInfo );
       Keyboard.dismiss();
       if (!response.ok) {
         setLoading(false);
         return Toast.show({
           type: 'error',
-          // text1: response.data.message,
-          text1: confirmNewPassword ,
+          text1: response.data.message,
         });
       }
+      await AsyncStorage.setItem('userToken', response.data.token);
+      setUserDetails(response.data.rider);
       Toast.show({
         type: 'success',
-        // text1: response.data.message,
-        text1: confirmNewPassword,
+        text1: response.data.message,
       });
       resetForm();
      navigation.navigate('Security');
