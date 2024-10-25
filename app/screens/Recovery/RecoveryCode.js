@@ -40,23 +40,20 @@ export default function RecoveryCode({navigation, route}) {
 
     const handleConfirm = async (values, {resetForm}) => {
       setLoading(true);
-      // const response = await recoveryApi.verifyRecoveryOtp(email, values.code);
-      const response = {
-        ok: true,
-      }
+      const response = await recoveryApi.verifyRecoveryOtp(email, values.code);
       Keyboard.dismiss();
       if (!response.ok) {
         setLoading(false);
         return Toast.show({
           type: 'error',
-          // text1: response.data.message,
-          text1: values.code,
+          text1: "Account Verification failed",
+          text2: response.data.message,
         });
       }
       Toast.show({
         type: 'success',
-        // text1: response.data.message,
-        text1: values.code,
+        text1: "Account Verification Sucessful",
+        text2: response.data.message,
       });
       resetForm();
      navigation.navigate('RecoveryPhoneNumber', email);
@@ -65,19 +62,19 @@ export default function RecoveryCode({navigation, route}) {
 
     const handleResend = async () => {
       setLoading(true);
-      const res = await otpApi.requestOtp(email, password, confirm);
+       const res = await recoveryApi.recoveryOtp(email);
   
       setLoading(false);
       if (res.ok) {
         setCountdown(180);
         Toast.show({
           type: 'success',
-          text2: res.data.message,
+          text1: res.data.message,
         });
       } else {
         Toast.show({
           type: 'error',
-          text2: res.data.message,
+          text1: res.data.message,
         });
       }
     }

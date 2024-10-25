@@ -7,11 +7,23 @@ import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { AppContext } from '../../context/AppContext';
+import SecurityIntroModal from '../../components/SecurityIntro';
 
 export default function SettingHome({ navigation }) {
     const { userDetails, setUserDetails } = useContext(AppContext);
     const [showLogOut, setShowLogOut] = useState(false);
     const slideAnim = useRef(new Animated.Value(300)).current;
+    const [modalVisible, setModalVisible] = useState(false);
+
+    useEffect( () => {
+        const timer = setTimeout(() => {
+            if (userDetails.authsEnabled.length <= 1) {
+            setModalVisible(true)
+        } 
+    }, 3000);
+
+        return () => clearTimeout(timer); 
+    }, [userDetails]);
 
     const logOut = async () => {
         try {
@@ -36,16 +48,6 @@ export default function SettingHome({ navigation }) {
         }
     };
 
-
-    useEffect( () => {
-        const timer = setTimeout(() => {
-            if (userDetails.authsEnabled.length <= 1) {
-            navigation.navigate('SecurityIntro')
-        } 
-       }, 3000);
-
-        return () => clearTimeout(timer); 
-    }, [userDetails]);
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -170,6 +172,13 @@ export default function SettingHome({ navigation }) {
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
+
+                       {/* Render the SecurityIntroModal */}
+            <SecurityIntroModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                navigation={navigation}
+            />
 
         </SafeAreaView>
     );

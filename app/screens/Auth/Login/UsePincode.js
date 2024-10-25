@@ -2,7 +2,6 @@ import React, {useRef, useState, useContext} from 'react';
 import api from '../../../api/auth'
 import { StyleSheet, Text, View, ActivityIndicator, StatusBar, Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute } from '@react-navigation/native';
 import BackButton from '../../../components/BackButton';
 import { AppContext } from '../../../context/AppContext';
 import Toast from 'react-native-toast-message';
@@ -18,8 +17,8 @@ import StyledButton from '../../../components/StyledButton';
 const validationSchema = yup.object().shape({
     pinCode: yup
       .string()
-      .length(6, 'Code must be exactly 6 digits')
-      .required('Enter the 6-digit code'),
+      .length(4, 'Code must be exactly 4 digits')
+      .required('Enter the 4-digit code'),
   });
   
 const CELL_COUNT = 4;
@@ -34,7 +33,7 @@ export default function UsePincode({navigation}) {
       setValue,
     });
     const [errorMessage, setErrorMessage] = useState('');
-    const formRef = useRef();
+    const formikRef = useRef(null); 
 
 
     const handleContinue = async (values) => {
@@ -85,11 +84,10 @@ export default function UsePincode({navigation}) {
             text1: response.data.message,
         });
         await AsyncStorage.setItem('userToken', response.data.token);
-        await AsyncStorage.setItem('bioToken', response.data.bioToken);
         setUserDetails(response.data.rider);
     
-          setLoading(false);
-         return navigation.navigate('WelcomeHome');
+        setLoading(false);
+        return navigation.navigate('WelcomeHome');
       }
 
     return (
@@ -104,12 +102,12 @@ export default function UsePincode({navigation}) {
                 </View>                  
                 <View>
                     <Formik
-                        innerRef={formRef}
+                        innerRef={formikRef}
                         initialValues={{ pinCode: '', }}
                         validationSchema={validationSchema}
                         onSubmit={handleContinue}
                     >
-                        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                        {({ handleChange, handleBlur, values, errors, touched }) => (
                         <>
 
                             <CodeField
@@ -121,6 +119,9 @@ export default function UsePincode({navigation}) {
                                 rootStyle={styles.codeFieldRoot}
                                 keyboardType="name-phone-pad"
                                 textContentType="oneTimeCode"
+                                onSubmitEditing={() => {
+                                  Keyboard.dismiss();
+                                }}
                                 renderCell={({ index, symbol, isFocused }) => (
                                 <Text
                                     key={index}
@@ -157,7 +158,7 @@ export default function UsePincode({navigation}) {
               }
               onPress={() => {
                 Keyboard.dismiss();
-                handleContinue();
+                formikRef.current.handleSubmit();
               }}
               width="40%"
               height={53}

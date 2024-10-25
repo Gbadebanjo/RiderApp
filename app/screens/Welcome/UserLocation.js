@@ -32,6 +32,7 @@ export default function UserLocation({navigation}){
         handleLocationAccess();
       }
     } catch (error) {
+        console.log('herrerer')
         console.error('Error requesting location permission:', error);
     } 
   };
@@ -63,7 +64,9 @@ export default function UserLocation({navigation}){
   return (
     <View style={styles.container}>
       <StatusBar barStyle='light-content' backgroundColor="#fff" />
-      <Modal isVisible={isDeniedModalVisible}>
+      <Modal
+        isVisible={isDeniedModalVisible}
+      >
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>
             Location Denied
