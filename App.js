@@ -51,12 +51,17 @@ import LiveChat from './app/screens/Settings/LiveChat'; // In use
 import TrackReferral from './app/screens/Dashboard/TrackReferral';  // In use
 import FacialIdToggle from './app/screens/Settings/FacialIdToggle'; // In use
 import PassphraseScreen from './app/screens/Settings/PassphraseScreen'; // In use
+import PassphraseCreateSelection from './app/screens/Settings/PassphraseCreateSelection'; // In use
+import PassphraseAutoGenerate from './app/screens/Settings/PassphraseAutoGenerate'; // In use
+import PassphraseManually from './app/screens/Settings/PassphraseManually'; // In use
+import PassphrasePassword from './app/screens/Settings/PassphrasePassword'; // In use
 import BiometricToggle from './app/screens/Settings/BiometricToggle';
 import SettingsPasswordScreen from './app/screens/Settings/SettingsPasswordScreen'; // In use
 import PinSettings from './app/screens/Settings/PinSettings'; // In use
 import PinPasswordScreen from './app/screens/Settings/PinPasswordScreen'; // In use
 import CreatePinScreen from './app/screens/Settings/CreatePinScreen'; // In use
 import ConfirmPinScreen from './app/screens/Settings/ConfirmPinScreen'; // In use
+import PasswordCurrent from './app/screens/Settings/PasswordCurrent'; // In use
 import DevicesList from './app/screens/Settings/DevicesList'; // In use
 
 import NavButtons from './app/components/NavButtons';  // In use
@@ -96,6 +101,10 @@ export default function App() {
           <Stack.Screen name='FacialID' component={FacialID} options={{ headerShown: false }} />
           <Stack.Screen name='SettingsPasswordScreen' component={SettingsPasswordScreen} options={{ headerShown: false }} />
           <Stack.Screen name='PassphraseScreen' component={PassphraseScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='PassphraseCreateSelection' component={PassphraseCreateSelection} options={{ headerShown: false }} />
+          <Stack.Screen name='PassphraseAutoGenerate' component={PassphraseAutoGenerate} options={{ headerShown: false }} />
+          <Stack.Screen name='PassphraseManually' component={PassphraseManually} options={{ headerShown: false }} />
+          <Stack.Screen name='PassphrasePassword' component={PassphrasePassword} options={{ headerShown: false }} />
           <Stack.Screen name='CreatePassphrase' component={CreatePassphrase} options={{ headerShown: false }} />
           <Stack.Screen name='GeneratePassphrase' component={GeneratePassphrase} options={{ headerShown: false }} />
           <Stack.Screen name='RecoveryEmail' component={RecoveryEmail} options={{ headerShown: false }} />
@@ -125,6 +134,7 @@ export default function App() {
           <Stack.Screen name='CreatePinScreen' component={CreatePinScreen} options={{ headerShown: false }} />
           <Stack.Screen name='ConfirmPinScreen' component={ConfirmPinScreen} options={{ headerShown: false }} />
           <Stack.Screen name='DevicesList' component={DevicesList} options={{ headerShown: false }} />
+          <Stack.Screen name='PasswordCurrent' component={PasswordCurrent} options={{ headerShown: false }} />
 
         </Stack.Navigator>
         <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />

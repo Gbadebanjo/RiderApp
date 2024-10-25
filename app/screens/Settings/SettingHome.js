@@ -2,10 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIn
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign, Feather, Entypo, FontAwesome6, FontAwesome5, MaterialIcons, MaterialCommunityIcons, SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState, useRef, useContext, useEffect } from 'react';
-import { Alert } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 import { AppContext } from '../../context/AppContext';
 import SecurityIntroModal from '../../components/SecurityIntro';
 

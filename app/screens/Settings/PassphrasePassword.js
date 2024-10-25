@@ -7,7 +7,7 @@ import { setAuthToken } from '../../api/client';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function SettingsPasswordScreen({ navigation, route }) {
+export default function PassphrasePassword({ navigation, route }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +35,7 @@ export default function SettingsPasswordScreen({ navigation, route }) {
           text1: response.data.message,
         });
       }
-      navigation.navigate(originScreen, { success: true , action: route.params?.action, authType: route.params?.authType });
+      navigation.navigate('PassphraseCreateSelection');
     }
     catch (error) {
       setError('An error occurred. Please try again.');
@@ -59,16 +59,16 @@ export default function SettingsPasswordScreen({ navigation, route }) {
         style={styles.input}
         secureTextEntry={!showPassword}
         value={password}
-        placeholder="********"
-        placeholderTextColor="#b0b0b0"
         onChangeText={setPassword}
+        placeholder='********'
+        placeholderTextColor='#b0b0b0'
         onSubmitEditing={handlePasswordSubmit} // Submit on completion
         returnKeyType='Submit' // Change the return key to 'Submit'
       />
       <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
           <Ionicons
             name={showPassword ? 'eye' : 'eye-off'}  // Change icon based on state
-            size={18}
+            size={24}
             color="#8d8d8d"
           />
         </TouchableOpacity>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'space-between',
+    justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderBottomColor: '#8d8d8d',
     marginVertical: 30,
