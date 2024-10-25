@@ -31,6 +31,7 @@ const updateAuth = (authType, payload) => {
     const endpoint = `update-security/${authType}`;
     return dashboardClient.post(endpoint, payload );
 };
+const deactivateDevice = (deviceInfo) => dashboardClient.put('device/deactivate', deviceInfo);
 
 export default {
     requestOtp,
@@ -55,5 +56,6 @@ export default {
     verifyRecoveryOtp,
     verifyRecoveryDetails,
     createNewPassword,
-    updateAuth
+    updateAuth,
+    deactivateDevice
 }

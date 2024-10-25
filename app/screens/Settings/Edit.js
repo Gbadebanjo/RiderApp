@@ -1,111 +1,175 @@
-import React, { useRef, useState, useContext } from 'react';
-import { StyleSheet, Text, View, ScrollView, Alert } from 'react-native';
+import React, { useRef, useState, useEffect, useContext } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ScrollView, Platform, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Formik } from 'formik';
-import * as yup from 'yup';
-import Toast from 'react-native-toast-message';
-import PhoneInput from 'react-native-phone-number-input';
-import StyledButton from '../../components/StyledButton';
-import Centerlogo from '../../components/centerlogo';
-import BackButton from '../../components/BackButton';
-import InputField from '../../components/InputField';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Toast from 'react-native-toast-message';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import StyledButton from '../../components/StyledButton';
+import { Formik } from 'formik';
+import InputField from '../../components/InputField';
+import SelectInput from '../../components/SelectInput';
+import PhoneInput from 'react-native-phone-number-input';
+import * as yup from 'yup';
+import BackButton from '../../components/BackButton';
+import ISO6391 from 'iso-639-1';
 import { AppContext } from '../../context/AppContext';
-import updateOtp from '../../api/auth';
+import * as Application from 'expo-application';
+import updateApi from '../../api/auth';
 import { setAuthToken } from '../../api/client';
 
 const validationSchema = yup.object().shape({
+  accountType: yup.string().required('Account Type is required'),
   firstName: yup.string().required('First Name is required'),
   lastName: yup.string().required('Last Name is required'),
+  middleName: yup.string().required('Middle Name is required'),
   displayName: yup.string().required('Display Name is required'),
-  phoneNumber: yup.string().required('Phone Number is required'),
-  emergencyContact: yup.string().required('Emergency Contact is required'),
-  emergencyPhoneNumber: yup.string().required('Emergency Phone Number is required'),
+  otherLangSpoken: yup.string().required('Other Language is required'),
+  dateOfBirth: yup.string().required('Date of birth is required'),
+  gender: yup.string().required('Gender is required'),
+  accessibility: yup.string().optional(),
+  email: yup
+    .string()
+    .email('Please enter a valid email')
+    .required('Enter your Email Address'),
+  phone: yup.string().required('Phone Number required'),
+  country: yup.string().required('Country is required'),
+  state: yup.string().required('State is required'),
+  city: yup.string().required('City is required'),
+  referralCode: yup.string().optional(),
 });
 
-export default function Edit({ navigation }) {
-  const [isFocused, setIsFocused] = useState(false);
+export default function UserDetails({ navigation, route }) {
   const [loading, setLoading] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const phoneInputRef = useRef(null);
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [languages, setLanguages] = useState([]);
+  const [locationDetails, setLocationDetails] = useState({});
   const { userDetails, setUserDetails } = useContext(AppContext);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const pickDate = (date, setFieldValue) => {
+    const formattedDate = date.toLocaleDateString();
+    setSelectedDate(formattedDate);
+    setFieldValue('dateOfBirth', formattedDate);
+    hideDatePicker();
+  };
+
+
+  useEffect(() => {
+    const fetchLanguages = () => {
+      const languageItems = ISO6391.getAllNames().map((language) => ({
+        label: language,
+        value: language,
+      }));
+      setLanguages(languageItems);
+    };
+
+    const fetchLocationDetails = async () => {
+      try {
+        const location = await AsyncStorage.getItem('userLocation');
+        if (location) {
+          setLocationDetails(JSON.parse(location));
+        }
+      } catch (error) {
+        console.error('Failed to fetch location details:', error);
+      }
+    };
+
+    fetchLanguages();
+    fetchLocationDetails();
+  }, []);
+
+
 
 
   const handleUpdate = async (values) => {
     setLoading(true);
-    console.log('Form values:', values);
-
-    const payload = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      displayName: values.displayName,
-      phone: values.phoneNumber, 
-      emergency: {
-        name: values.emergencyContact, 
-        phone: values.emergencyPhoneNumber,
-      },
-    };
 
     const token = await AsyncStorage.getItem('userToken');
     setAuthToken(token);
+    const response = await updateApi.updateUser(values);
 
-    try {
-      const response = await updateOtp.updateUser(payload);
-      // console.log('Update response:', response);
-      if (!response.ok) {
-        setLoading(false);
-        // console.error('An error occurred:', response.data.message);
-        return Toast.show({
-          type: 'error',
-          text1: response.data.message,
-        });
-      }
+    if (!response.ok) {
+      console.log(response.data);
       setLoading(false);
-      Toast.show({
-        type: 'success',
-        text1: 'Profile updated successfully',
-      });
-      setUserDetails(response.data.rider);
-      navigation.goBack();
-    }
-    catch (error) {
-      setLoading(false);
-      console.error('An error occurred:', error);
-      Toast.show({
+      return Toast.show({
         type: 'error',
-        text1: 'An error occurred. Please try again',
+        text1: response.data.message,
       });
     }
-  }
+    Toast.show({
+      type: 'success',
+      text1: response.data.message,
+    });
+    setUserDetails(response.data.rider.rider);
+    setLoading(false);
+    return navigation.navigate('SettingHome');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <BackButton style={styles.Icon} />
-        <Centerlogo align="left" />
 
         <Formik
           initialValues={{
+            accountType: 'Individual',
             firstName: userDetails.firstName || '',
             lastName: userDetails.lastName || '',
+            middleName: userDetails.middleName || '',
             displayName: userDetails.displayName || '',
-            phoneNumber: userDetails.phone || '',
-            emergencyContact: userDetails.emergency.name || '', 
-            emergencyPhoneNumber: userDetails.emergency.phone || '', 
+            otherLangSpoken: userDetails.otherLangSpoken || '',
+            dateOfBirth: userDetails.dateOfBirth || '',
+            gender: userDetails.gender || '',
+            email: userDetails.email || '',
+            phone:  userDetails.phone || '',
+            referralCode:  userDetails.referralCode || '',
+            country: locationDetails?.country || '',
+            state: locationDetails?.state || '',
+            city: locationDetails?.city || '',
           }}
           validationSchema={validationSchema}
-          onSubmit={(values) => handleUpdate(values)}
+          onSubmit={handleUpdate}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, touched }) => (
             <>
+              <Text style={styles.profile}>Profile</Text>
+              <InputField
+                label="Account Type"
+                placeholder=""
+                // autoCapitalize="none"
+                // textContentType=""
+                // returnKeyType="next"
+                width="100%"
+                // onChangeText={handleChange('accountType')}
+                onBlur={handleBlur('accountType')}
+                value={"Individual"}
+                error={touched.accountType && errors.accountType}
+                errorMessage={errors.accountType}
+                // showPasswordToggle={false}
+                paddingLeft={10}
+              />
+
               <InputField
                 label="First Name"
-                placeholder="John"
-                autoCapitalize="none"
                 returnKeyType="next"
                 width="100%"
                 onChangeText={handleChange('firstName')}
                 onBlur={handleBlur('firstName')}
                 value={values.firstName}
+                paddingLeft={10}
                 error={touched.firstName && errors.firstName}
                 errorMessage={errors.firstName}
                 showPasswordToggle={false}
@@ -113,24 +177,44 @@ export default function Edit({ navigation }) {
 
               <InputField
                 label="Last Name"
-                placeholder="Doe"
+                placeholder="John"
                 autoCapitalize="none"
+                textContentType=""
                 returnKeyType="next"
                 width="100%"
                 onChangeText={handleChange('lastName')}
                 onBlur={handleBlur('lastName')}
                 value={values.lastName}
+                paddingLeft={10}
                 error={touched.lastName && errors.lastName}
                 errorMessage={errors.lastName}
                 showPasswordToggle={false}
               />
 
               <InputField
-                label="Display Name (Alias)"
-                placeholder="JohnD"
+                label="Middle Name"
+                placeholder="John"
                 autoCapitalize="none"
+                textContentType=""
                 returnKeyType="next"
                 width="100%"
+                paddingLeft={10}
+                onChangeText={handleChange('middleName')}
+                onBlur={handleBlur('middleName')}
+                value={values.middleName}
+                error={touched.middleName && errors.middleName}
+                errorMessage={errors.middleName}
+                showPasswordToggle={false}
+              />
+
+              <InputField
+                label="Display Name (Alias)"
+                placeholder="John"
+                autoCapitalize="none"
+                textContentType=""
+                returnKeyType="next"
+                width="100%"
+                paddingLeft={10}
                 onChangeText={handleChange('displayName')}
                 onBlur={handleBlur('displayName')}
                 value={values.displayName}
@@ -139,75 +223,180 @@ export default function Edit({ navigation }) {
                 showPasswordToggle={false}
               />
 
-              <Text style={styles.label}>Phone Number</Text>
+              <SelectInput
+                label="Other Language Spoken"
+                items={languages}
+                value={values.otherLangSpoken}
+                onValueChange={(value) => {
+                  setSelectedLanguage(value);
+                  handleChange('otherLangSpoken')(value);
+                }}
+                initialValue=""
+                placeholder="Choose Language"
+                error={touched.otherLangSpoken && errors.otherLangSpoken}
+                errorMessage={errors.otherLangSpoken}
+                width="100%"
+              />
+              {touched.otherLangSpoken && errors.otherLangSpoken && (
+                <Text style={styles.errorText}>{errors.otherLangSpoken}</Text>
+              )}
+
+              <Text style={styles.phonelabel}>Date of Birth</Text>
+              <View>
+                <TouchableOpacity style={styles.dateContainer} onPress={showDatePicker}>
+                  <Text style={styles.dateText}>{values.dateOfBirth || 'Select Date'}</Text>
+                  <AntDesign name="calendar" size={20} color="black" />
+                </TouchableOpacity>
+                <DateTimePickerModal
+                  isVisible={isDatePickerVisible}
+                  mode="date"
+                  onConfirm={(date) => pickDate(date, setFieldValue)}
+                  onCancel={hideDatePicker}
+                />
+                {touched.dateOfBirth && errors.dateOfBirth && (
+                  <Text style={styles.errorText}>{errors.dateOfBirth}</Text>
+                )}
+              </View>
+
+              <SelectInput
+                label="Gender"
+                items={[
+                  { label: 'Male', value: 'Male' },
+                  { label: 'Female', value: 'Female' },
+                  { label: 'Other', value: 'Other' },
+                ]}
+                // placeholder='Select Gender'
+                onValueChange={handleChange('gender')}
+                initialValue={locationDetails.gender || ''}
+                value={values.gender}
+                width="100%"
+                error={errors.gender}
+                errorMessage={errors.gender}
+              />
+              {touched.gender && errors.gender && (
+                <Text style={styles.errorText}>{errors.gender}</Text>
+              )}
+
+              <Text style={styles.phonelabel}>Phone Number</Text>
               <View style={styles.phoneContainer}>
                 <PhoneInput
                   ref={phoneInputRef}
-                  defaultValue={values.phoneNumber}
+                  defaultValue={values.phone}
                   defaultCode="US"
                   layout="first"
-                  onChangeText={handleChange('phoneNumber')}
+                  onChangeText={handleChange('phone')}
                   containerStyle={[
                     styles.phoneFlagContainer,
                     isFocused && styles.focusedPhoneFlagContainer,
                   ]}
                   textContainerStyle={styles.phoneInputTextContainer}
+                  withDarkTheme
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  value={values.phoneNumber}
+                  // value={values.phone}
+                  error={touched.phone && errors.phone}
+                  errorMessage={errors.phone}
                 />
-                {touched.phoneNumber && errors.phoneNumber && (
-                  <Text style={styles.errorText}>{errors.phoneNumber}</Text>
+                {touched.phone && errors.phone && (
+                  <Text style={styles.errorText}>{errors.phone}</Text>
                 )}
               </View>
 
+              <SelectInput
+                label="Country"
+                items={[
+                  { label: 'United States', value: 'us' },
+                  { label: 'United Kingdom', value: 'uk' },
+                  { label: 'Nigeria', value: 'nigeria' },
+                  { label: 'India', value: 'india' },
+                ]}
+                placeholder='Select Country'
+                onValueChange={handleChange('country')}
+                initialValue={locationDetails.country || ''}
+                value={values.country}
+                width="100%"
+                error={errors.country}
+                errorMessage={errors.country}
+              />
+              {touched.country && errors.country && (
+                <Text style={styles.errorText}>{errors.country}</Text>
+              )}
+
+              <SelectInput
+                label="State"
+                items={[
+                  { label: 'Lagos', value: 'lagos' },
+                  { label: 'Ogun', value: 'ogun' },
+                  { label: 'Osun', value: 'osun' },
+                  { label: 'Others', value: 'others' },
+                ]}
+                placeholder='Select State'
+                onValueChange={handleChange('state')}
+                value={values.state}
+                width="100%"
+                error={errors.state}
+                errorMessage={errors.state}
+                initialValue={locationDetails.state || ''}
+              />
+              {touched.state && errors.state && (
+                <Text style={styles.errorText}>{errors.state}</Text>
+              )}
+
+              <SelectInput
+                label="City"
+                items={[
+                  { label: 'Ikeja', value: 'ikeja' },
+                  { label: 'Lekki', value: 'lekki' },
+                  { label: 'Ibadan', value: 'ibadan' },
+                  { label: 'Others', value: 'others' },
+                ]}
+                placeholder='Select City'
+                onValueChange={handleChange('city')}
+                initialValue={locationDetails.city || ''}
+                value={values.city}
+                width="100%"
+                error={errors.city}
+                errorMessage={errors.city}
+              />
+              {touched.city && errors.city && (
+                <Text style={styles.errorText}>{errors.city}</Text>
+              )}
+
+
               <InputField
-                label="Emergency Contact(Name)"
-                placeholder="Jane Doe"
+                label="Referral Code (optional)"
+                placeholder="Your Code Here"
                 autoCapitalize="none"
+                textContentType=""
                 returnKeyType="next"
                 width="100%"
-                onChangeText={handleChange('emergencyContact')}
-                onBlur={handleBlur('emergencyContact')}
-                value={values.emergencyContact}
-                error={touched.emergencyContact && errors.emergencyContact}
-                errorMessage={errors.emergencyContact}
+                paddingLeft={10}
+                onChangeText={handleChange('referralCode')}
+                onBlur={handleBlur('referralCode')}
+                value={values.referralCode}
+                error={touched.referralCode && errors.referralCode}
+                errorMessage={errors.referralCode}
                 showPasswordToggle={false}
               />
 
-              <Text style={styles.label}>Emergency Number</Text>
-              <View style={styles.phoneContainer}>
-                <PhoneInput
-                  ref={phoneInputRef}
-                  defaultValue={values.emergencyPhoneNumber}
-                  defaultCode="US"
-                  layout="first"
-                  onChangeText={handleChange('emergencyPhoneNumber')}
-                  containerStyle={[
-                    styles.phoneFlagContainer,
-                    isFocused && styles.focusedPhoneFlagContainer,
-                  ]}
-                  textContainerStyle={styles.phoneInputTextContainer}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                  value={values.emergencyPhoneNumber}
-                />
-                {touched.emergencyPhoneNumber && errors.emergencyPhoneNumber && (
-                  <Text style={styles.errorText}>{errors.emergencyPhoneNumber}</Text>
-                )}
-              </View>
-
               <StyledButton
-                title="Update"
-                loading={loading}
-                onPress={handleSubmit} 
-                width="100%"
+                title={
+                  loading ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    'Next'
+                  )
+                }
+                onPress={handleSubmit}
+                width="40%"
                 height={53}
                 paddingVertical={10}
-                marginTop={20}
+                marginTop={40}
                 backgroundColor="#212121"
                 borderWidth={2}
                 TextColor="#fff"
+                borderRadius={10}
+                marginLeft='60%'
               />
             </>
           )}
@@ -223,33 +412,47 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
+    paddingBottom: 30,
     paddingTop: 30,
   },
   Icon: {
-    alignSelf: 'flex-start',
-    marginBottom: 20,
+    marginBottom: 10,
+    marginLeft: '5%',
   },
-  label: {
-    fontSize: 16,
-    color: '#212121',
+  profile: {
+    fontSize: 18,
+    fontWeight: '500',
+    marginTop: 20,
+  },
+  phonelabel: {
     marginTop: 15,
-  },
-  errorText: {
     fontSize: 14,
-    color: 'red',
-    marginTop: 5,
-    alignSelf: 'flex-start',
+    fontWeight: '500',
+    color: '#0E0E0E',
   },
   phoneContainer: {
     height: 50,
     width: '100%',
     marginBottom: 20,
   },
+  dateContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    marginTop: 6,
+    width: '100%',
+    borderBottomWidth: 1,
+    borderColor: '#CCCCCC',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  dateText: {
+    color: '#8A8A8A',
+  },
   phoneFlagContainer: {
     height: '100%',
     borderColor: '#CCCCCC',
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     width: '100%',
   },
   focusedPhoneFlagContainer: {
@@ -262,5 +465,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  errorText: {
+    fontSize: 12,
+    color: 'red',
+    marginTop: 0,
+    alignSelf: 'flex-start',
   },
 });
