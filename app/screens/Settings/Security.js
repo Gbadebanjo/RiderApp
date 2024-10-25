@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Switch, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Switch, ScrollView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Entypo, Feather } from '@expo/vector-icons';
 import { AppContext } from '../../context/AppContext';
@@ -8,12 +8,15 @@ import authApi from '../../api/auth';  // Unified API import
 import Toast from 'react-native-toast-message';
 import { setAuthToken } from '../../api/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 
 export default function Security({ navigation, route }) {
     const [isFacialIDEnabled, setIsFacialIDEnabled] = useState(false);
     const [isFingerIDEnabled, setIsFingerIDEnabled] = useState(false);
     const [isFingerprintSupported, setIsFingerprintSupported] = useState(false);
     const { userDetails, setUserDetails } = useContext(AppContext);
+
 
     // Check authentication status from userDetails
     useEffect(() => {
@@ -35,11 +38,36 @@ export default function Security({ navigation, route }) {
         const token = await AsyncStorage.getItem('userToken');
         setAuthToken(token);
 
+        let deviceId;
+
+        if (Platform.OS === 'android') {
+            deviceId = await Application.getAndroidId();
+        } else if (Platform.OS === 'ios') {
+            deviceId = await Application.getIosIdForVendorAsync();
+        }
+
+        // Add a safety check here
+    if (!deviceId) {
+        console.error('Device ID is undefined!');
+        return Toast.show({ type: 'error', text1: 'Device ID not found. Please try again.' });
+    }
+
+        const deviceInfo = {
+            "deviceId": deviceId,
+            "deviceName": await Device.deviceName,
+            "deviceType": "Device.osName"
+        }
+
         try {
-            // console.log('Updating', authType, newValue);
-            const response = await authApi.updateAuth(authType, newValue);
+            const payload = {
+                value: newValue,
+                deviceInfo
+            };
+            console.log('Payload', payload);
+            // console.log('Updating', authType, payload);
+            const response = await authApi.updateAuth(authType, payload);
             if (!response.ok) {
-                // console.log(response.data?.message)
+                console.log("error", response.data?.message)
                 return Toast.show({
                     type: 'error',
                     text1: 'Update Failed',
@@ -54,6 +82,9 @@ export default function Security({ navigation, route }) {
         }
     };
 
+ 
+ 
+    
     const toggleAuth = async (authType, isEnabled, setEnabled) => {
         if (isEnabled) {
             navigation.navigate('SettingsPasswordScreen', { originScreen: 'Security', action: 'disable', authType });
@@ -136,7 +167,7 @@ export default function Security({ navigation, route }) {
                     <Feather name="chevron-right" size={20} color='#111' />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.password}>
+                <TouchableOpacity style={styles.password} onPress={() => navigation.navigate('PasswordCurrent')}>
                     <Text style={styles.text}>Change Password</Text>
                     <Feather name="chevron-right" size={20} color='#111' />
                 </TouchableOpacity>

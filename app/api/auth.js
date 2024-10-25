@@ -26,9 +26,10 @@ const updateUser = (values) => dashboardClient.put('update', values);
 const confirmPassword = (password) => dashboardClient.post('confirm', { password });
 const updatePin = (values) => dashboardClient.post('update-security/pin', values);
 const updatePassphrase = (value) => dashboardClient.post('update-security/passphrase', value);
-const updateAuth = (authType, value) => {
+const updateAuth = (authType, payload) => {
+    console.log('Updating', authType, payload);
     const endpoint = `update-security/${authType}`;
-    return dashboardClient.post(endpoint, { value });
+    return dashboardClient.post(endpoint, payload );
 };
 
 export default {
@@ -50,8 +51,6 @@ export default {
     confirmPassword,
     updatePin,
     updatePassphrase,
-    updateFingerPrint,
-    updateFacialId,
     recoveryOtp,
     verifyRecoveryOtp,
     verifyRecoveryDetails,
