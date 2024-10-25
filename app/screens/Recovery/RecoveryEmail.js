@@ -31,25 +31,22 @@ export default function EnterEmail({ navigation }) {
     const handleContinue = async (values, { resetForm }) => {
         const { email } = values;
         setLoading(true);
-        //   const res = await otpApi.verifyOtp(email);
-        const res = {
-            ok: true,
-        }
+        const res = await otpApi.recoveryOtp(email);
   
       setLoading(false);
       if (res.ok) {
         Toast.show({
           type: 'success',
           text1: 'Account Created Successfully',
-        //   text2: res.data.message,
+          text2: res.data.message,
         });
           navigation.navigate('RecoveryCode', email);
           resetForm();
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Account Creation Failed',
-        //   text2: res.data.message,
+          text1: 'OTP Sending Failed',
+          text2: res.data.message,
         });
       }
     };

@@ -1,20 +1,21 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet, TextInput, StatusBar } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
+import BackButton from '../../components/BackButton';
 
 export default function Language({ navigation }) {
-  const [selectedLanguage, setSelectedLanguage] = useState('English');
+  const [selectedLanguage, setSelectedLanguage] = useState('Select Language');
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [dropdownTop, setDropdownTop] = useState(0);
+  const [buttonPosition, setButtonPosition] = useState({ top: 0, left: 0, width: 0, height: 0 });
   const [otherLanguage, setOtherLanguage] = useState('');
   const languages = ['English', 'Spanish', 'Chinese', 'French', 'German', 'Japanese', 'Other'];
   const pickerRef = useRef(null);
 
   const openModal = () => {
     pickerRef.current.measure((fx, fy, width, height, px, py) => {
-      setDropdownTop(py + height);
+      setButtonPosition({ top: py, left: px, width, height });
+      setIsModalVisible(true);
     });
-    setIsModalVisible(true);
   };
 
   const closeModal = () => {
@@ -29,6 +30,8 @@ export default function Language({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <StatusBar translucent barStyle="dark-content" backgroundColor="transparent" />
+      <BackButton/>
       <Text style={styles.title}>Language Selection</Text>
       <Text style={styles.subtitle}>What is your preferred language?</Text>
 
@@ -51,7 +54,7 @@ export default function Language({ navigation }) {
           onRequestClose={closeModal}
         >
           <TouchableOpacity style={styles.modalBackground} onPress={closeModal}>
-            <View style={[styles.dropdownContainer, { top: dropdownTop }]}>
+            <View style={[styles.dropdownContainer, { top: buttonPosition.top + buttonPosition.height, left: buttonPosition.left, width: buttonPosition.width }]}>
               <FlatList
                 data={languages}
                 keyExtractor={(item) => item}
@@ -87,6 +90,7 @@ export default function Language({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: '13%',
     padding: 20,
     backgroundColor: '#fff',
   },
@@ -94,6 +98,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    marginTop: '10%',
   },
   subtitle: {
     fontSize: 16,
@@ -118,15 +123,14 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     position: 'absolute', 
-    width: '89%',
-    marginLeft: '5.5%',
     backgroundColor: '#fff',
     borderBottomRightRadius: 5,
     borderBottomLeftRadius: 5,
     maxHeight: 'auto',
     borderColor: '#ccc',
     borderWidth: 1,
-    marginTop: 1,
+    //  paddingVertical: 20,
+    // marginTop: '-11%',
   },
   dropdownItem: {
     paddingVertical: 12,

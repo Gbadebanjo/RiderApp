@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { FontAwesome6 } from '@expo/vector-icons';
-import Centerlogo from '../../components/centerlogo';
 import StyledButton from '../../components/StyledButton';
+import BackButton from '../../components/BackButton';
 
 export default function Photo({ navigation }) {
   const [facing, setFacing] = useState('front');
@@ -101,8 +101,8 @@ export default function Photo({ navigation }) {
             ref={cameraRef}
           />
         </View>
-        <Centerlogo />
-        <Text style={styles.text}>Take a Profile Photo</Text>
+        <BackButton/>
+        <Text style={styles.text}>Capture Passport photo</Text>
 
         <View style={styles.controlsContainer}>
 
@@ -116,8 +116,9 @@ export default function Photo({ navigation }) {
             >
               <FontAwesome6 name="arrows-rotate" size={24} color="#212121" />
             </TouchableOpacity>
+                      
             <StyledButton
-              title="Capture"
+              title="Update Profile Picture"
               onPress={takePicture}
               width="100%"
               height={50}

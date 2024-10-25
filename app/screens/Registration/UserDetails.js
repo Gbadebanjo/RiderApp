@@ -32,7 +32,7 @@ const validationSchema = yup.object().shape({
     .string()
     .email('Please enter a valid email')
     .required('Enter your Email Address'),
-    phone: yup.string().required('Phone Number required'),
+    phoneNumber: yup.string().required('Phone Number required'),
     country: yup.string().required('Country is required'),
     state: yup.string().required('State is required'),
     city: yup.string().required('City is required'),
@@ -41,7 +41,6 @@ const validationSchema = yup.object().shape({
 
 export default  function UserDetails({navigation, route}) {
     const { email } = route.params;
-    const [phoneNumber, setPhoneNumber] = useState('');
     const [loading, setLoading] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const phoneInputRef = useRef(null);
@@ -96,9 +95,9 @@ export default  function UserDetails({navigation, route}) {
 
   const handleNext = async (values) => {
     setLoading(true)
-    console.log(values)
-      const { email, firstName, middleName, lastName, otherLangSpoken, dateOfBirth, phone, gender, displayName, country, state, city, } = values;
-
+    const { email, firstName, middleName, lastName, otherLangSpoken, dateOfBirth, phoneNumber, gender, displayName, country, state, city, } = values;
+      const countryCode = phoneInputRef.current.getCallingCode();
+      const phone = `${countryCode}${phoneNumber}`;
       const getLocation= await AsyncStorage.getItem('userLocation');
       const stringLocation = JSON.parse(getLocation);
       const signupLocation = {
@@ -111,9 +110,7 @@ export default  function UserDetails({navigation, route}) {
       state,
       city
     }
-    
-      console.log('location', location)
-      
+          
       let deviceId;
 
       if (Platform.OS === 'android') {
@@ -128,7 +125,6 @@ export default  function UserDetails({navigation, route}) {
          deviceId: deviceId,
     }  
       const response = await signupApi.signUp(email, firstName, middleName, lastName, otherLangSpoken, dateOfBirth, phone, displayName, deviceInfo, signupLocation, location,  gender,);
-      console.log(response);
       if (!response.ok) {
         setLoading(false);
         return Toast.show({
@@ -141,7 +137,6 @@ export default  function UserDetails({navigation, route}) {
         text1: response.data.message,
       });
       const token = response.data.rider.token
-      console.log(token)
       await AsyncStorage.setItem('userToken', token);
       setUserDetails(response.data.rider.rider);
       setLoading(false);
@@ -165,7 +160,7 @@ export default  function UserDetails({navigation, route}) {
              dateOfBirth: '',
              gender: '',
              email: email,
-             phone: '',
+             phoneNumber: '',
              referralCode: '',
              country: locationDetails.country || '',
              state: locationDetails.state || '',
@@ -331,10 +326,10 @@ export default  function UserDetails({navigation, route}) {
                 <View style={styles.phoneContainer}>
                   <PhoneInput
                     ref={phoneInputRef}
-                    defaultValue={phoneNumber}
+                    defaultValue={values.phoneNumber}
                     defaultCode="US"
                     layout="first"
-                    onChangeText={handleChange('phone')}
+                    onChangeText={handleChange('phoneNumber')}
                     containerStyle={[
                         styles.phoneFlagContainer,
                         isFocused && styles.focusedPhoneFlagContainer,
@@ -343,13 +338,12 @@ export default  function UserDetails({navigation, route}) {
                     withDarkTheme
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    value={values.phone}
-                    error={touched.phone && errors.phone}
-                    errorMessage={errors.phone}
+                    value={values.phoneNumber}
+                    error={touched.phoneNumber && errors.phoneNumber}
+                    errorMessage={errors.phoneNumber}
                 />
-                
-                  {touched.phone && errors.phone && (
-                      <Text style={styles.errorText}>{errors.phone}</Text>
+                  {touched.phoneNumber && errors.phoneNumber && (
+                      <Text style={styles.errorText}>{errors.phoneNumber}</Text>
                   )}
               </View>
               

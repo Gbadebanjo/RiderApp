@@ -93,10 +93,9 @@ export default function UsePassword({ navigation, route }) {
       type: 'success',
       text1: response.data.message,
     });
-
     await AsyncStorage.setItem('userToken', response.data.token);
     await AsyncStorage.setItem('email', email);
-    setUserDetails(response.data.rider.rider);
+    setUserDetails(response.data.rider);
       setLoading(false);
       resetForm();
      return navigation.navigate('SettingHome');
@@ -126,14 +125,14 @@ export default function UsePassword({ navigation, route }) {
               >
                 <TouchableOpacity style={styles.modalOverlay} onPress={toggleModal}>
                   <View style={styles.modalContent}>
+                    <TouchableOpacity onPress={()=> navigation.navigate('RecoveryEmail')}>
+                      <Text style={styles.modalItem}>Account Recovery</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity>
                       <Text style={styles.modalItem}>Contact Us</Text>
                     </TouchableOpacity>
                     <TouchableOpacity>
                       <Text style={styles.modalItem}>Faq</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                      <Text style={styles.modalItem}>Account Recovery</Text>
                     </TouchableOpacity>
                   </View>
                 </TouchableOpacity>
