@@ -95,13 +95,28 @@ export default function UserDetails({ navigation, route }) {
 
   const handleUpdate = async (values) => {
     setLoading(true);
+    console.log('values', values);
+    const updatedValues = {
+      ...values,
+      location: {
+        city: values.city,
+        state: values.state,
+        country: values.country,
+      },
+    };
+
+    delete updatedValues.city;
+    delete updatedValues.state;
+    delete updatedValues.country;
+
+    // console.log('Updated values:', updatedValues);
 
     const token = await AsyncStorage.getItem('userToken');
     setAuthToken(token);
-    const response = await updateApi.updateUser(values);
+    const response = await updateApi.updateUser(updatedValues);
 
     if (!response.ok) {
-      console.log(response.data);
+      console.log(response);
       setLoading(false);
       return Toast.show({
         type: 'error',
@@ -112,7 +127,7 @@ export default function UserDetails({ navigation, route }) {
       type: 'success',
       text1: response.data.message,
     });
-    setUserDetails(response.data.rider.rider);
+    setUserDetails(response.data.rider);
     setLoading(false);
     return navigation.navigate('SettingHome');
   };
@@ -126,19 +141,19 @@ export default function UserDetails({ navigation, route }) {
         <Formik
           initialValues={{
             accountType: 'Individual',
-            firstName: userDetails.firstName || '',
-            lastName: userDetails.lastName || '',
-            middleName: userDetails.middleName || '',
-            displayName: userDetails.displayName || '',
-            otherLangSpoken: userDetails.otherLangSpoken || '',
-            dateOfBirth: userDetails.dateOfBirth || '',
-            gender: userDetails.gender || '',
-            email: userDetails.email || '',
-            phone:  userDetails.phone || '',
-            referralCode:  userDetails.referralCode || '',
-            country: locationDetails?.country || '',
-            state: locationDetails?.state || '',
-            city: locationDetails?.city || '',
+            firstName: userDetails?.firstName || '',
+            lastName: userDetails?.lastName || '',
+            middleName: userDetails?.middleName || '',
+            displayName: userDetails?.displayName || '',
+            otherLangSpoken: userDetails?.otherLangSpoken || '',
+            dateOfBirth: userDetails?.dateOfBirth || '',
+            gender: userDetails?.gender || '',
+            email: userDetails?.email || '',
+            phone: userDetails?.phone || '',
+            referralCode: userDetails?.referralCode || '',
+            country: userDetails?.location ? JSON.parse(userDetails.location).country : '',
+            state: userDetails?.location ? JSON.parse(userDetails.location).state : '',
+            city: userDetails?.location ? JSON.parse(userDetails.location).city : '',
           }}
           validationSchema={validationSchema}
           onSubmit={handleUpdate}
@@ -149,16 +164,11 @@ export default function UserDetails({ navigation, route }) {
               <InputField
                 label="Account Type"
                 placeholder=""
-                // autoCapitalize="none"
-                // textContentType=""
-                // returnKeyType="next"
                 width="100%"
-                // onChangeText={handleChange('accountType')}
                 onBlur={handleBlur('accountType')}
                 value={"Individual"}
                 error={touched.accountType && errors.accountType}
                 errorMessage={errors.accountType}
-                // showPasswordToggle={false}
                 paddingLeft={10}
               />
 
@@ -312,7 +322,7 @@ export default function UserDetails({ navigation, route }) {
                 ]}
                 placeholder='Select Country'
                 onValueChange={handleChange('country')}
-                initialValue={locationDetails.country || ''}
+                initialValue={values.country || ''}
                 value={values.country}
                 width="100%"
                 error={errors.country}
@@ -336,7 +346,7 @@ export default function UserDetails({ navigation, route }) {
                 width="100%"
                 error={errors.state}
                 errorMessage={errors.state}
-                initialValue={locationDetails.state || ''}
+                initialValue={values.state || ''}
               />
               {touched.state && errors.state && (
                 <Text style={styles.errorText}>{errors.state}</Text>
@@ -352,7 +362,7 @@ export default function UserDetails({ navigation, route }) {
                 ]}
                 placeholder='Select City'
                 onValueChange={handleChange('city')}
-                initialValue={locationDetails.city || ''}
+                initialValue={values.city || ''}
                 value={values.city}
                 width="100%"
                 error={errors.city}

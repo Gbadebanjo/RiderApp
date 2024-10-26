@@ -10,11 +10,10 @@ const MilesPoint = ({ navigation }) => {
                 style={styles.headcontainer}
                 onPress={() => navigation.goBack()}
             >
-                <FontAwesome name="angle-left" size={24} color="#fff" />
+                <FontAwesome name="angle-left" size={24} color="#0c0c0c" />
                 <Text style={styles.head}>Miles Points </Text>
             </TouchableOpacity>
             <View style={styles.bodyContainer}>
-                <Text style={styles.key}>Miles Points</Text>
                 <Text style={styles.text}><Text style={styles.texthead}>Earn as You Go:</Text> For every mile you travel, you’ll rack up miles points. It’s like a treasure hunt on wheels!
                 </Text>
                 <Text style={styles.text}><Text style={styles.texthead}>Dynamic Accumulation: </Text> These points accumulate with each journey, creating a dynamic frequent miles program. The more you ride, the more you earn!</Text>
@@ -31,7 +30,7 @@ export default MilesPoint
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#212121',
+        backgroundColor: '#fcfcfc',
         paddingTop: 40,
         paddingHorizontal: 20,
     },
@@ -40,32 +39,24 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     head: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#fff',
+        fontSize: 18,
+        fontWeight: '500',
+        color: '#0c0c0c',
         textAlign: 'center',
         flex: 1,
     },
     bodyContainer: {
-        marginTop: 20,
+        marginTop: 10,
         backgroundColor: '#f9f9f9',
-        padding: 20,
-        borderRadius: 10,
-    },
-    key: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#161718',
-        marginTop: 20,
     },
     text: {
         fontSize: 16,
-        color: '#161718',
+        color: '#0e0e0e',
         marginTop: 20,
     },
     texthead: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#161718',
+        color: '#0e0e0e',
     }
 })

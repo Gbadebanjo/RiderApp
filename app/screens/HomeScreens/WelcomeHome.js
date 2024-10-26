@@ -114,6 +114,7 @@ const WelcomeHome = () => {
               width="70%"
               marginLeft={-50}
               marginTop={0}
+
             />
           </View>
           <View style={{ flexDirection: 'row', marginHorizontal: 20 }}>

@@ -53,14 +53,12 @@ export default function SettingHome({ navigation }) {
                 <TouchableOpacity style={styles.image}>
                     <Image source={userDetails?.profileImg ? { uri: userDetails?.profileImg } : require('../../assets/ProfileTemplate.png')} style={styles.img} />
                 </TouchableOpacity>
-                {/* <Text style={{ color: '#fff', fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 20 }}>{userDetails?.firstName} {userDetails?.lastName}</Text> */}
                 <Text style={{ color: '#0E0E0E', fontSize: 20, fontWeight: '700', textAlign: 'center', margin: 5 }}>{userDetails?.displayName}</Text>
-                {/* <Text style={{ color: '#464646', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>User ID: {userDetails?.accountId}</Text> */}
                 <Text style={{ color: '#555555', fontSize: 14, textAlign: 'center' }}>
                     User ID: <Text style={{ color: '#0E0E0E', fontWeight: '700' }}>{userDetails?.accountId}</Text>
                 </Text>
                 <Text style={{ color: '#555555', fontSize: 14, textAlign: 'center', margin: 7 }}>Ratings</Text>
-                <TouchableOpacity style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('Account')}>
+                <TouchableOpacity style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('ProfileDetails')}>
                     <Text style={styles.viewBox}>View Profile</Text>
                 </TouchableOpacity>
             </View>
@@ -76,10 +74,10 @@ export default function SettingHome({ navigation }) {
                 <Text style={styles.textHead}>Promotions</Text>
                 <TouchableOpacity style={styles.eachItem} onPress={() => navigation.navigate('RewardProgram')}>
                     <View style={styles.iconWrapper}>
-                        <SimpleLineIcons name="badge" size={22} color="#8a8a8a" />
+                        <SimpleLineIcons name="badge" size={22} color="#000" />
                     </View>
-                    <Text style={styles.disabledEachItemText} >Rewards and Miles Points</Text>
-                    <MaterialCommunityIcons name="lock-outline" size={20} color="#8a8a8a" />
+                    <Text style={styles.eachItemText} >Rewards and Miles Points</Text>
+                    <Ionicons name="chevron-forward" size={20} color="#8a8a8a" style={styles.forwardIcon} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.eachItem} onPress={() => navigation.navigate('InviteReferral')}>
                     <View style={styles.iconWrapper}>
@@ -88,7 +86,7 @@ export default function SettingHome({ navigation }) {
                     <Text style={styles.eachItemText}>Referral Program</Text>
                     <Ionicons name="chevron-forward" size={20} color="#8a8a8a" style={styles.forwardIcon} />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.eachItem} onPress={() => navigation.navigate('RewardProgram')}>
+                <TouchableOpacity style={styles.eachItem} >
                     <View style={styles.iconWrapper}>
                         <AntDesign name="creditcard" size={22} color="#8a8a8a" />
                     </View>
@@ -97,10 +95,10 @@ export default function SettingHome({ navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.eachItem}>
                     <View style={styles.iconWrapper}>
-                        <AntDesign name="gift" size={22} color="#000" />
+                        <AntDesign name="gift" size={22} color="#8a8a8a" />
                     </View>
-                    <Text style={styles.eachItemText}>Promotions and offers</Text>
-                    <Ionicons name="chevron-forward" size={20} color="#8a8a8a" />
+                    <Text style={styles.disabledEachItemText}>Promotions and offers</Text>
+                    <MaterialCommunityIcons name="lock-outline" size={20} color="#8a8a8a" />
                 </TouchableOpacity>
                 <Text style={styles.textHead}>Settings</Text>
                 <TouchableOpacity style={styles.eachItem} onPress={() => navigation.navigate('Security')}>
@@ -119,7 +117,7 @@ export default function SettingHome({ navigation }) {
                     <Ionicons name="chevron-forward" size={20} color="#8a8a8a" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.eachItem}
-                    onPress={() => navigation.navigate('HelpAndSupport')}>
+                    onPress={() => navigation.navigate('Legal')}>
                     <View style={styles.iconWrapper}>
                         <Ionicons name="briefcase-outline" size={22} color="#000" />
                     </View>
@@ -127,7 +125,7 @@ export default function SettingHome({ navigation }) {
                     <Ionicons name="chevron-forward" size={20} color="#8a8a8a" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.eachItem}
-                    onPress={() => navigation.navigate('HelpAndSupport')}>
+                    onPress={() => navigation.navigate('Language')}>
                     <View style={styles.iconWrapper}>
                         <MaterialIcons name="language" size={22} color="#000" />
                     </View>

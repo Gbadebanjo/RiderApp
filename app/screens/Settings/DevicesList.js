@@ -42,8 +42,7 @@ export default function DevicesList({ navigation }) {
                 });
                 return;
             }
-            console.log('responseDetails', response);
-            // setUserDetails(response.data.rider);  // Update the user details
+            setUserDetails(response.data.rider);  // Update the user details
             setModalVisible(false);
             Toast.show({
                 type: 'success',
