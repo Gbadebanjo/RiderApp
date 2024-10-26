@@ -63,6 +63,8 @@ import CreatePinScreen from './app/screens/Settings/CreatePinScreen'; // In use
 import ConfirmPinScreen from './app/screens/Settings/ConfirmPinScreen'; // In use
 import PasswordCurrent from './app/screens/Settings/PasswordCurrent'; // In use
 import DevicesList from './app/screens/Settings/DevicesList'; // In use
+import Legal from './app/screens/Settings/Legal'; // In use
+import LanguageDetails from './app/screens/Welcome/Language'; // In use
 
 import NavButtons from './app/components/NavButtons';  // In use
 
@@ -135,6 +137,8 @@ export default function App() {
           <Stack.Screen name='ConfirmPinScreen' component={ConfirmPinScreen} options={{ headerShown: false }} />
           <Stack.Screen name='DevicesList' component={DevicesList} options={{ headerShown: false }} />
           <Stack.Screen name='PasswordCurrent' component={PasswordCurrent} options={{ headerShown: false }} />
+          <Stack.Screen name='Legal' component={Legal} options={{ headerShown: false }} />
+          <Stack.Screen name='LanguageDetails' component={LanguageDetails} options={{ headerShown: false }} />
 
         </Stack.Navigator>
         <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />

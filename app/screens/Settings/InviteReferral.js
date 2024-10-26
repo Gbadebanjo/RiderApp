@@ -4,11 +4,12 @@ import React, { useState, useRef, useContext } from 'react';
 import { FontAwesome, Ionicons, Fontisto } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { AppContext } from '../../context/AppContext';
+import Toast from 'react-native-toast-message';
+
 const InviteReferral = ({ navigation, route }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const slideAnim = useRef(new Animated.Value(300)).current;
     const { userDetails } = useContext(AppContext);
-    // const { userDetails } = route.params;
 
     const toggleModal = () => {
         setModalVisible(!modalVisible);
@@ -24,7 +25,10 @@ const InviteReferral = ({ navigation, route }) => {
 
     const copyToClipboard = async (text) => {
         await Clipboard.setStringAsync(text);
-        Alert.alert('Copied to Clipboard!', `${text} has been copied to your clipboard.`);
+        Toast.show({
+            type: 'success',
+            text1: 'Copied to clipboard',
+        });
         toggleModal();
     };
 
@@ -49,7 +53,7 @@ const InviteReferral = ({ navigation, route }) => {
                     style={styles.headcontainer}
                     onPress={() => navigation.goBack()}
                 >
-                    <FontAwesome name="angle-left" size={24} color="#fff" />
+                    <FontAwesome name="angle-left" size={24} color="#0c0c0c" />
                     <Text style={styles.head}>Invite Referral</Text>
                 </TouchableOpacity>
                 <View style={styles.subcontainer}>
@@ -62,7 +66,7 @@ const InviteReferral = ({ navigation, route }) => {
                             onPress={toggleModal}
                             style={styles.copy}
                         >
-                            <Ionicons name="share-social-outline" size={28} color="#292D32" />
+                            <Ionicons name="share-social-outline" size={28} color="#fcfcfc" />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -76,7 +80,7 @@ const InviteReferral = ({ navigation, route }) => {
                             onPress={toggleModal}
                             style={styles.copy}
                         >
-                            <Ionicons name="share-social-outline" size={28} color="#292D32" />
+                            <Ionicons name="share-social-outline" size={28} color="#fcfcfc" />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -104,15 +108,15 @@ const InviteReferral = ({ navigation, route }) => {
                         >
                             <Text style={styles.modalTitle}>Share</Text>
                             <View style={styles.iconcontainer}>
-                                <TouchableOpacity style={styles.eachicon} onPress={() => openSocialMedia('mailto:?subject=Check%20this%20out&body=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.individualReferralCode)}>
+                                <TouchableOpacity style={styles.eachicon} onPress={() => openSocialMedia('mailto:?subject=Check%20this%20out&body=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.referralCode)}>
                                     <FontAwesome name="envelope" size={24} color="black" />
                                     <Text style={styles.modalText}>Email</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={styles.eachicon}
                                     onPress={() => openSocialMedia(
-                                        'whatsapp://send?text=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.individualReferralCode,
-                                        'https://web.whatsapp.com/send?text=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.individualReferralCode
+                                        'whatsapp://send?text=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralCode,
+                                        'https://web.whatsapp.com/send?text=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralCode
                                     )}
                                 >
                                     <FontAwesome name="whatsapp" size={24} color="black" />
@@ -122,8 +126,8 @@ const InviteReferral = ({ navigation, route }) => {
                                 <TouchableOpacity
                                     style={styles.eachicon}
                                     onPress={() => openSocialMedia(
-                                        'twitter://post?message=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.individualReferralCode,
-                                        'https://twitter.com/intent/tweet?text=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.individualReferralCode
+                                        'twitter://post?message=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.referralCode,
+                                        'https://twitter.com/intent/tweet?text=Check%20out%20this%20awesome%20app%20using%20my%20referral%20code%3A%20' + userDetails.referralId.referralCode
                                     )}
                                 >
                                     <Fontisto name="twitter" size={24} color="black" />
@@ -153,7 +157,7 @@ const InviteReferral = ({ navigation, route }) => {
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.lastcontainer}>
-                                <TouchableOpacity style={styles.copyicon} onPress={() => copyToClipboard('https://yourapp.com/referral?code=' + userDetails.referralId.individualReferralCode)}>
+                                <TouchableOpacity style={styles.copyicon} onPress={() => copyToClipboard(userDetails.referralCode)}>
                                     <FontAwesome name="copy" size={24} color="black" />
                                     <Text style={styles.modalText}>Copy Link</Text>
                                 </TouchableOpacity>
@@ -175,7 +179,7 @@ export default InviteReferral
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#212121',
+        backgroundColor: '#fcfcfc',
         paddingTop: 30,
         paddingHorizontal: 20,
     },
@@ -184,14 +188,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     head: {
-        fontSize: 26,
-        color: '#fff',
+        fontSize: 18,
+        color: '#0c0c0c',
         textAlign: 'center',
         flex: 1,
+        fontWeight: '500',
     },
     subcontainer: {
         marginTop: 30,
-        backgroundColor: '#F5F7FA',
+        // backgroundColor: '#F5F7FA',
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
         borderRadius: 10,
         padding: 20,
         marginBottom: 20,
@@ -206,6 +213,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#464646',
         marginBottom: 12,
+        fontWeight: '400',
     },
     referrallinkcontainer: {
         flexDirection: 'row',
@@ -225,7 +233,7 @@ const styles = StyleSheet.create({
         // color: '#161718',
     },
     copy: {
-        backgroundColor: '#E0E0E0',
+        backgroundColor: '#292D32',
         borderRadius: 30,
         padding: 7,
     },

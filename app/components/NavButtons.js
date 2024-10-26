@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import MenuLanding from '../screens/Dashboard/MenuLanding';
-import Account from '../screens/Settings/Account';
+import ProfileDetails from '../screens/Settings/ProfileDetails';
 import PromotionsScreen from '../screens/Promotions/PromotionsScreen';
 import ProfileLanding from '../screens/Profile/ProfileLanding';
 import Edit from '../screens/Settings/Edit';
@@ -52,7 +52,7 @@ function SettingsStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen name="SettingHome" component={SettingHome} options={{ headerShown: false }} />
-            <Stack.Screen name="Account" component={Account} options={{ headerShown: false }} />
+            <Stack.Screen name="ProfileDetails" component={ProfileDetails} options={{ headerShown: false }} />
             <Stack.Screen name="MenuLanding" component={MenuLanding} options={{ headerShown: false }} />
             <Stack.Screen name="Edit" component={Edit} options={{ headerShown: false }} />
         </Stack.Navigator>

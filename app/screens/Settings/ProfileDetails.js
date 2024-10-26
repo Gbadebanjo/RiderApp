@@ -15,7 +15,7 @@ import { FontAwesome, Entypo, Ionicons, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppContext } from '../../context/AppContext';
 
-const Account = ({ navigation, route }) => {
+const ProfileDetails = ({ navigation, route }) => {
   const { userDetails } = useContext(AppContext);
   const [showName, setShowName] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -83,11 +83,12 @@ const Account = ({ navigation, route }) => {
           <Text style={styles.label}>Phone Number</Text>
           <View style={styles.value}><Text style={styles.valueText}>{userDetails?.phone}</Text></View>
           <Text style={styles.label}>City</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{JSON.parse(userDetails.location)?.city }</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.location ? JSON.parse(userDetails.location)?.city : 'N/A'}
+          </Text></View>
           <Text style={styles.label}>State</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{JSON.parse(userDetails.location)?.state}</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.location ? JSON.parse(userDetails.location)?.state : 'N/A'}</Text></View>
           <Text style={styles.label}>Country</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{JSON.parse(userDetails.location)?.country}</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.location ? JSON.parse(userDetails.location)?.country : 'N/A'}</Text></View>
       </ScrollView>
 
       <Modal
@@ -136,7 +137,7 @@ const Account = ({ navigation, route }) => {
   );
 };
 
-export default Account;
+export default ProfileDetails;
 
 const styles = StyleSheet.create({
   container: {

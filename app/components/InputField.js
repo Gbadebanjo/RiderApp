@@ -72,7 +72,7 @@ const getStyles = (width, marginLeft, paddingLeft, flex, isFocused, fullBorder, 
       marginTop: 15,
       fontWeight: '500',
       alignSelf: 'flex-start',
-      // marginLeft: marginLeft,
+      marginLeft: marginLeft,
     },
     input: {
       borderColor: isFocused ? '#8A8A8A' : '#CCCCCC',
