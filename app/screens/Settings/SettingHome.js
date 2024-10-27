@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator, StatusBar, Modal, Easing, TouchableWithoutFeedback, Animated } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, StatusBar, Modal, Easing, TouchableWithoutFeedback, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AntDesign, Feather, Entypo, FontAwesome6, FontAwesome5, MaterialIcons, MaterialCommunityIcons, SimpleLineIcons, Ionicons } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons, MaterialCommunityIcons, SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { AppContext } from '../../context/AppContext';
@@ -12,15 +12,17 @@ export default function SettingHome({ navigation }) {
     const slideAnim = useRef(new Animated.Value(300)).current;
     const [modalVisible, setModalVisible] = useState(false);
 
+    const details = userDetails || userDetails.rider
+
     useEffect( () => {
         const timer = setTimeout(() => {
-            if (userDetails.authsEnabled.length <= 1) {
+            if (details.authsEnabled.length <= 1) {
             setModalVisible(true)
         } 
     }, 3000);
 
         return () => clearTimeout(timer); 
-    }, [userDetails]);
+    }, [details]);
 
     const logOut = async () => {
         try {
@@ -45,24 +47,23 @@ export default function SettingHome({ navigation }) {
         }
     };
 
-
     return (
         <SafeAreaView style={styles.safeArea}>
-            <StatusBar barStyle="light-content" backgroundColor='#212121' translucent={false} />
+            <StatusBar barStyle="dark-content" backgroundColor='#f7f7f7' translucent={false} />
             <View style={styles.profileContainer}>
                 <TouchableOpacity style={styles.image}>
-                    <Image source={userDetails?.profileImg ? { uri: userDetails?.profileImg } : require('../../assets/ProfileTemplate.png')} style={styles.img} />
+                    <Image source={details?.profileImg ? { uri: details?.profileImg } : require('../../assets/ProfileTemplate.png')} style={styles.img} />
                 </TouchableOpacity>
-                <Text style={{ color: '#0E0E0E', fontSize: 20, fontWeight: '700', textAlign: 'center', margin: 5 }}>{userDetails?.displayName}</Text>
+                <Text style={{ color: '#0E0E0E', fontSize: 20, fontWeight: '700', textAlign: 'center', margin: 5 }}>{details?.displayName}</Text>
                 <Text style={{ color: '#555555', fontSize: 14, textAlign: 'center' }}>
-                    User ID: <Text style={{ color: '#0E0E0E', fontWeight: '700' }}>{userDetails?.accountId}</Text>
+                    User ID: <Text style={{ color: '#0E0E0E', fontWeight: '700' }}>{details?.accountId}</Text>
                 </Text>
                 <Text style={{ color: '#555555', fontSize: 14, textAlign: 'center', margin: 7 }}>Ratings</Text>
                 <TouchableOpacity style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('ProfileDetails')}>
                     <Text style={styles.viewBox}>View Profile</Text>
                 </TouchableOpacity>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView} >
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
                 <Text style={styles.textHead}>User</Text>
                 <TouchableOpacity style={styles.eachItem}>
                     <View style={styles.iconWrapper}>

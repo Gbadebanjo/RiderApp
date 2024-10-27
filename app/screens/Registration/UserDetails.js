@@ -138,9 +138,10 @@ export default  function UserDetails({navigation, route}) {
       });
       const token = response.data.rider.token
       await AsyncStorage.setItem('userToken', token);
+      console.log('response', response.data.rider.rider)
       setUserDetails(response.data.rider.rider);
       setLoading(false);
-      return navigation.navigate('SettingHome');
+      return navigation.navigate('Photo');
     }
 
   return (

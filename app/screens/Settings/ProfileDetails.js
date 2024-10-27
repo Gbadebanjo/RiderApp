@@ -11,7 +11,7 @@ import {
   Easing,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { FontAwesome, Entypo, Ionicons, Feather } from '@expo/vector-icons';
+import { FontAwesome, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppContext } from '../../context/AppContext';
 
@@ -22,7 +22,9 @@ const ProfileDetails = ({ navigation, route }) => {
   const [isProfilePicHidden, setIsProfilePicHidden] = useState(false); // State to manage profile picture visibility
   const slideAnim = useRef(new Animated.Value(300)).current; // Initial value for sliding animation
 
-  console.log(userDetails)
+  // console.log(userDetails)
+  const details = userDetails.rider || userDetails
+  
   const toggleNameDetails = () => {
     setShowName(!showName);
   };
@@ -53,7 +55,7 @@ const ProfileDetails = ({ navigation, route }) => {
         <View style={styles.userProfileHeader}>
           <Text style={styles.head}>Profile</Text>
           <View style={styles.image}>
-            <Image source={isProfilePicHidden || !userDetails?.profileImg ? require('../../assets/ProfileTemplate.png') : { uri: userDetails.profileImg }} style={styles.imageStyle} resizeMode="cover" />
+            <Image source={isProfilePicHidden || !details?.profileImg ? require('../../assets/ProfileTemplate.png') : { uri: details.profileImg }} style={styles.imageStyle} resizeMode="cover" />
           </View>
           <TouchableOpacity style={styles.profilePicture} onPress={toggleModal} >
             <Text style={styles.profileText}>Change Profile Picture</Text>
@@ -65,30 +67,30 @@ const ProfileDetails = ({ navigation, route }) => {
         </View>
 
           <Text style={styles.label}>Account Type</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.accountType}</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{details?.accountType}</Text></View>
           <Text style={styles.label}>First Name</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.firstName}</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{details?.firstName}</Text></View>
           <Text style={styles.label}>Last Name</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.lastName}</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{details?.lastName}</Text></View>
           <Text style={styles.label}>Display Name</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.displayName}</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{details?.displayName}</Text></View>
           <Text style={styles.label}>Other Language Spoken</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.otherLangSpoken}</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{details?.otherLangSpoken}</Text></View>
           <Text style={styles.label}>Date of Birth</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.dateOfBirth}</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{details?.dateOfBirth}</Text></View>
           {/* <Text style={styles.label}>Gender</Text>
           <View style={styles.value}><Text style={styles.valueText}>{userDetails?.firstName}</Text></View> */}
           <Text style={styles.label}>Email Address</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.email}</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{details?.email}</Text></View>
           <Text style={styles.label}>Phone Number</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.phone}</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{details?.phone}</Text></View>
           <Text style={styles.label}>City</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.location ? JSON.parse(userDetails.location)?.city : 'N/A'}
+          <View style={styles.value}><Text style={styles.valueText}>{details?.location ? JSON.parse(details.location)?.city : 'N/A'}
           </Text></View>
           <Text style={styles.label}>State</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.location ? JSON.parse(userDetails.location)?.state : 'N/A'}</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{details?.location ? JSON.parse(details.location)?.state : 'N/A'}</Text></View>
           <Text style={styles.label}>Country</Text>
-          <View style={styles.value}><Text style={styles.valueText}>{userDetails?.location ? JSON.parse(userDetails.location)?.country : 'N/A'}</Text></View>
+          <View style={styles.value}><Text style={styles.valueText}>{details?.location ? JSON.parse(details.location)?.country : 'N/A'}</Text></View>
       </ScrollView>
 
       <Modal

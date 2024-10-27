@@ -83,7 +83,8 @@ export default function UsePincode({navigation}) {
             type: 'success',
             text1: response.data.message,
         });
-        await AsyncStorage.setItem('userToken', response.data.token);
+      await AsyncStorage.setItem('userToken', response.data.token);
+        console.log("pincode", response.data.rider);
         setUserDetails(response.data.rider);
     
         setLoading(false);

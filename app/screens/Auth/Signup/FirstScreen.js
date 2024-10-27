@@ -111,7 +111,6 @@ export default function Login({ navigation }) {
           text1: response.data.message,
       });
       await AsyncStorage.setItem('userToken', response.data.token);
-      await AsyncStorage.setItem('bioToken', response.data.bioToken);
       setUserDetails(response.data.rider);
   
       setLoading(false);
