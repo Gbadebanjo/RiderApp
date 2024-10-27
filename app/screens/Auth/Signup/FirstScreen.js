@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useContext} from 'react';
 import api from '../../../api/auth';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Image, Modal, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,7 +6,7 @@ import * as Device from 'expo-device';
 import * as Application from 'expo-application';
 import * as LocalAuthentication from 'expo-local-authentication';
 import Centerlogo from '../../../components/centerlogo';
-import SocialLogo from '../../../components/SocialLogo';
+import { AppContext } from '../../../context/AppContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Entypo, AntDesign, Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
@@ -16,6 +16,7 @@ import faceImage from '../../../assets/Vector.png'
 
 
 export default function Login({ navigation }) {
+  const { userDetails, setUserDetails } = useContext(AppContext)
   const [loading, setLoading] = useState(false);
   // const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [isFacialIDSupported, setIsFacialIdSupported] = useState(false); 

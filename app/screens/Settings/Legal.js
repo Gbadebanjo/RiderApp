@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React from 'react';
-import { FontAwesome, AntDesign } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 
 const Legal = ({ navigation }) => {
@@ -12,9 +12,9 @@ const Legal = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
         <TouchableOpacity style={styles.headcontainer} onPress={() => navigation.goBack()} >
-            <TouchableOpacity style={styles.headcontainer}>
+            <View style={styles.headcontainer}>
             <FontAwesome name="angle-left" size={20} color="#0e0e0e" />
-            </TouchableOpacity>
+            </View>
             <Text style={styles.head}>Legal</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.each} onPress={() => openURL('https://mvp.katabenterprises.com')}>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
     },
     text: {
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: '400',
         color: '#0e0e0e',
     },

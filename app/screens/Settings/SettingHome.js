@@ -12,17 +12,15 @@ export default function SettingHome({ navigation }) {
     const slideAnim = useRef(new Animated.Value(300)).current;
     const [modalVisible, setModalVisible] = useState(false);
 
-    const details = userDetails || userDetails.rider
-
     useEffect( () => {
         const timer = setTimeout(() => {
-            if (details.authsEnabled.length <= 1) {
+            if (userDetails.authsEnabled.length <= 1) {
             setModalVisible(true)
         } 
     }, 3000);
 
         return () => clearTimeout(timer); 
-    }, [details]);
+    }, [userDetails]);
 
     const logOut = async () => {
         try {
@@ -52,11 +50,11 @@ export default function SettingHome({ navigation }) {
             <StatusBar barStyle="dark-content" backgroundColor='#f7f7f7' translucent={false} />
             <View style={styles.profileContainer}>
                 <TouchableOpacity style={styles.image}>
-                    <Image source={details?.profileImg ? { uri: details?.profileImg } : require('../../assets/ProfileTemplate.png')} style={styles.img} />
+                    <Image source={userDetails?.profileImg ? { uri: userDetails?.profileImg } : require('../../assets/ProfileTemplate.png')} style={styles.img} />
                 </TouchableOpacity>
-                <Text style={{ color: '#0E0E0E', fontSize: 20, fontWeight: '700', textAlign: 'center', margin: 5 }}>{details?.displayName}</Text>
+                <Text style={{ color: '#0E0E0E', fontSize: 20, fontWeight: '700', textAlign: 'center', margin: 5 }}>{userDetails?.displayName}</Text>
                 <Text style={{ color: '#555555', fontSize: 14, textAlign: 'center' }}>
-                    User ID: <Text style={{ color: '#0E0E0E', fontWeight: '700' }}>{details?.accountId}</Text>
+                    User ID: <Text style={{ color: '#0E0E0E', fontWeight: '700' }}>{userDetails?.accountId}</Text>
                 </Text>
                 <Text style={{ color: '#555555', fontSize: 14, textAlign: 'center', margin: 7 }}>Ratings</Text>
                 <TouchableOpacity style={{ justifyContent: 'center', alignContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('ProfileDetails')}>
@@ -126,7 +124,7 @@ export default function SettingHome({ navigation }) {
                     <Ionicons name="chevron-forward" size={20} color="#8a8a8a" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.eachItem}
-                    onPress={() => navigation.navigate('Language')}>
+                    onPress={() => navigation.navigate('SelectLanguage')}>
                     <View style={styles.iconWrapper}>
                         <MaterialIcons name="language" size={22} color="#000" />
                     </View>

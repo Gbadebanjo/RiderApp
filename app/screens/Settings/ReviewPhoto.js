@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, Image, SafeAreaView, Dimensions } from 'react-native';
-import Centerlogo from '../../components/centerlogo';
 import StyledButton from '../../components/StyledButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { dashboardClient, setAuthToken } from '../../api/client';
@@ -117,7 +116,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
     backButton: {
-    top: 20,
+    top: 30,
     left: 20,
   },
   imageContainer: {
