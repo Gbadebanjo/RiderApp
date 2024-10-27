@@ -125,7 +125,7 @@ export default function SettingHome({ navigation }) {
                     <Ionicons name="chevron-forward" size={20} color="#8a8a8a" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.eachItem}
-                    onPress={() => navigation.navigate('Language')}>
+                    onPress={() => navigation.navigate('SelectLanguage')}>
                     <View style={styles.iconWrapper}>
                         <MaterialIcons name="language" size={22} color="#000" />
                     </View>
