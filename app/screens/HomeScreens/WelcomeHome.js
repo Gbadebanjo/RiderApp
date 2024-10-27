@@ -24,7 +24,8 @@ const WelcomeHome = () => {
       try {
         const response = await dashboardApi.fetchUserDetails();
         if (response.ok) {
-          setUserDetails(response.data.info);
+          // console.log('User details:', response.data.);
+          setUserDetails(response.data.info.rider);
         } else {
           console.error('An error occurred while fetching user details:', response.data.message);
         }
