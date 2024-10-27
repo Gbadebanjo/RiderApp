@@ -41,7 +41,7 @@ export default function ReviewPhoto({ navigation, route }) {
         text1: response.data.message,
       });
       setUserDetails({ ...userDetails, profileImg: response.data.image });
-      navigation.navigate('Account');
+      navigation.navigate('ProfileDetails');
     } catch (error) {
       setLoading(false);
       Toast.show({
