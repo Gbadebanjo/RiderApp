@@ -1,26 +1,30 @@
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, AntDesign } from '@expo/vector-icons';
+import { Feather, AntDesign } from '@expo/vector-icons';
 import React from 'react'
 
 const HelpAndSupport = ({ navigation }) => {
+    const openURL = (url) => {
+        Linking.openURL(url).catch((err) => console.error("Couldn't load page", err));
+      };
+
   return (
     <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor="#212121" />
         <View style={styles.titleContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color='#fff'/>
+            <Feather name="chevron-left" size={24} color='#111' />
             </TouchableOpacity>
             <Text style={styles.title}>Help and Support</Text>
-            <AntDesign name="customerservice" size={24} color='#fff'/>
+            <AntDesign name="customerservice" size={24} color='#0c0c0c'/>
         </View>
         <TouchableOpacity style={styles.eachSecurity} onPress={() => navigation.navigate('CustomerServiceCenter')}>
             <Text style={styles.text}>Customer Service Center</Text>
-            <AntDesign name="right" size={12} color='#fff'/>
+            <AntDesign name="right" size={12} color='#0c0c0c'/>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.eachSecurity}>
+        <TouchableOpacity style={styles.eachSecurity} onPress={() => openURL('https://mvp.katabenterprises.com')}>
             <Text style={styles.text}>FAQs</Text>
-            <AntDesign name="right" size={12} color='#fff'/>
+            <AntDesign name="right" size={12} color='#0c0c0c0'/>
         </TouchableOpacity>
     </SafeAreaView>
   )
@@ -31,7 +35,7 @@ export default HelpAndSupport
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#212121',
+        backgroundColor: '#fcfcfc',
         alignItems: 'center',
     },
     titleContainer: {
@@ -42,7 +46,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     title: {
-        color: '#fff',
+        color: '#0c0c0c',
         fontSize: 20,
         flex: 1,
         paddingLeft: 20,
@@ -57,7 +61,7 @@ const styles = StyleSheet.create({
     
     },
     text: {
-        color: '#fff',
+        color: '#0c0c0c',
         fontSize: 16,
     },
 })
