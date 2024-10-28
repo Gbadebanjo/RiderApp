@@ -33,6 +33,7 @@ import SettingToggle from './app/screens/Security/SettingToggle';
 import Feedback from './app/screens/Feedback/Feedback';
 import ThankYou from './app/screens/Feedback/ThankYou';
 import Photo from './app/screens/Settings/Photo';  // In use
+import ProfileDetails from './app/screens/Settings/ProfileDetails';  // In use
 import ReviewPhoto from './app/screens/Settings/ReviewPhoto';  // In use
 import RewardProgram from './app/screens/Settings/RewardProgram'; // In use
 import CashbackReward from './app/screens/Settings/CashbackReward'; // In use
@@ -116,6 +117,7 @@ export default function App() {
           <Stack.Screen name='Feedback' component={Feedback} options={{ headerShown: false }} />
           <Stack.Screen name='ThankYou' component={ThankYou} options={{ headerShown: false }} />
           <Stack.Screen name='Photo' component={Photo} options={{ headerShown: false }} />
+          <Stack.Screen name='ProfileDetails' component={ProfileDetails} options={{ headerShown: false }} />
           <Stack.Screen name='ReviewPhoto' component={ReviewPhoto} options={{ headerShown: false }} />
           <Stack.Screen name='RewardProgram' component={RewardProgram} options={{ headerShown: false }} />
           <Stack.Screen name='CashbackReward' component={CashbackReward} options={{ headerShown: false }} />

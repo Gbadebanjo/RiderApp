@@ -103,7 +103,7 @@ export default function CreateAccount({ navigation }) {
       setLoading(true);
       const res = await otpApi.requestOtp(email, password, confirm);
   
-      setLoading(false);
+    setLoading(false);
       if (res.ok) {
         Toast.show({
           type: 'success',

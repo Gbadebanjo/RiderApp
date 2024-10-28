@@ -6,11 +6,15 @@ import {
   TouchableOpacity,
   Modal,
   SafeAreaView,
+  Dimensions
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { FontAwesome6 } from '@expo/vector-icons';
-import Centerlogo from '../../components/centerlogo';
 import StyledButton from '../../components/StyledButton';
+import BackButton from '../../components/BackButton';
+
+const { width } = Dimensions.get('window');
+const circleDiameter = width * 0.7; 
 
 export default function Photo({ navigation }) {
   const [facing, setFacing] = useState('front');
@@ -101,8 +105,8 @@ export default function Photo({ navigation }) {
             ref={cameraRef}
           />
         </View>
-        <Centerlogo />
-        <Text style={styles.text}>Take a Profile Photo</Text>
+        <BackButton style={styles.backButton}/>
+        <Text style={styles.text}>Capture Profile Photo</Text>
 
         <View style={styles.controlsContainer}>
 
@@ -126,16 +130,6 @@ export default function Photo({ navigation }) {
               backgroundColor="#212121"
               TextColor="#fff"
             />
-            <StyledButton
-              title="Cancel"
-              onPress={() => navigation.goBack()}
-              width="100%"
-              height={50}
-              paddingVertical={10}
-              marginTop={10}
-              backgroundColor="#fff"
-              TextColor="#212121"
-            />
           </View>
         </View>
       </View>
@@ -152,15 +146,20 @@ const styles = StyleSheet.create({
   overlayContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
   },
   cameraContainer: {
     position: 'absolute',
     top: '20%',
-    width: 350,
-    height: 400,
-    borderRadius: 50,
+    width: circleDiameter,
+    height: circleDiameter,
+    borderRadius: circleDiameter / 2,
     overflow: 'hidden',
+    alignSelf: 'center'
+  },
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
   },
   captureArea: {
     width: '100%',
@@ -170,7 +169,10 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 5,
+    marginTop: '20%',
+    textAlign: 'left',
+    alignContent: 'left',
+    left: '8%',
   },
   controlsContainer: {
     flex: 1,

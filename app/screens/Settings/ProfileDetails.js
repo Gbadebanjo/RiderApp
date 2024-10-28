@@ -11,7 +11,7 @@ import {
   Easing,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { FontAwesome, Entypo, Ionicons, Feather } from '@expo/vector-icons';
+import { FontAwesome, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppContext } from '../../context/AppContext';
 
@@ -22,7 +22,8 @@ const ProfileDetails = ({ navigation, route }) => {
   const [isProfilePicHidden, setIsProfilePicHidden] = useState(false); // State to manage profile picture visibility
   const slideAnim = useRef(new Animated.Value(300)).current; // Initial value for sliding animation
 
-  console.log(userDetails)
+  // console.log(userDetails)
+  
   const toggleNameDetails = () => {
     setShowName(!showName);
   };

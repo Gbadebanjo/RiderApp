@@ -47,10 +47,10 @@ export default function Security({ navigation, route }) {
         }
 
         // Add a safety check here
-    if (!deviceId) {
-        console.error('Device ID is undefined!');
-        return Toast.show({ type: 'error', text1: 'Device ID not found. Please try again.' });
-    }
+        if (!deviceId) {
+            console.error('Device ID is undefined!');
+            return Toast.show({ type: 'error', text1: 'Device ID not found. Please try again.' });
+        }
 
         const deviceInfo = {
             "deviceId": deviceId,
@@ -63,7 +63,6 @@ export default function Security({ navigation, route }) {
                 value: newValue,
                 deviceInfo
             };
-            console.log('Payload', payload);
             // console.log('Updating', authType, payload);
             const response = await authApi.updateAuth(authType, payload);
             if (!response.ok) {

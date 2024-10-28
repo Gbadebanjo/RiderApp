@@ -1,11 +1,14 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, View, Text, Image, SafeAreaView, Alert } from 'react-native';
-import Centerlogo from '../../components/centerlogo';
+import { StyleSheet, View, Text, Image, SafeAreaView, Dimensions } from 'react-native';
 import StyledButton from '../../components/StyledButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { dashboardClient, setAuthToken } from '../../api/client';
 import { AppContext } from '../../context/AppContext';
 import Toast from 'react-native-toast-message';
+import BackButton from '../../components/BackButton';
+
+const { width } = Dimensions.get('window');
+const circleDiameter = width * 0.7; 
 
 export default function ReviewPhoto({ navigation, route }) {
   const { photo, facing } = route.params;
@@ -41,7 +44,7 @@ export default function ReviewPhoto({ navigation, route }) {
         text1: response.data.message,
       });
       setUserDetails({ ...userDetails, profileImg: response.data.image });
-      navigation.navigate('ProfileDetails');
+      navigation.navigate('SettingHome')
     } catch (error) {
       setLoading(false);
       Toast.show({
@@ -54,21 +57,35 @@ export default function ReviewPhoto({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.overlayContainer}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={{ uri: photo.uri }}
-            style={[
-              styles.capturedImage,
-              facing === 'front' ? { transform: [{ scaleX: -1 }] } : null, // Flip for front camera
-            ]}
-          />
+        <View style={styles.topContent}>
+          <BackButton style={styles.backButton}/>
+          <Text style={styles.text}>Review Your Photo</Text>
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: photo.uri }}
+              style={[
+                styles.capturedImage,
+                facing === 'front' ? { transform: [{ scaleX: -1 }] } : null, // Flip for front camera
+              ]}
+            />
+          </View>
+
+            <StyledButton
+              title="Retake Picture"
+              onPress={() => navigation.goBack()}
+              width="40%"
+              paddingVertical={10}
+              marginTop='15%'
+              marginLeft='30%'
+              borderColor="#D0D0D0"
+              borderWidth={1}
+              backgroundColor="#fff"
+              TextColor="#0E0E0E"
+            />
         </View>
-        <Centerlogo />
-        <Text style={styles.text}>Review Your Photo</Text>
-        <View style={styles.controlsContainer}>
           <View style={styles.buttonContainer}>
             <StyledButton
-              title="Submit"
+              title="Update Profile Picture"
               loading={loading}
               onPress={handleSubmit}
               width="100%"
@@ -78,18 +95,7 @@ export default function ReviewPhoto({ navigation, route }) {
               backgroundColor="#212121"
               TextColor="#fff"
             />
-            <StyledButton
-              title="Retake"
-              onPress={() => navigation.goBack()}
-              width="100%"
-              height={50}
-              paddingVertical={10}
-              marginTop={10}
-              backgroundColor="#fff"
-              TextColor="#212121"
-            />
           </View>
-        </View>
       </View>
     </SafeAreaView>
   );
@@ -100,19 +106,26 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
     backgroundColor: '#fff',
+    justifyContent: 'space-between',
+  },
+  topContent: {
+    flex: 1,
   },
   overlayContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+  },
+    backButton: {
+    top: 30,
+    left: 20,
   },
   imageContainer: {
-    position: 'absolute',
-    top: '20%',
-    width: 350,
-    height: 400,
-    borderRadius: 20,
+    top: '5%',
+    width: circleDiameter,
+    height: circleDiameter,
+    borderRadius: circleDiameter / 2,
     overflow: 'hidden',
+    alignSelf: 'center',
   },
   capturedImage: {
     width: '100%',
@@ -121,19 +134,13 @@ const styles = StyleSheet.create({
   text: {
     color: '#000',
     fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 5,
-  },
-  controlsContainer: {
-    flex: 1,
-    alignItems: 'center',
-    paddingTop: 20,
+    fontWeight: '500',
+    marginTop: '10%',
+    left: 20,
   },
   buttonContainer: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
     width: '90%',
-    position: 'absolute',
     bottom: 30,
+    marginLeft: '5%',
   },
 });

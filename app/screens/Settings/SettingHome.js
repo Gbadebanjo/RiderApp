@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator, StatusBar, Modal, Easing, TouchableWithoutFeedback, Animated } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, StatusBar, Modal, Easing, TouchableWithoutFeedback, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AntDesign, Feather, Entypo, FontAwesome6, FontAwesome5, MaterialIcons, MaterialCommunityIcons, SimpleLineIcons, Ionicons } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons, MaterialCommunityIcons, SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { AppContext } from '../../context/AppContext';
@@ -45,10 +45,9 @@ export default function SettingHome({ navigation }) {
         }
     };
 
-
     return (
         <SafeAreaView style={styles.safeArea}>
-            <StatusBar barStyle="light-content" backgroundColor='#212121' translucent={false} />
+            <StatusBar barStyle="dark-content" backgroundColor='#f7f7f7' translucent={false} />
             <View style={styles.profileContainer}>
                 <TouchableOpacity style={styles.image}>
                     <Image source={userDetails?.profileImg ? { uri: userDetails?.profileImg } : require('../../assets/ProfileTemplate.png')} style={styles.img} />
@@ -62,7 +61,7 @@ export default function SettingHome({ navigation }) {
                     <Text style={styles.viewBox}>View Profile</Text>
                 </TouchableOpacity>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView} >
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
                 <Text style={styles.textHead}>User</Text>
                 <TouchableOpacity style={styles.eachItem}>
                     <View style={styles.iconWrapper}>
