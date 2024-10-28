@@ -142,7 +142,7 @@ export default function App() {
           <Stack.Screen name='SelectLanguage' component={SelectLanguage} options={{ headerShown: false }} />
 
         </Stack.Navigator>
-        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
+        <Toast config={toastConfig} />
       </NavigationContainer>
     </AppProvider>
   );
