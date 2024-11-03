@@ -104,7 +104,7 @@ export default function UseFaceid({navigation}) {
       setUserDetails(response.data.rider);
   
       setLoading(false);
-      return navigation.navigate('WelcomeHome');
+      return navigation.navigate('SettingHome');
     } else {
       return Toast.show({
         type: 'error', 

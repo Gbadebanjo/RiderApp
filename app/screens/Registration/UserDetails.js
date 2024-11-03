@@ -1,13 +1,12 @@
 import React, { useRef, useState, useEffect, useContext} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ScrollView, Platform, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, ScrollView, Platform, ActivityIndicator, Button, Modal, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+// import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import signupApi from '../../api/auth'
-import AntDesign from '@expo/vector-icons/AntDesign';
 import * as Device from 'expo-device';
 import * as Application from 'expo-application';
 import Toast from 'react-native-toast-message';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import StyledButton from '../../components/StyledButton';
 import { Formik } from 'formik';
 import InputField from '../../components/InputField';
@@ -46,27 +45,27 @@ export default  function UserDetails({navigation, route}) {
     const phoneInputRef = useRef(null);
     const saveEmail = AsyncStorage.setItem('email', email);
     const [selectedLanguage, setSelectedLanguage] = useState('');
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
+    const [dateModalVisible, setDateModalVisible] = useState(false);
+    const [date, setDate] = useState(new Date());``
     const [languages, setLanguages] = useState([]);
     const [locationDetails, setLocationDetails] = useState({});
     const { userDetails, setUserDetails } = useContext(AppContext);
   
-    const showDatePicker = () => {
-      setDatePickerVisibility(true);
-    };
-
+     const showDatePicker = () => {
+      setDateModalVisible(true);
+     };
+  
     const hideDatePicker = () => {
-      setDatePickerVisibility(false);
+      setDateModalVisible(false);
     };
   
-  const pickDate = (date, setFieldValue) => {
-    const formattedDate = date.toLocaleDateString();
-    setSelectedDate(formattedDate);
-    setFieldValue('dateOfBirth', formattedDate);
-    hideDatePicker();
-  };
-  
+    const pickDate = () => {
+      const formattedDate = date.toLocaleDateString();
+      setSelectedDate(formattedDate);
+      setFieldValue('dateOfBirth', formattedDate);
+      hideDatePicker();
+    };
 
   useEffect(() => {
     const fetchLanguages = () => {
@@ -105,11 +104,11 @@ export default  function UserDetails({navigation, route}) {
         lat: stringLocation.latitude,
       }
     
-    const location = {
-      country,
-      state,
-      city
-    }
+      const location = {
+        country,
+        state,
+        city
+      }
           
       let deviceId;
 
@@ -138,7 +137,7 @@ export default  function UserDetails({navigation, route}) {
       });
       const token = response.data.rider.token
       await AsyncStorage.setItem('userToken', token);
-      console.log('response', response.data.rider.rider)
+      // console.log('response', response.data.rider.rider)
       setUserDetails(response.data.rider.rider);
       setLoading(false);
       return navigation.navigate('Photo');
@@ -158,7 +157,7 @@ export default  function UserDetails({navigation, route}) {
              middleName: '',
              displayName: '',
              otherLangSpoken: selectedLanguage || '',
-             dateOfBirth: '',
+             dateOfBirth: '', 
              gender: '',
              email: email,
              phoneNumber: '',
@@ -271,21 +270,27 @@ export default  function UserDetails({navigation, route}) {
                   <Text style={styles.errorText}>{errors.otherLangSpoken}</Text>
               )}
 
-              <Text style={styles.phonelabel}>Date of Birth</Text>
+              {/* <Text style={styles.phonelabel}>Date of Birth</Text> */}
               <View>
-                <TouchableOpacity style={styles.dateContainer} onPress={showDatePicker}>
-                  <Text style={styles.dateText}>{selectedDate || 'Select Date'}</Text>
+                {/* <TouchableOpacity style={styles.dateContainer} onPress={showDatePicker}>
+                  <Text style={styles.dateText}>{values.dateOfBirth  || 'Select Date'}</Text>
                   <AntDesign name="calendar" size={20} color="black" />
-                </TouchableOpacity>
-                  <DateTimePickerModal
-                    isVisible={isDatePickerVisible}
-                    mode="date"
-                    onConfirm={(date) => pickDate(date, setFieldValue)}
-                    onCancel={hideDatePicker}
+                </TouchableOpacity> */}
+                <InputField
+                    label="Date of Birth"
+                    placeholder='12-24-2024'
+                    autoCapitalize="none"
+                    textContentType=""
+                    returnKeyType="next"
+                    width="100%"
+                    paddingLeft={10}
+                    onChangeText={handleChange('dateOfBirth')}
+                    onBlur={handleBlur('dateOfBirth')}
+                    value={values.dateOfBirth}
+                    error={touched.dateOfBirth && errors.dateOfBirth}
+                    errorMessage={errors.dateOfBirth}
+                    showPasswordToggle={false}
                   />
-                  {touched.dateOfBirth && errors.dateOfBirth && (
-                      <Text style={styles.errorText}>{errors.dateOfBirth}</Text>
-                  )}
                 </View>
 
               <SelectInput
@@ -517,5 +522,18 @@ const styles = StyleSheet.create({
     color: 'red',
     marginTop: 0,
     alignSelf: 'flex-start',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: 300,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
   },
 });

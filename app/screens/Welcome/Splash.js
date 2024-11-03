@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Image, Text, Animated, Linking, Platform, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
-import Logo from '../../assets/newRydeproLogo.png';
+import Logo from '../../assets/RYDEPRO_BLACK.png';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

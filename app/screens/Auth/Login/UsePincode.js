@@ -79,16 +79,14 @@ export default function UsePincode({navigation}) {
             text1: errorMessage,
           });
         }
+        setLoading(false);
         Toast.show({
             type: 'success',
             text1: response.data.message,
         });
-      await AsyncStorage.setItem('userToken', response.data.token);
-        console.log("pincode", response.data.rider);
+        await AsyncStorage.setItem('userToken', response.data.token);
         setUserDetails(response.data.rider);
-    
-        setLoading(false);
-        return navigation.navigate('WelcomeHome');
+        return navigation.navigate('SettingHome');
       }
 
     return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -52,8 +52,8 @@ function SettingsStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen name="SettingHome" component={SettingHome} options={{ headerShown: false }} />
-            <Stack.Screen name="ProfileDetails" component={ProfileDetails} options={{ headerShown: false }} />
             <Stack.Screen name="MenuLanding" component={MenuLanding} options={{ headerShown: false }} />
+            <Stack.Screen name="ProfileDetails" component={ProfileDetails} options={{ headerShown: false }} />
             <Stack.Screen name="Edit" component={Edit} options={{ headerShown: false }} />
         </Stack.Navigator>
     )

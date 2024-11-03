@@ -2,9 +2,8 @@ import React, { useRef, useState, useEffect, useContext } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, ScrollView, Platform, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AntDesign from '@expo/vector-icons/AntDesign';
+// import AntDesign from '@expo/vector-icons/AntDesign';
 import Toast from 'react-native-toast-message';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import StyledButton from '../../components/StyledButton';
 import { Formik } from 'formik';
 import InputField from '../../components/InputField';
@@ -108,8 +107,6 @@ export default function UserDetails({ navigation, route }) {
     delete updatedValues.city;
     delete updatedValues.state;
     delete updatedValues.country;
-
-    // console.log('Updated values:', updatedValues);
 
     const token = await AsyncStorage.getItem('userToken');
     setAuthToken(token);
@@ -251,21 +248,22 @@ export default function UserDetails({ navigation, route }) {
                 <Text style={styles.errorText}>{errors.otherLangSpoken}</Text>
               )}
 
-              <Text style={styles.phonelabel}>Date of Birth</Text>
               <View>
-                <TouchableOpacity style={styles.dateContainer} onPress={showDatePicker}>
-                  <Text style={styles.dateText}>{values.dateOfBirth || 'Select Date'}</Text>
-                  <AntDesign name="calendar" size={20} color="black" />
-                </TouchableOpacity>
-                <DateTimePickerModal
-                  isVisible={isDatePickerVisible}
-                  mode="date"
-                  onConfirm={(date) => pickDate(date, setFieldValue)}
-                  onCancel={hideDatePicker}
-                />
-                {touched.dateOfBirth && errors.dateOfBirth && (
-                  <Text style={styles.errorText}>{errors.dateOfBirth}</Text>
-                )}
+                  <InputField
+                    label="Date of Birth"
+                    placeholder='12-24-2024'
+                    autoCapitalize="none"
+                    textContentType=""
+                    returnKeyType="next"
+                    width="100%"
+                    paddingLeft={10}
+                    onChangeText={handleChange('dateOfBirth')}
+                    onBlur={handleBlur('dateOfBirth')}
+                    value={values.dateOfBirth}
+                    error={touched.dateOfBirth && errors.dateOfBirth}
+                    errorMessage={errors.dateOfBirth}
+                    showPasswordToggle={false}
+                  />
               </View>
 
               <SelectInput
@@ -275,7 +273,6 @@ export default function UserDetails({ navigation, route }) {
                   { label: 'Female', value: 'Female' },
                   { label: 'Other', value: 'Other' },
                 ]}
-                // placeholder='Select Gender'
                 onValueChange={handleChange('gender')}
                 initialValue={locationDetails.gender || ''}
                 value={values.gender}

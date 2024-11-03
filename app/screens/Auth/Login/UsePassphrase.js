@@ -73,7 +73,7 @@ export default function UsePassphrase({navigation, route}) {
     
           setLoading(false);
           resetForm();
-         return navigation.navigate('WelcomeHome');
+         return navigation.navigate('SettingHome');
       }
 
     return (

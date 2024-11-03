@@ -1,7 +1,7 @@
 import { StyleSheet, View, Image } from 'react-native';
 import React from 'react';
 
-const defaultLogo = require('../assets/newRydeproLogo.png');
+const defaultLogo = require('../assets/RYDEPRO_BLACK.png');
 
 export default function Centerlogo({ align, logoSource = defaultLogo, logoWidth = '30%', logoHeight = 100 }) {
   return (

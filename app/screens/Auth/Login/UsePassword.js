@@ -80,8 +80,6 @@ export default function UsePassword({ navigation, route }) {
        deviceId: deviceId,
   }
   
-  console.log(deviceInfo);
-
     const response = await passwordApi.loginWithPassword(email, password, deviceInfo, location);
     if (!response.ok) {
       setLoading(false);
@@ -100,7 +98,7 @@ export default function UsePassword({ navigation, route }) {
     setUserDetails(response.data.rider);
       setLoading(false);
       resetForm();
-     return navigation.navigate('WelcomeHome');
+     return navigation.navigate('SettingHome');
   }
 
   const handlePasswordChange = (password) => {

@@ -59,6 +59,7 @@ import PassphrasePassword from './app/screens/Settings/PassphrasePassword'; // I
 import BiometricToggle from './app/screens/Settings/BiometricToggle';
 import SettingsPasswordScreen from './app/screens/Settings/SettingsPasswordScreen'; // In use
 import PinSettings from './app/screens/Settings/PinSettings'; // In use
+import Edit from './app/screens/Settings/Edit'; // In use
 import PinPasswordScreen from './app/screens/Settings/PinPasswordScreen'; // In use
 import CreatePinScreen from './app/screens/Settings/CreatePinScreen'; // In use
 import ConfirmPinScreen from './app/screens/Settings/ConfirmPinScreen'; // In use
@@ -117,6 +118,7 @@ export default function App() {
           <Stack.Screen name='Feedback' component={Feedback} options={{ headerShown: false }} />
           <Stack.Screen name='ThankYou' component={ThankYou} options={{ headerShown: false }} />
           <Stack.Screen name='Photo' component={Photo} options={{ headerShown: false }} />
+          <Stack.Screen name='Edit' component={Edit} options={{ headerShown: false }} />
           <Stack.Screen name='ProfileDetails' component={ProfileDetails} options={{ headerShown: false }} />
           <Stack.Screen name='ReviewPhoto' component={ReviewPhoto} options={{ headerShown: false }} />
           <Stack.Screen name='RewardProgram' component={RewardProgram} options={{ headerShown: false }} />
