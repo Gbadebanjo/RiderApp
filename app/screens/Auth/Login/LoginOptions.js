@@ -4,15 +4,54 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar,  } from 'react-native-web'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { MaterialCommunityIcons, AntDesign, Ionicons, Entypo } from '@expo/vector-icons';
-
+import {
+  GoogleSignin,
+  isErrorWithCode,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 const googleLogo = require('./../../../assets/GoogleIcon.png');
+
+GoogleSignin.configure({
+  webClientId: "447373894859-p3qt639opm2c12b9o07la0r30amha66n.apps.googleusercontent.com",
+  scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+  offlineAccess: true, 
+  forceCodeForRefreshToken: true, 
+  iosClientId: "447373894859-38d2ev07f0obb5a3f6usf0ja8l6g4v81.apps.googleusercontent.com",
+});
 
 export default function LoginOptions({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
 
     const toggleModal = () => {
         setModalVisible(!modalVisible);
+    };
+
+    const signIn = async () => {
+      try {
+        await GoogleSignin.hasPlayServices();
+        const userInfo = await GoogleSignin.signIn();
+        console.log('userInfo:', userInfo);
+        // setData(userInfo);
+      } catch (error) {
+        console.log('error', error);
+        // setError(error.message || 'An unexpected error occurred');
+        if (isErrorWithCode(error)) {
+          switch (error.code) {
+            case statusCodes.IN_PROGRESS:
+              // operation (eg. sign in) already in progress
+              break;
+            case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+              // Android only, play services not available or outdated
+              break;
+            default:
+            // some other error happened
+          }
+        } else {
+          console.log('an error thats not related to google sign in occurred');
+          setError('Npot going');
+        }
+      }
     };
 
   return (
@@ -58,7 +97,7 @@ export default function LoginOptions({ navigation }) {
                     <AntDesign name="apple1" size={25} color="#0E0E0E" />
                     <Text>Apple ID</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.eachclickable}>
+                <TouchableOpacity style={styles.eachclickable} onPress={signIn}>
                     <Image source={googleLogo} style={styles.googleLogo}/>
                     <Text style={styles.texts}>Google Account</Text>
                 </TouchableOpacity>
