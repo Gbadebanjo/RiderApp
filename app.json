@@ -4,7 +4,6 @@
     "slug": "RidersRydePRO",
     "version": "1.0.0",
     "scheme": "ridersrydepro",
-    "icon": "./app/assets/newRydeproLogo.png",
     "splash": {
       "image": "./app/assets/Logo Image.png",
       "resizeMode": "contain",
@@ -34,7 +33,7 @@
       [
         "@react-native-google-signin/google-signin",
         {
-          "iosUrlScheme": "com.googleusercontent.apps.885225392728-lutft160jr5nb1q7b3o05gklt5g8u6r2"
+          "iosUrlScheme": "com.googleusercontent.apps.447373894859-38d2ev07f0obb5a3f6usf0ja8l6g4v81"
         }
       ],
       "expo-asset"
