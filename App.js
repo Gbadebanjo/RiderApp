@@ -71,6 +71,7 @@ import NavButtons from './app/components/NavButtons';  // In use
 
 const Stack = createStackNavigator();
 
+
 export default function App() {
   return (
     <AppProvider>
